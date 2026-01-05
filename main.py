@@ -30,19 +30,31 @@ from app.core.field_config import get_config
 class SquadStatsExtractor:
     """Main extraction orchestrator."""
     
-    def __init__(self):
-        """Initialize all extraction components."""
+    def __init__(self, mapping_file: str = "screen1_column_mapping.yaml"):
+        """Initialize all extraction components.
+        
+        Args:
+            mapping_file: Column mapping file to use (e.g., 'screen1_column_mapping.yaml', 'screen2_column_mapping.yaml')
+        """
         print("🔧 Initializing Squad STATS Extractor...")
+        print(f"  📋 Using mapping: {mapping_file}")
         
         # Load configuration
-        self.field_config = get_config()
+        self.field_config = get_config(mapping_file=mapping_file)
+        self.mapping_file = mapping_file
         
-        # Initialize matchers
-        self.hero_matcher = HeroMatcher()
-        self.item_matcher = ItemMatcher()
+        # Only initialize matchers for screen1 (which has hero portraits and items)
+        # Other screens (screen2, etc.) will use OCR-only extraction
+        if mapping_file == "screen1_column_mapping.yaml":
+            self.hero_matcher = HeroMatcher()
+            self.item_matcher = ItemMatcher()
+            print(f"  ✓ Loaded {len(self.hero_matcher.hero_database)} heroes")
+            print(f"  ✓ Loaded {len(self.item_matcher.item_database)} items")
+        else:
+            self.hero_matcher = None
+            self.item_matcher = None
+            print("  ✓ OCR-only mode (no hero/item matching)")
         
-        print(f"  ✓ Loaded {len(self.hero_matcher.hero_database)} heroes")
-        print(f"  ✓ Loaded {len(self.item_matcher.item_database)} items")
         print("✓ Initialization complete\n")
     
     def extract_player_data(
@@ -97,6 +109,10 @@ class SquadStatsExtractor:
         hero_col_def: Dict
     ) -> Optional[Dict[str, Any]]:
         """Extract and match hero portrait."""
+        # Skip hero matching if matcher not available (OCR-only mode)
+        if self.hero_matcher is None:
+            return None
+            
         try:
             # Calculate cell coordinates
             x_start = int(width * hero_col_def['x_start_pct'])
@@ -152,6 +168,10 @@ class SquadStatsExtractor:
     ) -> List[Dict[str, Any]]:
         """Extract and match all 6 item slots."""
         items = []
+        
+        # Skip item matching if matcher not available (OCR-only mode)
+        if self.item_matcher is None:
+            return items
         
         for slot_idx in range(1, 7):
             slot_key = f"item{slot_idx}"  # Changed from item_slot_{slot_idx}
@@ -379,6 +399,10 @@ class SquadStatsExtractor:
         We reverse the order so slot 1 in output = leftmost item visually.
         """
         items = []
+        
+        # Skip item matching if matcher not available (OCR-only mode)
+        if self.item_matcher is None:
+            return items
         
         # Extract in reverse order: enemy_item6 -> enemy_item1 
         # so that slot 1 = leftmost item visually
@@ -645,11 +669,30 @@ def main():
     if len(sys.argv) < 2:
         print("❌ Error: No screenshot path provided")
         print("\nUsage:")
-        print('  python main.py "path/to/screenshot.png"')
-        print('  python main.py "tests/fixtures/test (1).jpeg"')
+        print('  python main.py "path/to/screenshot.png" [screentype]')
+        print('  python main.py "tests/fixtures/test (1).jpeg" screen1')
+        print('  python main.py "tests/fixtures/Screen2.jpeg" screen2')
+        print()
+        print("Screen types:")
+        print('  screen1 - KDA stats, items, ratings (default)')
+        print('  screen2 - Damage stats (hero/turret/damage taken/teamfight participation)')
         sys.exit(1)
     
     screenshot_path = sys.argv[1]
+    screentype = sys.argv[2] if len(sys.argv) > 2 else "screen1"
+    
+    # Map screentype to mapping file
+    mapping_files = {
+        "screen1": "screen1_column_mapping.yaml",
+        "screen2": "screen2_column_mapping.yaml"
+    }
+    
+    if screentype not in mapping_files:
+        print(f"❌ Error: Invalid screentype '{screentype}'")
+        print(f"   Valid options: {', '.join(mapping_files.keys())}")
+        sys.exit(1)
+    
+    mapping_file = mapping_files[screentype]
     
     # Check if file exists
     if not Path(screenshot_path).exists():
@@ -657,8 +700,8 @@ def main():
         sys.exit(1)
     
     try:
-        # Initialize extractor
-        extractor = SquadStatsExtractor()
+        # Initialize extractor with specified mapping
+        extractor = SquadStatsExtractor(mapping_file=mapping_file)
         
         # Process screenshot
         result = extractor.process_screenshot(screenshot_path)
