@@ -1,0 +1,413 @@
+# Field Extraction Configuration
+# This file defines which fields are extracted from screenshots and how to process them.
+# You can enable/disable fields without changing code.
+
+# OCR Engine Settings
+ocr:
+  engine: "tesseract"
+  language: "eng"
+  confidence_threshold: 0.6  # Minimum confidence to accept OCR result
+
+# Field Definitions
+# Each field represents data extracted from the screenshot
+fields:
+  # ====================
+  # PLAYER IDENTIFICATION
+  # ====================
+  
+  player_name:
+    enabled: true
+    type: text
+    ocr_config: "text"
+    required: true
+    column_key: "player_name"
+    description: "Player's in-game username"
+    validation:
+      min_length: 1
+      max_length: 30
+  
+  # ====================
+  # HERO INFORMATION
+  # ====================
+  
+  hero_portrait:
+    enabled: true
+    type: image_match
+    required: true
+    column_key: "hero_portrait"
+    description: "Hero identification via portrait matching"
+    matching_method: "orb"  # orb, sift, or template
+    confidence_threshold: 0.7
+  
+  hero_level:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "hero_level"
+    description: "Hero level in this match"
+    validation:
+      min: 1
+      max: 20
+  
+  # ====================
+  # COMBAT STATISTICS
+  # ====================
+  
+  kills:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    column_key: "kills"
+    description: "Number of enemy kills"
+    validation:
+      min: 0
+      max: 100
+  
+  deaths:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    column_key: "deaths"
+    description: "Number of times died"
+    validation:
+      min: 0
+      max: 100
+  
+  assists:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    column_key: "assists"
+    description: "Number of kill assists"
+    validation:
+      min: 0
+      max: 200
+  
+  damage_dealt:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    column_key: "damage_dealt"
+    description: "Total damage dealt to enemies"
+    validation:
+      min: 0
+      max: 200000
+  
+  damage_taken:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "damage_taken"
+    description: "Total damage received"
+    validation:
+      min: 0
+      max: 200000
+  
+  healing_shields:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "healing_shields"
+    description: "Healing and shields provided"
+    validation:
+      min: 0
+      max: 100000
+  
+  crowd_control:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "crowd_control"
+    description: "Crowd control duration in seconds"
+    validation:
+      min: 0
+      max: 500
+  
+  # ====================
+  # GOLD ECONOMY
+  # ====================
+  
+  total_gold:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    column_key: "total_gold"
+    description: "Total gold earned"
+    validation:
+      min: 0
+      max: 50000
+  
+  jungle_gold:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "jungle_gold"
+    description: "Gold from jungle monsters"
+    validation:
+      min: 0
+      max: 30000
+  
+  kill_gold:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "kill_gold"
+    description: "Gold from kills and assists"
+    validation:
+      min: 0
+      max: 30000
+  
+  minion_gold:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: false
+    column_key: "minion_gold"
+    description: "Gold from minions/creeps"
+    validation:
+      min: 0
+      max: 30000
+  
+  # ====================
+  # PARTICIPATION METRICS
+  # ====================
+  
+  teamfight_participation:
+    enabled: true
+    type: percentage
+    ocr_config: "percent"
+    required: false
+    column_key: "teamfight_pct"
+    description: "Percentage of teamfights participated in"
+    validation:
+      min: 0.0
+      max: 1.0
+  
+  team_gold_pct:
+    enabled: true
+    type: percentage
+    ocr_config: "percent"
+    required: false
+    column_key: "team_gold_pct"
+    description: "Percentage of team's total gold"
+    validation:
+      min: 0.0
+      max: 1.0
+  
+  team_damage_pct:
+    enabled: true
+    type: percentage
+    ocr_config: "percent"
+    required: false
+    column_key: "team_damage_pct"
+    description: "Percentage of team's total damage"
+    validation:
+      min: 0.0
+      max: 1.0
+  
+  team_damage_taken_pct:
+    enabled: false  # Often not visible on main screen
+    type: percentage
+    ocr_config: "percent"
+    required: false
+    column_key: "team_damage_taken_pct"
+    description: "Percentage of team's total damage taken"
+    validation:
+      min: 0.0
+      max: 1.0
+  
+  # ====================
+  # MVP / AWARDS
+  # ====================
+  
+  mvp_badge:
+    enabled: true
+    type: text
+    ocr_config: "text"
+    required: false
+    column_key: "mvp_badge"
+    description: "MVP badge type (gold/silver/bronze)"
+    validation:
+      allowed_values: ["gold_mvp", "silver_mvp", "bronze_mvp", "gold", "silver", "bronze"]
+  
+  mvp_score:
+    enabled: true
+    type: float
+    ocr_config: "digits_decimal"
+    required: false
+    column_key: "mvp_score"
+    description: "MVP rating score"
+    validation:
+      min: 0.0
+      max: 10.0
+  
+  # ====================
+  # ITEMS (PHASE 4)
+  # ====================
+  
+  item_1:
+    enabled: false
+    type: image_match
+    required: false
+    column_key: "item_1"
+    description: "First item slot"
+    note: "Item detection is a Phase 4 feature"
+  
+  item_2:
+    enabled: false
+    type: image_match
+    required: false
+    column_key: "item_2"
+    description: "Second item slot"
+  
+  item_3:
+    enabled: false
+    type: image_match
+    required: false
+    column_key: "item_3"
+    description: "Third item slot"
+  
+  item_4:
+    enabled: false
+    type: image_match
+    required: false
+    column_key: "item_4"
+    description: "Fourth item slot"
+  
+  item_5:
+    enabled: false
+    type: image_match
+    required: false
+    column_key: "item_5"
+    description: "Fifth item slot"
+  
+  item_6:
+    enabled: false
+    type: image_match
+    required: false
+    column_key: "item_6"
+    description: "Sixth item slot"
+
+# ====================
+# MATCH-LEVEL FIELDS
+# ====================
+
+match_fields:
+  match_id:
+    enabled: true
+    type: text
+    ocr_config: "text"
+    required: false
+    region_key: "match_id"
+    description: "In-game match ID if visible"
+  
+  game_duration:
+    enabled: true
+    type: text
+    ocr_config: "text"
+    required: false
+    region_key: "game_duration"
+    description: "Match duration (MM:SS format) - top right above enemy rows"
+    validation:
+      pattern: "^\\d{1,2}:\\d{2}$"
+  
+  game_result:
+    enabled: true
+    type: text
+    ocr_config: "text"
+    required: false
+    region_key: "game_result"
+    description: "Victory or Defeat - top center of screen"
+    validation:
+      allowed_values: ["Victory", "Defeat", "VICTORY", "DEFEAT"]
+  
+  duration:
+    enabled: true
+    type: duration
+    ocr_config: "text"
+    required: true
+    region_key: "duration"
+    description: "Match duration (MM:SS format)"
+    validation:
+      min_seconds: 60
+      max_seconds: 7200
+  
+  final_score_left:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    region_key: "score_left"
+    description: "Final score for left team"
+  
+  final_score_right:
+    enabled: true
+    type: integer
+    ocr_config: "digits"
+    required: true
+    region_key: "score_right"
+    description: "Final score for right team"
+
+# ====================
+# TEAM FILTER
+# ====================
+# Only extract stats for blue team (left side)
+# Red team (right side) is completely ignored
+team_filter:
+  extract_blue_team: true
+  extract_red_team: false
+  blue_team_identifier: "left_side"
+
+# ====================
+# POST-PROCESSING RULES
+# ====================
+
+post_processing:
+  # Common OCR error corrections
+  ocr_corrections:
+    # When expecting digits
+    digit_replacements:
+      "O": "0"
+      "o": "0"
+      "l": "1"
+      "I": "1"
+      "S": "5"
+      "s": "5"
+      "B": "8"
+      "Z": "2"
+  
+  # Data normalization
+  normalization:
+    player_names:
+      lowercase: false  # Keep original case
+      strip_whitespace: true
+      remove_special_chars: false
+    
+    percentages:
+      format: "decimal"  # Convert "45.2%" to 0.452
+      strip_percent_sign: true
+  
+  # Validation rules
+  validation:
+    # Warn if values seem unrealistic but don't fail
+    warnings:
+      high_damage_threshold: 100000
+      high_gold_threshold: 30000
+      high_kda: 30
+    
+    # Fail processing if these constraints violated
+    hard_constraints:
+      max_players: 5  # Blue team only
+      min_players: 5  # Must detect all 5 blue team players
+      teams: 1        # Only blue team extracted

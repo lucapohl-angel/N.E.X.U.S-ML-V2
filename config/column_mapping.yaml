@@ -1,0 +1,372 @@
+# Column Mapping Configuration
+# This file defines the pixel regions for each data column in the screenshot.
+# Coordinates are specified as percentages of image dimensions for resolution independence.
+
+# ====================
+# REFERENCE RESOLUTION
+# ====================
+# The resolution used when manually determining column positions
+# All percentage calculations are based on this
+reference_resolution:
+  width: 1920
+  height: 1080
+
+# ====================
+# ROW DETECTION SETTINGS
+# ====================
+rows:
+  detection_method: "hough_lines"  # Options: hough_lines, contours, fixed_positions
+  
+  # Expected number of player rows (BLUE TEAM ONLY - red team ignored)
+  expected_count: 5
+  
+  # Only process blue team (left side)
+  team_filter: "blue_only"  # Only extract blue/left team stats
+  blue_team_rows: [0, 1, 2, 3, 4]  # Indices (0-based)
+  
+  # Row detection parameters
+  min_row_height_px: 60
+  max_row_height_px: 120
+  row_spacing_tolerance_px: 10
+  
+  # Y-axis region where player rows are expected (percentage of height)
+  # Only blue team (left side) - approximately upper half
+  # CONTROLS:
+  # - y_start_pct: LOWER = rows start higher up, HIGHER = rows start lower down
+  # - y_end_pct: LOWER = rows end sooner (smaller), HIGHER = rows extend lower (taller)
+  # - Increase the GAP between y_start and y_end to make rows TALLER
+  # VALUES MUST BE BETWEEN 0.0 and 1.0 (e.g., 0.15 = 15%, 0.65 = 65%)
+  row_region:
+    y_start_pct: 0.237  # Start of first blue player row (try 0.10-0.20)
+    y_end_pct: 0.883    # End of 5th blue player row (try 0.60-0.70)
+
+# ====================
+# COLUMN DEFINITIONS
+# ====================
+# Each column defined by:
+#   - x_start_pct: Left edge as % of image width
+#   - x_end_pct: Right edge as % of image width
+#   - y_offset_pct: Vertical offset from row top (% of row height)
+#   - height_pct: Height of region (% of row height)
+
+columns:
+  # ------------------
+  # HERO & PLAYER INFO
+  # ------------------
+  
+  hero_portrait:
+    x_start_pct: 0.142
+    x_end_pct: 0.192
+    y_offset_pct: 0.08
+    height_pct: 0.84
+    description: "Hero avatar/portrait image"
+    preprocessing: "none"  # Keep color for image matching
+  
+  hero_level:
+    x_start_pct: 0.143
+    x_end_pct: 0.159
+    y_offset_pct: 0.69
+    height_pct: 0.22
+    description: "Small number on hero portrait"
+    preprocessing: "binarize"
+  
+  player_name:
+    x_start_pct: 0.196
+    x_end_pct: 0.3149
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Player username (may be long)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # K/D/A STATS
+  # ------------------
+  
+  kills:
+    x_start_pct: 0.3149
+    x_end_pct: 0.3307
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Kills count"
+    preprocessing: "binarize"
+  
+  deaths:
+    x_start_pct: 0.3345
+    x_end_pct: 0.3503
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Deaths count"
+    preprocessing: "binarize"
+  
+  assists:
+    x_start_pct: 0.354
+    x_end_pct: 0.3698
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Assists count"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # GOLD STATS
+  # ------------------
+  
+  total_gold:
+    x_start_pct: 0.3735
+    x_end_pct: 0.42
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Total gold earned"
+    preprocessing: "binarize"
+  
+  individual_rating:
+    x_start_pct: 0.432
+    x_end_pct: 0.464
+    y_offset_pct: 0.65
+    height_pct: 0.255
+    description: "Individual player rating score"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # ITEMS
+  # ------------------
+  
+  item1:
+    x_start_pct: 0.206
+    x_end_pct: 0.2326
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Item slot 1"
+    preprocessing: "none"
+  
+  item2:
+    x_start_pct: 0.2401
+    x_end_pct: 0.2667
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Item slot 2"
+    preprocessing: "none"
+  
+  item3:
+    x_start_pct: 0.2738
+    x_end_pct: 0.3004
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Item slot 3"
+    preprocessing: "none"
+  
+  item4:
+    x_start_pct: 0.3076
+    x_end_pct: 0.3342
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Item slot 4"
+    preprocessing: "none"
+  
+  item5:
+    x_start_pct: 0.3413
+    x_end_pct: 0.3679
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Item slot 5"
+    preprocessing: "none"
+  
+  item6:
+    x_start_pct: 0.375
+    x_end_pct: 0.4016
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Item slot 6"
+    preprocessing: "none"
+  
+  # ------------------
+  # ENEMY TEAM (RED) - Mirrored
+  # ------------------
+  
+  enemy_hero_portrait:
+    x_start_pct: 0.808
+    x_end_pct: 0.858
+    y_offset_pct: 0.08
+    height_pct: 0.84
+    description: "Enemy hero avatar/portrait"
+    preprocessing: "none"
+  
+  enemy_hero_level:
+    x_start_pct: 0.841
+    x_end_pct: 0.857
+    y_offset_pct: 0.69
+    height_pct: 0.22
+    description: "Enemy hero level"
+    preprocessing: "binarize"
+  
+  enemy_player_name:
+    x_start_pct: 0.685
+    x_end_pct: 0.804
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Enemy player name"
+    preprocessing: "binarize"
+  
+  enemy_kills:
+    x_start_pct: 0.630
+    x_end_pct: 0.646
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Enemy kills"
+    preprocessing: "binarize"
+  
+  enemy_deaths:
+    x_start_pct: 0.650
+    x_end_pct: 0.665
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Enemy deaths"
+    preprocessing: "binarize"
+  
+  enemy_assists:
+    x_start_pct: 0.669
+    x_end_pct: 0.685
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Enemy assists"
+    preprocessing: "binarize"
+  
+  enemy_total_gold:
+    x_start_pct: 0.580
+    x_end_pct: 0.6265
+    y_offset_pct: 0.09
+    height_pct: 0.25
+    description: "Enemy total gold"
+    preprocessing: "binarize"
+  
+  enemy_individual_rating:
+    x_start_pct: 0.536
+    x_end_pct: 0.568
+    y_offset_pct: 0.65
+    height_pct: 0.255
+    description: "Enemy rating"
+    preprocessing: "binarize"
+  
+  enemy_item1:
+    x_start_pct: 0.7674
+    x_end_pct: 0.794
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Enemy item 1"
+    preprocessing: "none"
+  
+  enemy_item2:
+    x_start_pct: 0.7333
+    x_end_pct: 0.7599
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Enemy item 2"
+    preprocessing: "none"
+  
+  enemy_item3:
+    x_start_pct: 0.6996
+    x_end_pct: 0.7262
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Enemy item 3"
+    preprocessing: "none"
+  
+  enemy_item4:
+    x_start_pct: 0.6658
+    x_end_pct: 0.6924
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Enemy item 4"
+    preprocessing: "none"
+  
+  enemy_item5:
+    x_start_pct: 0.6321
+    x_end_pct: 0.6587
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Enemy item 5"
+    preprocessing: "none"
+  
+  enemy_item6:
+    x_start_pct: 0.5984
+    x_end_pct: 0.625
+    y_offset_pct: 0.4
+    height_pct: 0.46
+    description: "Enemy item 6"
+    preprocessing: "none"
+  
+  # ------------------
+  # BATTLE ID
+  # ------------------
+  
+  battle_id:
+    x_start_pct: 0.158
+    x_end_pct: 0.3
+    y_offset_pct: 0.8856
+    height_pct: 0.0262
+    description: "Battle ID number at bottom"
+    preprocessing: "binarize"
+
+# ====================
+# MATCH METADATA REGIONS
+# ====================
+# These regions are NOT row-based, they're absolute positions on the screen
+# Used for match-level data (duration, result, etc.)
+
+metadata_regions:
+  game_duration:
+    x_start_pct: 0.805
+    x_end_pct: 0.84
+    y_start_pct: 0.15
+    y_end_pct: 0.187
+    description: "Game duration timer (MM:SS) - top right above enemy rows"
+    preprocessing: "binarize"
+  
+  game_result:
+    x_start_pct: 0.42
+    x_end_pct: 0.59
+    y_start_pct: 0.02
+    y_end_pct: 0.10
+    description: "Victory/Defeat text - top center of screen"
+    preprocessing: "binarize"
+
+# ====================
+# PREPROCESSING OPTIONS
+# ====================
+preprocessing_settings:
+  binarize:
+    method: "adaptive_threshold"  # or "otsu"
+    block_size: 11
+    c_constant: 2
+    invert: false
+  
+  enhance:
+    clahe: true
+    clip_limit: 2.0
+    tile_grid_size: [8, 8]
+  
+  denoise:
+    method: "bilateral"  # or "gaussian", "median"
+    d: 5
+    sigma_color: 75
+    sigma_space: 75
+  
+  resize_before_ocr:
+    enabled: true
+    scale_factor: 2.0  # Enlarge small text
+    interpolation: "INTER_CUBIC"
+
+# ====================
+# CALIBRATION NOTES
+# ====================
+# To recalibrate column positions:
+# 1. Run: python tools/phase1_debug_mapping.py <screenshot.png>
+# 2. Visually inspect the output image with drawn rectangles
+# 3. Adjust percentage values in this file
+# 4. Re-run step 1 until all columns align correctly
+# 5. Commit the updated config to version control
+
+# Common issues and fixes:
+# - Text cut off on left: Decrease x_start_pct
+# - Text cut off on right: Increase x_end_pct
+# - Text vertically clipped: Adjust y_offset_pct and height_pct
+# - Wrong column extracted: Check column_key in field_extraction.yaml matches key here

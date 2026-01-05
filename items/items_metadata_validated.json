@@ -1,0 +1,640 @@
+{
+  "total_items": 109,
+  "successful_downloads": 104,
+  "failed_downloads": 5,
+  "validated_against_wiki": true,
+  "wiki_equipment_count": 109,
+  "failed_items": [
+    "Athena%27s Shield",
+    "Berserker%27s Fury",
+    "Haas%27 Claws",
+    "Hero%27s Ring",
+    "Queen%27s Wings"
+  ],
+  "items": [
+    {
+      "name": "Allow Throw",
+      "wiki_name": "Allow Throw",
+      "filename": "item_Allow Throw.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/16/Allow_Throw.png/revision/latest?cb=20240110065620"
+    },
+    {
+      "name": "Antique Cuirass",
+      "wiki_name": "Antique Cuirass",
+      "filename": "item_Antique Cuirass.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/40/Antique_Cuirass.png/revision/latest?cb=20240728122516"
+    },
+    {
+      "name": "Arcane Boots",
+      "wiki_name": "Arcane Boots",
+      "filename": "item_Arcane Boots.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/15/Arcane_Boots.png/revision/latest?cb=20240110072249"
+    },
+    {
+      "name": "Ares Belt",
+      "wiki_name": "Ares Belt",
+      "filename": "item_Ares Belt.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/04/Ares_Belt.png/revision/latest?cb=20210921161332"
+    },
+    {
+      "name": "Athena's Shield",
+      "wiki_name": "Athena's Shield",
+      "filename": "item_Athena's Shield.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/15/Athena%27s_Shield.png/revision/latest?cb=20240728122125"
+    },
+    {
+      "name": "Azure Blade",
+      "wiki_name": "Azure Blade",
+      "filename": "item_Azure Blade.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Azure_Blade.png/revision/latest?cb=20240110063912"
+    },
+    {
+      "name": "Berserker's Fury",
+      "wiki_name": "Berserker's Fury",
+      "filename": "item_Berserker's Fury.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/6/6c/Berserker%27s_Fury.png/revision/latest?cb=20240109135108"
+    },
+    {
+      "name": "Black Ice Shield",
+      "wiki_name": "Black Ice Shield",
+      "filename": "item_Black Ice Shield.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/5d/Black_Ice_Shield.png/revision/latest?cb=20240110071203"
+    },
+    {
+      "name": "Blade Armor",
+      "wiki_name": "Blade Armor",
+      "filename": "item_Blade Armor.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/d9/Blade_Armor.png/revision/latest?cb=20240728123118"
+    },
+    {
+      "name": "Blade of Despair",
+      "wiki_name": "Blade of Despair",
+      "filename": "item_Blade of Despair.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/d5/Blade_of_Despair.png/revision/latest?cb=20210627031620"
+    },
+    {
+      "name": "Blade of the Heptaseas",
+      "wiki_name": "Blade of the Heptaseas",
+      "filename": "item_Blade of the Heptaseas.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Blade_of_the_Heptaseas.png/revision/latest?cb=20210627031239"
+    },
+    {
+      "name": "Blood Wings",
+      "wiki_name": "Blood Wings",
+      "filename": "item_Blood Wings.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/44/Blood_Wings.png/revision/latest?cb=20210305055304"
+    },
+    {
+      "name": "Bloody Retribution",
+      "wiki_name": "Bloody Retribution",
+      "filename": "item_Bloody Retribution.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Bloody_Retribution.png/revision/latest?cb=20220714103400"
+    },
+    {
+      "name": "Book of Sages",
+      "wiki_name": "Book of Sages",
+      "filename": "item_Book of Sages.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/3/35/Book_of_Sages.png/revision/latest?cb=20240110064937"
+    },
+    {
+      "name": "Boots",
+      "wiki_name": "Boots",
+      "filename": "item_Boots.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/59/Boots.png/revision/latest?cb=20240110072216"
+    },
+    {
+      "name": "Broken Heart",
+      "wiki_name": "Broken Heart",
+      "filename": "item_Broken Heart.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/56/Broken_Heart.png/revision/latest?cb=20230610045500"
+    },
+    {
+      "name": "Brute Force Breastplate",
+      "wiki_name": "Brute Force Breastplate",
+      "filename": "item_Brute Force Breastplate.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/f/f6/Brute_Force_Breastplate.png/revision/latest?cb=20240728121246"
+    },
+    {
+      "name": "Chastise Pauldron",
+      "wiki_name": "Chastise Pauldron",
+      "filename": "item_Chastise Pauldron.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/2f/Chastise_Pauldron.png/revision/latest?cb=20251224045812"
+    },
+    {
+      "name": "Clock of Destiny",
+      "wiki_name": "Clock of Destiny",
+      "filename": "item_Clock of Destiny.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/4a/Clock_of_Destiny.png/revision/latest?cb=20210627045114"
+    },
+    {
+      "name": "Concentrated Energy",
+      "wiki_name": "Concentrated Energy",
+      "filename": "item_Concentrated Energy.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/4e/Concentrated_Energy.png/revision/latest?cb=20210731031308"
+    },
+    {
+      "name": "Corrosion Scythe",
+      "wiki_name": "Corrosion Scythe",
+      "filename": "item_Corrosion Scythe.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/f/f3/Corrosion_Scythe.png/revision/latest?cb=20210627031037"
+    },
+    {
+      "name": "Cursed Helmet",
+      "wiki_name": "Cursed Helmet",
+      "filename": "item_Cursed Helmet.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/80/Cursed_Helmet.png/revision/latest?cb=20240728122832"
+    },
+    {
+      "name": "Dagger",
+      "wiki_name": "Dagger",
+      "filename": "item_Dagger.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/45/Dagger.png/revision/latest?cb=20240109130605"
+    },
+    {
+      "name": "Demon Hunter Sword",
+      "wiki_name": "Demon Hunter Sword",
+      "filename": "item_Demon Hunter Sword.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/1a/Demon_Hunter_Sword.png/revision/latest?cb=20210731025511"
+    },
+    {
+      "name": "Demon Shoes",
+      "wiki_name": "Demon Shoes",
+      "filename": "item_Demon Shoes.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/17/Demon_Shoes.png/revision/latest?cb=20240110072404"
+    },
+    {
+      "name": "Divine Glaive",
+      "wiki_name": "Divine Glaive",
+      "filename": "item_Divine Glaive.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/9/9a/Divine_Glaive.png/revision/latest?cb=20210524101632"
+    },
+    {
+      "name": "Dominance Ice",
+      "wiki_name": "Dominance Ice",
+      "filename": "item_Dominance Ice.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/e3/Dominance_Ice.png/revision/latest?cb=20240728122016"
+    },
+    {
+      "name": "Dreadnaught Armor",
+      "wiki_name": "Dreadnaught Armor",
+      "filename": "item_Dreadnaught Armor.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/0f/Dreadnaught_Armor.png/revision/latest?cb=20240110071105"
+    },
+    {
+      "name": "Elegant Gem",
+      "wiki_name": "Elegant Gem",
+      "filename": "item_Elegant Gem.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/d4/Elegant_Gem.png/revision/latest?cb=20240620000956"
+    },
+    {
+      "name": "Enchanted Talisman",
+      "wiki_name": "Enchanted Talisman",
+      "filename": "item_Enchanted Talisman.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/21/Enchanted_Talisman.png/revision/latest?cb=20210627044432"
+    },
+    {
+      "name": "Endless Battle",
+      "wiki_name": "Endless Battle",
+      "filename": "item_Endless Battle.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/2b/Endless_Battle.png/revision/latest?cb=20240109134914"
+    },
+    {
+      "name": "Exotic Veil",
+      "wiki_name": "Exotic Veil",
+      "filename": "item_Exotic Veil.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/e9/Exotic_Veil.png/revision/latest?cb=20210921151940"
+    },
+    {
+      "name": "Expert Gloves",
+      "wiki_name": "Expert Gloves",
+      "filename": "item_Expert Gloves.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/13/Expert_Gloves.png/revision/latest?cb=20240620001003"
+    },
+    {
+      "name": "Feather of Heaven",
+      "wiki_name": "Feather of Heaven",
+      "filename": "item_Feather of Heaven.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Feather_of_Heaven.png/revision/latest?cb=20240109140326"
+    },
+    {
+      "name": "Flame Retribution",
+      "wiki_name": "Flame Retribution",
+      "filename": "item_Flame Retribution.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/9/9f/Flame_Retribution.png/revision/latest?cb=20220714103414"
+    },
+    {
+      "name": "Flask of the Oasis",
+      "wiki_name": "Flask of the Oasis",
+      "filename": "item_Flask of the Oasis.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/c/c5/Flask_of_the_Oasis.png/revision/latest?cb=20240109135304"
+    },
+    {
+      "name": "Fleeting Time",
+      "wiki_name": "Fleeting Time",
+      "filename": "item_Fleeting Time.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/71/Fleeting_Time.png/revision/latest?cb=20240706155949"
+    },
+    {
+      "name": "Flower of Hope",
+      "wiki_name": "Flower of Hope",
+      "filename": "item_Flower of Hope.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/20/Flower_of_Hope.png/revision/latest?cb=20210928021759"
+    },
+    {
+      "name": "Fury Hammer",
+      "wiki_name": "Fury Hammer",
+      "filename": "item_Fury Hammer.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/52/Fury_Hammer.png/revision/latest?cb=20240109132148"
+    },
+    {
+      "name": "Genius Wand",
+      "wiki_name": "Genius Wand",
+      "filename": "item_Genius Wand.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/20/Genius_Wand.png/revision/latest?cb=20231008061208"
+    },
+    {
+      "name": "Glowing Wand",
+      "wiki_name": "Glowing Wand",
+      "filename": "item_Glowing Wand.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/7a/Glowing_Wand.png/revision/latest?cb=20240706160031"
+    },
+    {
+      "name": "Golden Staff",
+      "wiki_name": "Golden Staff",
+      "filename": "item_Golden Staff.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/80/Golden_Staff.png/revision/latest?cb=20210627031811"
+    },
+    {
+      "name": "Great Dragon Spear",
+      "wiki_name": "Great Dragon Spear",
+      "filename": "item_Great Dragon Spear.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/d4/Great_Dragon_Spear.png/revision/latest?cb=20240109133223"
+    },
+    {
+      "name": "Guardian Helmet",
+      "wiki_name": "Guardian Helmet",
+      "filename": "item_Guardian Helmet.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/a/a3/Guardian_Helmet.png/revision/latest?cb=20240728122738"
+    },
+    {
+      "name": "Haas' Claws",
+      "wiki_name": "Haas' Claws",
+      "filename": "item_Haas' Claws.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Haas%27_Claws.png/revision/latest?cb=20240109133028"
+    },
+    {
+      "name": "Healing Necklace",
+      "wiki_name": "Healing Necklace",
+      "filename": "item_Healing Necklace.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/d7/Healing_Necklace.png/revision/latest?cb=20210921161214"
+    },
+    {
+      "name": "Hero's Ring",
+      "wiki_name": "Hero's Ring",
+      "filename": "item_Hero's Ring.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/9/91/Hero%27s_Ring.png/revision/latest?cb=20210921161813"
+    },
+    {
+      "name": "Holy Crystal",
+      "wiki_name": "Holy Crystal",
+      "filename": "item_Holy Crystal.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/6/64/Holy_Crystal.png/revision/latest?cb=20210731030840"
+    },
+    {
+      "name": "Hunter Strike",
+      "wiki_name": "Hunter Strike",
+      "filename": "item_Hunter Strike.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/b/b9/Hunter_Strike.png/revision/latest?cb=20210731111742"
+    },
+    {
+      "name": "Ice Queen Wand",
+      "wiki_name": "Ice Queen Wand",
+      "filename": "item_Ice Queen Wand.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/da/Ice_Queen_Wand.png/revision/latest?cb=20210307060410"
+    },
+    {
+      "name": "Ice Retribution",
+      "wiki_name": "Ice Retribution",
+      "filename": "item_Ice Retribution.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/b/bd/Ice_Retribution.png/revision/latest?cb=20220714103419"
+    },
+    {
+      "name": "Immortality",
+      "wiki_name": "Immortality",
+      "filename": "item_Immortality.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/84/Immortality.png/revision/latest?cb=20240728121655"
+    },
+    {
+      "name": "Iron Hunting Bow",
+      "wiki_name": "Iron Hunting Bow",
+      "filename": "item_Iron Hunting Bow.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/b/be/Iron_Hunting_Bow.png/revision/latest?cb=20240109130634"
+    },
+    {
+      "name": "Javelin",
+      "wiki_name": "Javelin",
+      "filename": "item_Javelin.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/1d/Javelin.png/revision/latest?cb=20240109130430"
+    },
+    {
+      "name": "Knife",
+      "wiki_name": "Knife",
+      "filename": "item_Knife.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/58/Knife.png/revision/latest?cb=20240109130338"
+    },
+    {
+      "name": "Lantern of Hope",
+      "wiki_name": "Lantern of Hope",
+      "filename": "item_Lantern of Hope.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/79/Lantern_of_Hope.png/revision/latest?cb=20210924150801"
+    },
+    {
+      "name": "Leather Jerkin",
+      "wiki_name": "Leather Jerkin",
+      "filename": "item_Leather Jerkin.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/58/Leather_Jerkin.png/revision/latest?cb=20210921162254"
+    },
+    {
+      "name": "Legion Sword",
+      "wiki_name": "Legion Sword",
+      "filename": "item_Legion Sword.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Legion_Sword.png/revision/latest?cb=20240109131009"
+    },
+    {
+      "name": "Lightning Truncheon",
+      "wiki_name": "Lightning Truncheon",
+      "filename": "item_Lightning Truncheon.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/ee/Lightning_Truncheon.png/revision/latest?cb=20210930074036"
+    },
+    {
+      "name": "Magic Blade",
+      "wiki_name": "Magic Blade",
+      "filename": "item_Magic Blade.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/a/ae/Magic_Blade.png/revision/latest?cb=20240109132217"
+    },
+    {
+      "name": "Magic Necklace",
+      "wiki_name": "Magic Necklace",
+      "filename": "item_Magic Necklace.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/c/cd/Magic_Necklace.png/revision/latest?cb=20240110065246"
+    },
+    {
+      "name": "Magic Potion",
+      "wiki_name": "Magic Potion",
+      "filename": "item_Magic Potion.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/58/Magic_Potion.png/revision/latest?cb=20240110065542"
+    },
+    {
+      "name": "Magic Resist Cloak",
+      "wiki_name": "Magic Resist Cloak",
+      "filename": "item_Magic Resist Cloak.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Magic_Resist_Cloak.png/revision/latest?cb=20210921162156"
+    },
+    {
+      "name": "Magic Shoes",
+      "wiki_name": "Magic Shoes",
+      "filename": "item_Magic Shoes.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/5/5a/Magic_Shoes.png/revision/latest?cb=20240110072432"
+    },
+    {
+      "name": "Magic Wand",
+      "wiki_name": "Magic Wand",
+      "filename": "item_Magic Wand.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/b/bc/Magic_Wand.png/revision/latest?cb=20240110064711"
+    },
+    {
+      "name": "Malefic Gun",
+      "wiki_name": "Malefic Gun",
+      "filename": "item_Malefic Gun.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/72/Malefic_Gun.png/revision/latest?cb=20240706160025"
+    },
+    {
+      "name": "Malefic Roar",
+      "wiki_name": "Malefic Roar",
+      "filename": "item_Malefic Roar.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/12/Malefic_Roar.png/revision/latest?cb=20210616125818"
+    },
+    {
+      "name": "Molten Essence",
+      "wiki_name": "Molten Essence",
+      "filename": "item_Molten Essence.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/8c/Molten_Essence.png/revision/latest?cb=20240110071234"
+    },
+    {
+      "name": "Mystery Codex",
+      "wiki_name": "Mystery Codex",
+      "filename": "item_Mystery Codex.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/2c/Mystery_Codex.png/revision/latest?cb=20240110065418"
+    },
+    {
+      "name": "Mystic Container",
+      "wiki_name": "Mystic Container",
+      "filename": "item_Mystic Container.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/23/Mystic_Container.png/revision/latest?cb=20240110064746"
+    },
+    {
+      "name": "Ogre Tomahawk",
+      "wiki_name": "Ogre Tomahawk",
+      "filename": "item_Ogre Tomahawk.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/3/3d/Ogre_Tomahawk.png/revision/latest?cb=20240109131848"
+    },
+    {
+      "name": "Oracle",
+      "wiki_name": "Oracle",
+      "filename": "item_Oracle.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/17/Oracle.png/revision/latest?cb=20240728122545"
+    },
+    {
+      "name": "Passive - Dire Hit",
+      "wiki_name": "Passive - Dire Hit",
+      "filename": "item_Passive - Dire Hit.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/1/17/Passive_-_Dire_Hit.png/revision/latest?cb=20210617144227"
+    },
+    {
+      "name": "Passive - Encourage",
+      "wiki_name": "Passive - Encourage",
+      "filename": "item_Passive - Encourage.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/86/Passive_-_Encourage.png/revision/latest?cb=20210617144133"
+    },
+    {
+      "name": "Passive - Favor",
+      "wiki_name": "Passive - Favor",
+      "filename": "item_Passive - Favor.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/a/a0/Passive_-_Favor.png/revision/latest?cb=20210617144201"
+    },
+    {
+      "name": "Power Crystal",
+      "wiki_name": "Power Crystal",
+      "filename": "item_Power Crystal.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Power_Crystal.png/revision/latest?cb=20240110065203"
+    },
+    {
+      "name": "Power Potion",
+      "wiki_name": "Power Potion",
+      "filename": "item_Power Potion.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/06/Power_Potion.png/revision/latest?cb=20240109130008"
+    },
+    {
+      "name": "Queen's Wings",
+      "wiki_name": "Queen's Wings",
+      "filename": "item_Queen's Wings.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/f/f4/Queen%27s_Wings.png/revision/latest?cb=20240728123011"
+    },
+    {
+      "name": "Radiant Armor",
+      "wiki_name": "Radiant Armor",
+      "filename": "item_Radiant Armor.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/d8/Radiant_Armor.png/revision/latest?cb=20240110073249"
+    },
+    {
+      "name": "Rapid Boots",
+      "wiki_name": "Rapid Boots",
+      "filename": "item_Rapid Boots.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/a/a4/Rapid_Boots.png/revision/latest?cb=20240110072315"
+    },
+    {
+      "name": "Regular Spear",
+      "wiki_name": "Regular Spear",
+      "filename": "item_Regular Spear.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/3/32/Regular_Spear.png/revision/latest?cb=20220127072851"
+    },
+    {
+      "name": "Resonating Heart",
+      "wiki_name": "Resonating Heart",
+      "filename": "item_Resonating Heart.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/73/Resonating_Heart.png/revision/latest?cb=20240919141339"
+    },
+    {
+      "name": "Rock Potion",
+      "wiki_name": "Rock Potion",
+      "filename": "item_Rock Potion.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/03/Rock_Potion.png/revision/latest?cb=20240110065943"
+    },
+    {
+      "name": "Rogue Meteor",
+      "wiki_name": "Rogue Meteor",
+      "filename": "item_Rogue Meteor.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/75/Rogue_Meteor.png/revision/latest?cb=20240109132025"
+    },
+    {
+      "name": "Rose Gold Meteor",
+      "wiki_name": "Rose Gold Meteor",
+      "filename": "item_Rose Gold Meteor.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/2b/Rose_Gold_Meteor.png/revision/latest?cb=20210627044010"
+    },
+    {
+      "name": "Sea Halberd",
+      "wiki_name": "Sea Halberd",
+      "filename": "item_Sea Halberd.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/83/Sea_Halberd.png/revision/latest?cb=20240109134257"
+    },
+    {
+      "name": "Silence Robe",
+      "wiki_name": "Silence Robe",
+      "filename": "item_Silence Robe.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/a/a4/Silence_Robe.png/revision/latest?cb=20240110071439"
+    },
+    {
+      "name": "Sky Piercer",
+      "wiki_name": "Sky Piercer",
+      "filename": "item_Sky Piercer.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/4f/Sky_Piercer.png/revision/latest?cb=20240731072745"
+    },
+    {
+      "name": "Starlium Scythe",
+      "wiki_name": "Starlium Scythe",
+      "filename": "item_Starlium Scythe.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/2/26/Starlium_Scythe.png/revision/latest?cb=20240620140113"
+    },
+    {
+      "name": "Steel Legplates",
+      "wiki_name": "Steel Legplates",
+      "filename": "item_Steel Legplates.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/3/3c/Steel_Legplates.png/revision/latest?cb=20240110071517"
+    },
+    {
+      "name": "Swift Boots",
+      "wiki_name": "Swift Boots",
+      "filename": "item_Swift Boots.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/07/Swift_Boots.png/revision/latest?cb=20210627055208"
+    },
+    {
+      "name": "Swift Crossbow",
+      "wiki_name": "Swift Crossbow",
+      "filename": "item_Swift Crossbow.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/a/a1/Swift_Crossbow.png/revision/latest?cb=20240109125340"
+    },
+    {
+      "name": "Throw Forbidden",
+      "wiki_name": "Throw Forbidden",
+      "filename": "item_Throw Forbidden.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/70/Throw_Forbidden.png/revision/latest?cb=20240110065710"
+    },
+    {
+      "name": "Thunder Belt",
+      "wiki_name": "Thunder Belt",
+      "filename": "item_Thunder Belt.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/d/dd/Thunder_Belt.png/revision/latest?cb=20240303143710"
+    },
+    {
+      "name": "Tome of Evil",
+      "wiki_name": "Tome of Evil",
+      "filename": "item_Tome of Evil.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/0a/Tome_of_Evil.png/revision/latest?cb=20250928063829"
+    },
+    {
+      "name": "Tough Boots",
+      "wiki_name": "Tough Boots",
+      "filename": "item_Tough Boots.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Tough_Boots.png/revision/latest?cb=20240110072337"
+    },
+    {
+      "name": "Vampire Mallet",
+      "wiki_name": "Vampire Mallet",
+      "filename": "item_Vampire Mallet.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/f/f9/Vampire_Mallet.png/revision/latest?cb=20240109130816"
+    },
+    {
+      "name": "Vitality Crystal",
+      "wiki_name": "Vitality Crystal",
+      "filename": "item_Vitality Crystal.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/ea/Vitality_Crystal.png/revision/latest?cb=20210826093250"
+    },
+    {
+      "name": "War Axe",
+      "wiki_name": "War Axe",
+      "filename": "item_War Axe.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/7/70/War_Axe.png/revision/latest?cb=20240706160012"
+    },
+    {
+      "name": "Warrior Boots",
+      "wiki_name": "Warrior Boots",
+      "filename": "item_Warrior Boots.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/4b/Warrior_Boots.png/revision/latest?cb=20210627055015"
+    },
+    {
+      "name": "Wind of Nature",
+      "wiki_name": "Wind of Nature",
+      "filename": "item_Wind of Nature.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/e/e3/Wind_of_Nature.png/revision/latest?cb=20240109132548"
+    },
+    {
+      "name": "Windtalker",
+      "wiki_name": "Windtalker",
+      "filename": "item_Windtalker.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/4/45/Windtalker.png/revision/latest?cb=20210616130246"
+    },
+    {
+      "name": "Winter Crown",
+      "wiki_name": "Winter Crown",
+      "filename": "item_Winter Crown.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/9/9d/Winter_Crown.png/revision/latest?cb=20240706160002"
+    },
+    {
+      "name": "Wishing Lantern",
+      "wiki_name": "Wishing Lantern",
+      "filename": "item_Wishing Lantern.png",
+      "url": "https://static.wikia.nocookie.net/mobile-legends/images/0/07/Wishing_Lantern.png/revision/latest?cb=20240706155956"
+    }
+  ]
+}

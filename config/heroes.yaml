@@ -1,0 +1,83 @@
+# Heroes Database
+# This file defines all heroes in the game, used for hero identification from portraits
+
+heroes:
+  - id: 1
+    name: "Alpha Warrior"
+    slug: "alpha_warrior"
+    role: "Tank"
+    portrait_path: "heroes/portraits/alpha_warrior.png"
+    description: "Front-line tank with high defense"
+  
+  - id: 2
+    name: "Beta Mage"
+    slug: "beta_mage"
+    role: "Mage"
+    portrait_path: "heroes/portraits/beta_mage.png"
+    description: "High burst magic damage"
+  
+  - id: 3
+    name: "Gamma Assassin"
+    slug: "gamma_assassin"
+    role: "Assassin"
+    portrait_path: "heroes/portraits/gamma_assassin.png"
+    description: "High mobility single-target damage"
+  
+  - id: 4
+    name: "Delta Support"
+    slug: "delta_support"
+    role: "Support"
+    portrait_path: "heroes/portraits/delta_support.png"
+    description: "Healing and utility support"
+  
+  - id: 5
+    name: "Epsilon Marksman"
+    slug: "epsilon_marksman"
+    role: "Marksman"
+    portrait_path: "heroes/portraits/epsilon_marksman.png"
+    description: "Ranged physical damage dealer"
+
+# Add more heroes as needed...
+# To add a new hero:
+# 1. Get a clean screenshot of the hero portrait
+# 2. Crop to just the portrait (should be consistent size)
+# 3. Save to heroes/portraits/ with descriptive filename
+# 4. Add entry to this list with unique ID
+# 5. Run: python tools/seed_database.py to update DB
+
+# Hero roles (for filtering/stats)
+roles:
+  - Tank
+  - Fighter
+  - Assassin
+  - Mage
+  - Marksman
+  - Support
+
+# Hero matching settings
+matching:
+  method: "orb"  # Options: orb, sift, template
+  confidence_threshold: 0.7  # Minimum confidence to accept match
+  
+  # ORB settings
+  orb:
+    n_features: 500
+    scale_factor: 1.2
+    n_levels: 8
+    edge_threshold: 31
+    first_level: 0
+    wta_k: 2
+    score_type: "HARRIS"
+    patch_size: 31
+    fast_threshold: 20
+    
+    # Matching
+    matcher: "BFMatcher"
+    norm_type: "HAMMING"
+    cross_check: true
+    good_match_ratio: 0.75  # Lowe's ratio test
+  
+  # Template matching settings (simpler but less robust)
+  template:
+    method: "TM_CCOEFF_NORMED"
+    threshold: 0.8
