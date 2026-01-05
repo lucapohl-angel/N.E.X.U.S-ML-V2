@@ -70,6 +70,8 @@ class ItemMatcher:
         self.item_features: Dict[str, Tuple[Any, Any]] = {}
         self.item_center_crops: Dict[str, np.ndarray] = {}
         self.item_histograms: Dict[str, np.ndarray] = {}
+        self.item_gray_templates: Dict[str, np.ndarray] = {}  # Pre-computed grayscale
+        self.item_edge_templates: Dict[str, np.ndarray] = {}  # Pre-computed edges
         self._precompute_features()
     
     def _load_item_database(self) -> None:
@@ -102,13 +104,20 @@ class ItemMatcher:
         print(f"✓ Loaded {len(self.item_database)} item icons")
     
     def _precompute_features(self) -> None:
-        """Pre-compute ORB features, center crops, and histograms for all item icons."""
+        """Pre-compute ORB features, center crops, histograms, and templates for all item icons."""
         for filename, img in self.item_database.items():
             try:
                 # ORB features
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 keypoints, descriptors = self.orb.detectAndCompute(gray, None)
                 self.item_features[filename] = (keypoints, descriptors)
+                
+                # Store grayscale template for fast matching
+                self.item_gray_templates[filename] = gray
+                
+                # Store edge template
+                edges = cv2.Canny(gray, 50, 150)
+                self.item_edge_templates[filename] = edges
                 
                 # Center crop (60% of image - more aggressive to match query preprocessing)
                 # This ensures reference and query crops compare similar icon regions
@@ -130,6 +139,8 @@ class ItemMatcher:
                 self.item_features[filename] = (None, None)
                 self.item_center_crops[filename] = img
                 self.item_histograms[filename] = None
+                self.item_gray_templates[filename] = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
+                self.item_edge_templates[filename] = cv2.Canny(self.item_gray_templates[filename], 50, 150)
     
     def _is_empty_slot(self, query_img: np.ndarray) -> bool:
         """
@@ -262,37 +273,45 @@ class ItemMatcher:
         try:
             best_score = 0.0
             
-            # Try multiple preprocessing variants
-            for preprocess in ['none', 'normalize', 'equalize']:
-                # Resize template to query size (not vice versa - preserve query details)
-                template_resized = cv2.resize(template, (query.shape[1], query.shape[0]), 
-                                             interpolation=cv2.INTER_AREA)
+            # Convert query to grayscale once
+            query_gray = cv2.cvtColor(query, cv2.COLOR_BGR2GRAY) if len(query.shape) == 3 else query
+            
+            # Multi-scale matching - try different scales
+            scales = [0.8, 0.9, 1.0, 1.1, 1.2]
+            
+            for scale in scales:
+                # Scale the template
+                new_w = int(query.shape[1] * scale)
+                new_h = int(query.shape[0] * scale)
+                if new_w < 10 or new_h < 10:
+                    continue
+                    
+                template_resized = cv2.resize(template, (new_w, new_h), interpolation=cv2.INTER_AREA)
+                template_gray = cv2.cvtColor(template_resized, cv2.COLOR_BGR2GRAY) if len(template_resized.shape) == 3 else template_resized
                 
-                query_proc = query.copy()
-                template_proc = template_resized.copy()
-                
-                if preprocess == 'normalize':
-                    query_proc = self._normalize_colors(query_proc)
-                    template_proc = self._normalize_colors(template_proc)
-                elif preprocess == 'equalize':
-                    query_proc = cv2.cvtColor(query_proc, cv2.COLOR_BGR2GRAY)
-                    template_proc = cv2.cvtColor(template_proc, cv2.COLOR_BGR2GRAY)
-                    query_proc = cv2.equalizeHist(query_proc)
-                    template_proc = cv2.equalizeHist(template_proc)
-                
-                # Convert to grayscale if not already
-                if len(query_proc.shape) == 3:
-                    query_gray = cv2.cvtColor(query_proc, cv2.COLOR_BGR2GRAY)
-                    template_gray = cv2.cvtColor(template_proc, cv2.COLOR_BGR2GRAY)
-                else:
-                    query_gray = query_proc
-                    template_gray = template_proc
+                # If template is larger than query, resize to match
+                if template_gray.shape[0] > query_gray.shape[0] or template_gray.shape[1] > query_gray.shape[1]:
+                    template_gray = cv2.resize(template_gray, (query_gray.shape[1], query_gray.shape[0]))
                 
                 # Template matching
-                result = cv2.matchTemplate(query_gray, template_gray, cv2.TM_CCOEFF_NORMED)
-                _, max_val, _, _ = cv2.minMaxLoc(result)
-                
-                best_score = max(best_score, max_val)
+                if template_gray.shape[0] <= query_gray.shape[0] and template_gray.shape[1] <= query_gray.shape[1]:
+                    result = cv2.matchTemplate(query_gray, template_gray, cv2.TM_CCOEFF_NORMED)
+                    _, max_val, _, _ = cv2.minMaxLoc(result)
+                    best_score = max(best_score, max_val)
+                else:
+                    # Same size comparison
+                    template_same = cv2.resize(template_gray, (query_gray.shape[1], query_gray.shape[0]))
+                    result = cv2.matchTemplate(query_gray, template_same, cv2.TM_CCOEFF_NORMED)
+                    _, max_val, _, _ = cv2.minMaxLoc(result)
+                    best_score = max(best_score, max_val)
+            
+            # Also try with histogram equalization for robustness
+            query_eq = cv2.equalizeHist(query_gray)
+            template_eq = cv2.equalizeHist(cv2.cvtColor(template, cv2.COLOR_BGR2GRAY) if len(template.shape) == 3 else template)
+            template_eq = cv2.resize(template_eq, (query_eq.shape[1], query_eq.shape[0]))
+            result = cv2.matchTemplate(query_eq, template_eq, cv2.TM_CCOEFF_NORMED)
+            _, max_val, _, _ = cv2.minMaxLoc(result)
+            best_score = max(best_score, max_val)
             
             return max(0.0, best_score)
         except Exception:
@@ -434,6 +453,44 @@ class ItemMatcher:
         except Exception:
             return 0.0
     
+    def _phash_score(self, query: np.ndarray, template: np.ndarray) -> float:
+        """Calculate perceptual hash similarity score."""
+        try:
+            def compute_phash(img, hash_size=8):
+                """Compute perceptual hash of an image."""
+                # Resize to hash_size + 1 (for DCT)
+                resized = cv2.resize(img, (hash_size + 1, hash_size), interpolation=cv2.INTER_AREA)
+                if len(resized.shape) == 3:
+                    resized = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+                resized = resized.astype(np.float32)
+                
+                # Compute DCT
+                dct = cv2.dct(resized)
+                
+                # Use top-left hash_size x hash_size of DCT
+                dct_low = dct[:hash_size, :hash_size]
+                
+                # Get median (excluding DC component)
+                median = np.median(dct_low.flatten()[1:])
+                
+                # Create binary hash
+                hash_bits = (dct_low > median).flatten()
+                return hash_bits
+            
+            hash1 = compute_phash(query)
+            hash2 = compute_phash(template)
+            
+            # Hamming distance
+            hamming = np.sum(hash1 != hash2)
+            
+            # Convert to similarity (0 = different, 1 = identical)
+            max_distance = len(hash1)
+            similarity = 1.0 - (hamming / max_distance)
+            
+            return similarity
+        except Exception:
+            return 0.0
+    
     def _ssim_score(self, query: np.ndarray, template: np.ndarray) -> float:
         """Calculate SSIM (Structural Similarity Index) score."""
         try:
@@ -527,31 +584,56 @@ class ItemMatcher:
             # SSIM structural similarity
             scores['ssim'] = self._ssim_score(query_img, template)
             
+            # Perceptual hash - excellent for overall image similarity
+            scores['phash'] = self._phash_score(query_img, template)
+            
             # Weighted ensemble score
-            # Increased histogram weight - it's very discriminating for similar-colored items
-            # Reduced template/ssim - they often match wrong items with similar shapes
+            # Template matching is best for exact structural matches
+            # Phash gives good overall perceptual similarity
+            # Histogram can be misleading when colors differ due to lighting
             weights = {
-                'template': 0.15,     # Reduced - too generic
-                'histogram': 0.25,    # Increased - very discriminating
-                'orb': 0.05,
-                'center': 0.10,       # Reduced
-                'color': 0.15,        # Increased - good for overall color
-                'edge': 0.15,
-                'ssim': 0.15
+                'template': 0.30,     # Increased - most reliable for structure
+                'histogram': 0.10,    # Reduced - can be misleading
+                'orb': 0.05,          # Features often unreliable for small images
+                'center': 0.08,
+                'color': 0.07,
+                'edge': 0.10,         # Shape matching
+                'ssim': 0.10,
+                'phash': 0.20         # Increased - good discriminator
             }
             
             confidence = sum(scores[k] * weights[k] for k in weights)
             
-            # Boost confidence if multiple methods agree
-            high_scores = sum(1 for s in scores.values() if s > 0.35)
-            if high_scores >= 4:
-                confidence *= 1.2
-            elif high_scores >= 3:
+            # Strong template match indicates high confidence
+            # Template > 0.7 is a very reliable signal
+            # BUT reduce boost if color strongly disagrees (icon may look different in-game)
+            template_boost = 1.0
+            if scores['template'] > 0.7:
+                if scores['color'] < 0.2:  # Color strongly disagrees
+                    template_boost = 1.05  # Reduced boost
+                else:
+                    template_boost = 1.2
+            elif scores['template'] > 0.6:
+                template_boost = 1.1
+            confidence *= template_boost
+            
+            # Strong phash also reliable
+            if scores['phash'] > 0.7:
                 confidence *= 1.1
             
-            # Additional boost if edge matching is strong (shape similarity)
-            if scores['edge'] > 0.5:
-                confidence *= 1.1
+            # Strong color match can indicate correct item even with lower template
+            # This helps when reference icons differ in brightness/contrast from in-game
+            if scores['color'] > 0.8:
+                confidence *= 1.15
+            elif scores['color'] > 0.7:
+                confidence *= 1.08
+            
+            # Boost confidence if multiple methods agree strongly
+            high_scores = sum(1 for s in scores.values() if s > 0.4)
+            if high_scores >= 5:
+                confidence *= 1.15
+            elif high_scores >= 4:
+                confidence *= 1.08
             
             confidence = min(1.0, confidence)
             

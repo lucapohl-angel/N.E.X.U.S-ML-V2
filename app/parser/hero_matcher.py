@@ -716,20 +716,37 @@ class HeroMatcher:
         n_heroes = len(all_scores)
         borda_scores: Dict[str, float] = {fn: 0.0 for fn in all_scores}
         
-        # Rebalanced weights - trust color/structure more than features
+        # Check for VERY strong feature signal first
+        # Features method is extremely reliable when it has a clear winner
+        features_ranked = sorted(all_scores.keys(), 
+                                key=lambda f: all_scores[f]["features"],
+                                reverse=True)
+        features_top1 = all_scores[features_ranked[0]]["features"]
+        features_top2 = all_scores[features_ranked[1]]["features"] if len(features_ranked) > 1 else 0
+        features_margin = features_top1 - features_top2
+        
+        # If features has a very strong winner (>0.35 score AND large margin >0.06)
+        # This is a reliable signal - add heavy bonus
+        if features_top1 > 0.35 and features_margin > 0.06:
+            logger.debug(f"Strong feature signal detected: {features_ranked[0]} = {features_top1:.3f} (margin: {features_margin:.3f})")
+            # Give heavy bonus to feature winner
+            borda_scores[features_ranked[0]] += 3.0  # Strong head start
+            # Also give smaller bonus to second place
+            if len(features_ranked) > 1:
+                borda_scores[features_ranked[1]] += 0.5
+        
+        # Rebalanced weights - more balanced voting
         method_weights = {
-            "template": 1.5,        # Direct pixel match - reliable
-            "histogram": 1.2,       # Color distribution
-            "features": 1.0,        # ORB features - can be unreliable
-            "ssim": 1.5,            # Structural similarity - very reliable
+            "template": 1.0,
+            "histogram": 1.5,       # Histogram is very discriminating
+            "features": 2.0,        # Increased - features is reliable when strong
+            "ssim": 1.0,
             "edges": 0.5,
             "hu_moments": 0.5,
-            "color_moments": 1.5,   # Color stats - very reliable for heroes
-            "phash": 1.2,           # Perceptual hash
-            "contour": 0.8
+            "color_moments": 1.0,   # Reduced - can be misleading
+            "phash": 1.0,
+            "contour": 0.5
         }
-        
-        # Removed over-reliance on features - let all methods vote fairly
         
         for method, weight in method_weights.items():
             # Sort heroes by this method's score

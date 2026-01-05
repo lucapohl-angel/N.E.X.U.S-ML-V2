@@ -121,7 +121,7 @@ Enemy 5 (Fanny):
 ----------------
 Hero: Fanny
 Items:
-  Slot 1: Magic Shoes
+  Slot 1: Tough Boots
   Slot 2: Blade of the Heptaseas
   Slot 3: War Axe
   Slot 4: Leather Jerkin
