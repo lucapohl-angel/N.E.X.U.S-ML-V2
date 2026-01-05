@@ -1,0 +1,150 @@
+Game_result: Victory
+Game_Duration: 10:47
+BattleID: 436609948828842102
+
+Ally1:
+Hero_portrait: Yu Zhong
+Hero_level: 12
+Player_name: xXFlying_DutschmanXx
+Kills: 4
+Deaths: 2
+Assists: 8
+Total_Gold: 6939
+Individual_rating: 8.0
+Itemslot1: Hunter Strike
+Itemslot2: Tough Boots
+Itemslot3: War Axe
+Itemslot4: Ares Belt
+Itemslot5: Heroes Ring
+Itemslot6: Expert Gloves
+
+
+Ally2: 
+Hero_portrait: Matilda
+Hero_level: 12
+Player_name: Deepling
+Kills: 1
+Deaths: 2
+Assists: 18
+Total_Gold: 7609
+Individual_rating: 10.3
+Itemslot1: Tough Boots
+Itemslot2: Flask of Oasis
+Itemslot3: Dominance Ice
+Itemslot4: Enchanted Talisman
+Itemslot5: Magic Wand
+Itemslot6: Empty
+
+Ally3: 
+Hero_portrait: Xavier
+Hero_level: 11
+Player_name: ShiroVenom
+Kills: 1
+Deaths: 1
+Assists: 15
+Total_Gold: 6603
+Individual_rating: 9.5
+Itemslot1: Magic boots
+Itemslot2: Enchanted Talisman
+Itemslot3: Glowing Wand
+Itemslot4: Magic Wand
+Itemslot5: Book of Sages
+Itemslot6: Power Crystal
+
+Ally4: 
+Hero_portrait: Karrie
+Hero_level: 12
+Player_name: FVL SLASH 
+Kills: 3
+Deaths: 0
+Assists: 1
+Total_Gold: 7497
+Individual_rating: 6.3
+Itemslot1: Tough Boots
+Itemslot2: Corrosion Scythe
+Itemslot3: Golden Staff
+Itemslot4: Demon Hunter Sword
+Itemslot5: Dagger
+Itemslot6: Empty
+
+
+Enemy1: 
+Hero_portrait: Ixia
+Hero_level: 8
+Player_name: Grettos 
+Kills: 2
+Deaths: 3
+Assists: 0
+Total_Gold: 4428
+Individual_rating: 3.9
+Itemslot1: Sky Piercer
+Itemslot2: Sea Halberd
+Itemslot3: Knife
+Itemslot4: Knife
+Itemslot5: Empty
+Itemslot6: Empty
+
+
+Enemy2: 
+Hero_portrait: Gord
+Hero_level: 8
+Player_name: Nillik 
+Kills: 0
+Deaths: 6
+Assists: 1
+Total_Gold: 4360
+Individual_rating: 3.0
+Itemslot1: Arcane Boots
+Itemslot2: Sky Piercer
+Itemslot3: Glowing Wand
+Itemslot4: Empty
+Itemslot5: Empty
+Itemslot6: Empty
+
+Enemy3: 
+Hero_portrait: Tigreal
+Hero_level: 9
+Player_name: X0z9ih
+Kills: 0
+Deaths: 4
+Assists: 1
+Total_Gold: 5006
+Individual_rating: 3.8
+Itemslot1: Tough Boots
+Itemslot2: Dominance Ice
+Itemslot3: Dreadnaught Armor
+Itemslot4: Heros Ring
+Itemslot5: Ares Belt
+Itemslot6: Empty
+
+Enemy4: 
+Hero_portrait: Sun
+Hero_level: 9
+Player_name: pobarabanu03
+Kills: 0
+Deaths: 7
+Assists: 1
+Total_Gold: 4665
+Individual_rating: 3.0
+Itemslot1: Tough Boots
+Itemslot2: Corrosion Scythe
+Itemslot3: Rogue Meteor
+Itemslot4: Knife
+Itemslot5: Empty
+Itemslot6: Empty
+
+Enemy5: 
+Hero_portrait: Alice
+Hero_level: 11
+Player_name: Nappn228
+Kills: 4
+Deaths: 5
+Assists: 0
+Total_Gold: 6263
+Individual_rating: 6.0
+Itemslot1: Warrior Boots
+Itemslot2: Oracle
+Itemslot3: Cursed Helmet
+Itemslot4: Ares Belt
+Itemslot5: Heros Ring
+Itemslot6: Empty

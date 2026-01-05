@@ -1,0 +1,115 @@
+# Column Mapping Configuration - Screen 2 (Damage Stats)
+# This file defines the pixel regions for damage statistics screen
+# Coordinates are specified as percentages of image dimensions for resolution independence.
+
+# ====================
+# REFERENCE RESOLUTION
+# ====================
+reference_resolution:
+  width: 1920
+  height: 1080
+
+# ====================
+# ROW DETECTION SETTINGS
+# ====================
+rows:
+  detection_method: "hough_lines"
+  expected_count: 5
+  team_filter: "blue_only"
+  blue_team_rows: [0, 1, 2, 3, 4]
+  min_row_height_px: 60
+  max_row_height_px: 120
+  row_spacing_tolerance_px: 10
+  
+  # Y-axis region where player rows are expected (same as screen1)
+  row_region:
+    y_start_pct: 0.237
+    y_end_pct: 0.883
+
+# ====================
+# COLUMN DEFINITIONS - SCREEN 2
+# ====================
+columns:
+  # ------------------
+  # DAMAGE STATS (ALLIES)
+  # ------------------
+  
+  hero_damage:
+    x_start_pct: 0.168
+    x_end_pct: 0.3
+    y_offset_pct: 0.38
+    height_pct: 0.27
+    description: "Damage dealt to heroes"
+    preprocessing: "binarize"
+  
+  turret_damage:
+    x_start_pct: 0.24
+    x_end_pct: 0.37
+    y_offset_pct: 0.38
+    height_pct: 0.27
+    description: "Damage dealt to turrets"
+    preprocessing: "binarize"
+  
+  damage_taken:
+    x_start_pct: 0.31
+    x_end_pct: 0.44
+    y_offset_pct: 0.38
+    height_pct: 0.27
+    description: "Damage taken"
+    preprocessing: "binarize"
+  
+  teamfight_participation:
+    x_start_pct: 0.43
+    x_end_pct: 0.492
+    y_offset_pct: 0.63
+    height_pct: 0.27
+    description: "Teamfight participation percentage"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # ENEMY TEAM - DAMAGE STATS
+  # ------------------
+  
+  enemy_hero_damage:
+    x_start_pct: 0.465
+    x_end_pct: 0.62
+    y_offset_pct: 0.38
+    height_pct: 0.27
+    description: "Enemy damage dealt to heroes"
+    preprocessing: "binarize"
+  
+  enemy_turret_damage:
+    x_start_pct: 0.548
+    x_end_pct: 0.69
+    y_offset_pct: 0.38
+    height_pct: 0.27
+    description: "Enemy damage dealt to turrets"
+    preprocessing: "binarize"
+  
+  enemy_damage_taken:
+    x_start_pct: 0.618
+    x_end_pct: 0.78
+    y_offset_pct: 0.38
+    height_pct: 0.27
+    description: "Enemy damage taken"
+    preprocessing: "binarize"
+  
+  enemy_teamfight_participation:
+    x_start_pct: 0.758
+    x_end_pct: 0.795
+    y_offset_pct: 0.63
+    height_pct: 0.27
+    description: "Enemy teamfight participation percentage"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # METADATA
+  # ------------------
+  
+  battle_id:
+    x_start_pct: 0.158
+    x_end_pct: 0.300
+    y_offset_pct: 0.882
+    height_pct: 0.035
+    description: "Battle ID number at bottom"
+    preprocessing: "binarize"

@@ -70,13 +70,8 @@ def draw_rectangles_on_image(img: np.ndarray, rows: list, config) -> np.ndarray:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     
     # Draw column boundaries for each row
-    important_columns = [
-        'hero_portrait', 'hero_level', 'player_name', 'kills', 'deaths', 'assists',
-        'total_gold', 'individual_rating', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6',
-        'enemy_hero_portrait', 'enemy_hero_level', 'enemy_player_name', 
-        'enemy_kills', 'enemy_deaths', 'enemy_assists', 'enemy_total_gold', 'enemy_rating',
-        'enemy_item1', 'enemy_item2', 'enemy_item3', 'enemy_item4', 'enemy_item5', 'enemy_item6'
-    ]
+    # Get all columns dynamically, excluding metadata fields
+    important_columns = [k for k in config.columns.keys() if k not in ['battle_id']]
     
     for row_idx, (y_start, y_end) in enumerate(rows):
         row_height = y_end - y_start
@@ -95,6 +90,12 @@ def draw_rectangles_on_image(img: np.ndarray, rows: list, config) -> np.ndarray:
             rect_y_start = y_start + y_offset
             rect_y_end = rect_y_start + col_height
             
+            # Make rectangles half width (centered)
+            center_x = (x_start + x_end) // 2
+            half_rect_width = (x_end - x_start) // 4  # Half of original width
+            x_start = center_x - half_rect_width
+            x_end = center_x + half_rect_width
+            
             # Choose color based on column type
             if col_key in ['hero_level', 'enemy_hero_level']:
                 color = (0, 255, 255)  # Yellow for hero level
@@ -104,7 +105,7 @@ def draw_rectangles_on_image(img: np.ndarray, rows: list, config) -> np.ndarray:
                 color = (0, 0, 255)  # Red for deaths
             elif col_key in ['assists', 'enemy_assists']:
                 color = (255, 0, 255)  # Magenta for assists
-            elif col_key in ['individual_rating', 'enemy_rating']:
+            elif col_key in ['individual_rating', 'enemy_individual_rating']:
                 color = (255, 255, 255)  # White for ratings
             elif col_key.startswith('item') or col_key.startswith('enemy_item'):
                 color = (255, 0, 180)  # Pink for items
@@ -119,19 +120,27 @@ def draw_rectangles_on_image(img: np.ndarray, rows: list, config) -> np.ndarray:
             else:
                 color = colors['stats']
             
-            # Draw rectangle
-            cv2.rectangle(img_color, 
-                         (x_start, rect_y_start), 
-                         (x_end, rect_y_end), 
-                         color, 2)
+            # Determine if ally or enemy side based on column name, not position
+            is_enemy = col_key.startswith('enemy_')
+            is_ally = not is_enemy
             
-            # Add label (only on first row to avoid clutter)
-            if row_idx == 0:
-                cv2.putText(img_color, col_key, 
-                           (x_start, rect_y_start - 5), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
+            # Only draw if marker is on correct half
+            if (is_ally and x_start < half_width) or (is_enemy and x_start >= half_width):
+                # Draw rectangle border (like battle_id style)
+                cv2.rectangle(img_color, 
+                             (x_start, rect_y_start), 
+                             (x_end, rect_y_end), 
+                             color, 3)  # Thick border, not filled
+                
+                # Add label (only on first row to avoid clutter)
+                if row_idx == 0:
+                    # Position label based on side
+                    label_x = x_start if is_ally else max(x_end - 100, x_start)
+                    cv2.putText(img_color, col_key, 
+                               (label_x, rect_y_start - 5), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.3, color, 1)
     
-    # Draw battle_id as single element below all rows
+    # Draw battle_id as single element at bottom (yellow text region)
     if 'battle_id' in config.columns:
         battle_id_def = config.columns['battle_id']
         x_start = int(width * battle_id_def.x_start_pct)
@@ -140,16 +149,16 @@ def draw_rectangles_on_image(img: np.ndarray, rows: list, config) -> np.ndarray:
         y_start_abs = int(height * battle_id_def.y_offset_pct)
         y_end_abs = int(height * (battle_id_def.y_offset_pct + battle_id_def.height_pct))
         
-        color = (0, 165, 255)  # Orange for battle ID
+        color = (0, 255, 255)  # Yellow for battle ID (matches yellow text in image)
         
         cv2.rectangle(img_color,
                      (x_start, y_start_abs),
                      (x_end, y_end_abs),
-                     color, 2)
+                     color, 3)  # Thicker border for visibility
         
-        cv2.putText(img_color, 'battle_id',
-                   (x_start, y_start_abs - 5),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
+        cv2.putText(img_color, 'battle_id (yellow text)',
+                   (x_start, y_start_abs - 8),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     
     # Draw match metadata (non-row elements like battle_id)
     if hasattr(config, 'match_metadata'):
@@ -231,12 +240,14 @@ def print_detection_summary(rows: list, config):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python phase1_debug_mapping.py <screenshot_path>")
+        print("Usage: python phase1_debug_mapping.py <screenshot_path> [mapping_file]")
         print("\nExample:")
         print("  python tools/phase1_debug_mapping.py tests/fixtures/sample_screenshot.png")
+        print("  python tools/phase1_debug_mapping.py tests/fixtures/Screen2.jpeg screen2_column_mapping.yaml")
         sys.exit(1)
     
     screenshot_path = sys.argv[1]
+    mapping_file = sys.argv[2] if len(sys.argv) > 2 else "screen1_column_mapping.yaml"
     
     if not Path(screenshot_path).exists():
         print(f"Error: File not found: {screenshot_path}")
@@ -246,10 +257,11 @@ def main():
     print("PHASE 1: IMAGE MAPPING DEBUG TOOL")
     print("="*60)
     print(f"\nProcessing: {screenshot_path}")
+    print(f"Mapping file: {mapping_file}")
     
     # Load configuration
     print("\n1. Loading configuration...")
-    config = get_config()
+    config = get_config(mapping_file=mapping_file)
     print(f"   Reference resolution: {config.reference_resolution.width}x{config.reference_resolution.height}")
     print(f"   Expected rows: {config.row_config.get('expected_count', 5)}")
     

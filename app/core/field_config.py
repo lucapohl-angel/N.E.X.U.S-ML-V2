@@ -84,14 +84,16 @@ class FieldConfig:
     access enabled fields, column mappings, and validation rules.
     """
     
-    def __init__(self, config_dir: Path):
+    def __init__(self, config_dir: Path, mapping_file: str = "screen1_column_mapping.yaml"):
         """
-        Initialize configuration loader.
+        Initialize configuration.
         
         Args:
             config_dir: Path to directory containing config YAML files
+            mapping_file: Name of the column mapping file to use
         """
         self.config_dir = Path(config_dir)
+        self.mapping_file = mapping_file
         self._load_configs()
     
     def _load_configs(self):
@@ -102,7 +104,7 @@ class FieldConfig:
             self.field_config = yaml.safe_load(f)
         
         # Load column mapping config
-        column_config_path = self.config_dir / "column_mapping.yaml"
+        column_config_path = self.config_dir / self.mapping_file
         with open(column_config_path, 'r', encoding='utf-8') as f:
             self.column_config = yaml.safe_load(f)
         
@@ -308,12 +310,13 @@ class FieldConfig:
 _config_instance: Optional[FieldConfig] = None
 
 
-def get_config(config_dir: Optional[Path] = None) -> FieldConfig:
+def get_config(config_dir: Optional[Path] = None, mapping_file: str = "screen1_column_mapping.yaml") -> FieldConfig:
     """
     Get the global configuration instance.
     
     Args:
         config_dir: Path to config directory (only needed on first call)
+        mapping_file: Name of the column mapping file to use
         
     Returns:
         FieldConfig instance
@@ -324,7 +327,7 @@ def get_config(config_dir: Optional[Path] = None) -> FieldConfig:
         if config_dir is None:
             # Default to config/ directory relative to project root
             config_dir = Path(__file__).parent.parent.parent / "config"
-        _config_instance = FieldConfig(config_dir)
+        _config_instance = FieldConfig(config_dir, mapping_file)
     
     return _config_instance
 
