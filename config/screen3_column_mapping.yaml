@@ -1,0 +1,83 @@
+# Column Mapping Configuration - Screen 3 (Hero Damage + Consecutive Kills)
+# This file defines the pixel regions for hero damage and consecutive kills stats screen
+# Coordinates are specified as percentages of image dimensions for resolution independence.
+
+# ====================
+# REFERENCE RESOLUTION
+# ====================
+reference_resolution:
+  width: 1920
+  height: 1080
+
+# ====================
+# ROW DETECTION SETTINGS
+# ====================
+rows:
+  detection_method: "hough_lines"
+  expected_count: 5
+  team_filter: "blue_only"
+  blue_team_rows: [0, 1, 2, 3, 4]
+  min_row_height_px: 60
+  max_row_height_px: 120
+  row_spacing_tolerance_px: 10
+  
+  # Y-axis region where player rows are expected (same as screen1 and screen2)
+  row_region:
+    y_start_pct: 0.237
+    y_end_pct: 0.883
+
+# ====================
+# COLUMN DEFINITIONS - SCREEN 3
+# ====================
+columns:
+  # ------------------
+  # ALLY TEAM STATS
+  # ------------------
+  
+  hero_damage:
+    x_start_pct: 0.161
+    x_end_pct: 0.323
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Hero damage dealt (allies)"
+    preprocessing: "binarize"
+  
+  consecutive_kills:
+    x_start_pct: 0.299
+    x_end_pct: 0.461
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Consecutive kills (allies)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # ENEMY TEAM STATS
+  # ------------------
+  
+  enemy_hero_damage:
+    x_start_pct: 0.465
+    x_end_pct: 0.627
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Hero damage dealt (enemies)"
+    preprocessing: "binarize"
+  
+  enemy_consecutive_kills:
+    x_start_pct: 0.608
+    x_end_pct: 0.770
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Consecutive kills (enemies)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # METADATA
+  # ------------------
+  
+  battle_id:
+    x_start_pct: 0.158
+    x_end_pct: 0.320
+    y_offset_pct: 0.882
+    height_pct: 0.035
+    description: "Battle ID number at bottom (same as screen2)"
+    preprocessing: "binarize"

@@ -2,6 +2,7 @@ Game_result: Victory
 Game_Duration: 10:47
 BattleID: 436609948828842102
 
+
 Ally1:
 Hero_portrait: Yu Zhong
 Hero_level: 12

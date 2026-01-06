@@ -1,5 +1,4 @@
 BattleID: 436609948828842102
-
 Ally1:
 hero_damage: 20656
 turret_damage: 4584

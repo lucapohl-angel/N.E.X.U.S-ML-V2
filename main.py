@@ -31,6 +31,7 @@ from app.core.field_config import get_config
 SCREEN_MAPPING_FILES = {
     "screen1": "screen1_column_mapping.yaml",
     "screen2": "screen2_column_mapping.yaml",
+    "screen3": "screen3_column_mapping.yaml",
 }
 
 # Screens that require hero/item matching (only screen1)
