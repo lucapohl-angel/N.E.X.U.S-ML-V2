@@ -1,0 +1,63 @@
+BattleID: 436609948828842102
+
+Ally1:
+total_gold: 6939
+jungle_gold: 80
+kill_gold: 982
+minion_gold: 2514
+
+
+Ally2:
+total_gold: 7609
+jungle_gold: 41
+kill_gold: 1283
+minion_gold: 1304
+
+Ally3:
+total_gold: 6603
+jungle_gold: 97
+kill_gold: 1091
+minion_gold: 1942
+
+Ally4:
+total_gold: 7497
+jungle_gold: 246
+kill_gold: 531
+minion_gold: 2945
+
+Ally5:
+total_gold: 9445
+jungle_gold: 1781
+kill_gold: 2803
+minion_gold: 1450
+
+
+Enemy1:
+total_gold: 4428
+jungle_gold: 0
+kill_gold: 440
+minion_gold: 1206
+
+Enemy2:
+total_gold: 4360
+jungle_gold: 11
+kill_gold: 62
+minion_gold: 1423
+
+Enemy3:
+total_gold: 5006
+jungle_gold: 123
+kill_gold: 62
+minion_gold: 782
+
+Enemy4:
+total_gold: 4665
+jungle_gold: 718
+kill_gold: 62
+minion_gold: 1053
+
+Enemy5:
+total_gold: 6263
+jungle_gold: 0
+kill_gold: 1120
+minion_gold: 2361

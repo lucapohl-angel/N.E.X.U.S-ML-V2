@@ -573,3 +573,22 @@ When helping with this project:
 - Follow the blue-team-only constraint
 - Use type hints and clear docstrings
 - Test with the provided debug tools
+
+---
+
+## Chat Session Management
+
+### When Starting a New Chat
+Ask Copilot to summarize:
+```
+summarize this chat history for me to start a new chat. write a md. dont change any code
+```
+
+Copilot will:
+- Extract key accomplishments
+- Document code changes  
+- Record accuracy metrics
+- Add new section to CHAT_SUMMARIES.md
+- Make NO code changes
+
+All development history maintained in `CHAT_SUMMARIES.md` for future reference.

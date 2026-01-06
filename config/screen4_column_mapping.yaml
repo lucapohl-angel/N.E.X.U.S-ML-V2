@@ -1,0 +1,99 @@
+# Column Mapping Configuration - Screen 4 (Crowd Control, Healing, Damage Taken)
+# This file defines the pixel regions for support/defensive stats screen
+# Coordinates are specified as percentages of image dimensions for resolution independence.
+
+# ====================
+# REFERENCE RESOLUTION
+# ====================
+reference_resolution:
+  width: 1920
+  height: 1080
+
+# ====================
+# ROW DETECTION SETTINGS
+# ====================
+rows:
+  detection_method: "hough_lines"
+  expected_count: 5
+  team_filter: "blue_only"
+  blue_team_rows: [0, 1, 2, 3, 4]
+  min_row_height_px: 60
+  max_row_height_px: 120
+  row_spacing_tolerance_px: 10
+  
+  # Y-axis region where player rows are expected (same as screen1 and screen2)
+  row_region:
+    y_start_pct: 0.237
+    y_end_pct: 0.883
+
+# ====================
+# COLUMN DEFINITIONS - SCREEN 4
+# ====================
+columns:
+  # ------------------
+  # ALLY TEAM STATS
+  # ------------------
+  
+  crowd_control:
+    x_start_pct: 0.240
+    x_end_pct: 0.373
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Crowd control damage dealt (allies)"
+    preprocessing: "binarize"
+  
+  healing_and_shields:
+    x_start_pct: 0.316
+    x_end_pct: 0.449
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Healing and shields provided (allies)"
+    preprocessing: "binarize"
+  
+  damage_taken:
+    x_start_pct: 0.389
+    x_end_pct: 0.522
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Damage taken (allies)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # ENEMY TEAM STATS
+  # ------------------
+  
+  enemy_crowd_control:
+    x_start_pct: 0.551
+    x_end_pct: 0.684
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Crowd control damage dealt (enemies)"
+    preprocessing: "binarize"
+  
+  enemy_healing_and_shields:
+    x_start_pct: 0.624
+    x_end_pct: 0.757
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Healing and shields provided (enemies)"
+    preprocessing: "binarize"
+  
+  enemy_damage_taken:
+    x_start_pct: 0.698
+    x_end_pct: 0.831
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Damage taken (enemies)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # METADATA
+  # ------------------
+  
+  battle_id:
+    x_start_pct: 0.158
+    x_end_pct: 0.320
+    y_offset_pct: 0.882
+    height_pct: 0.035
+    description: "Battle ID number at bottom (same as screen2 and screen3)"
+    preprocessing: "binarize"
