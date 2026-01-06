@@ -296,6 +296,10 @@ class SquadStatsExtractor:
             "hero_damage", "turret_damage", "damage_taken", "teamfight_participation"
         }
         
+        # Screen3 fields that need specialized OCR
+        screen3_hero_damage_fields = {"hero_damage"}
+        screen3_consecutive_kills_fields = {"consecutive_kills"}
+        
         # Screen1 fields with dedicated OCR functions
         screen1_kda_fields = {"kills", "deaths", "assists"}
         
@@ -330,6 +334,16 @@ class SquadStatsExtractor:
                 if self.screentype == "screen2" and field_name in screen2_damage_fields:
                     # Screen2 damage stats (95% accuracy - DO NOT MODIFY)
                     result = self._ocr_damage_stat(cell, field_name)
+                elif self.screentype == "screen3":
+                    # Screen3 specialized OCR functions
+                    if field_name in screen3_hero_damage_fields:
+                        result = self._ocr_screen3_hero_damage(cell)
+                    elif field_name in screen3_consecutive_kills_fields:
+                        result = self._ocr_screen3_consecutive_kills(cell)
+                    else:
+                        # Use standard OCR for other screen3 fields
+                        field_type = self._get_field_type(field_name)
+                        result = extract_field(cell, field_type, field_name)
                 elif self.screentype == "screen1":
                     # Screen1 specialized OCR functions
                     if field_name == "individual_rating":
@@ -591,6 +605,214 @@ class SquadStatsExtractor:
             
         except Exception as e:
             print(f"  ⚠️ Failed to extract screen1 battle_id: {e}")
+            return None
+    
+    # ==========================================
+    # SCREEN3 SPECIALIZED OCR FUNCTIONS
+    # ==========================================
+    
+    def _ocr_screen3_hero_damage(self, cell: Any) -> Optional[int]:
+        """Specialized OCR for screen3 hero damage (4-6 digit integers like 20656, 63726).
+        
+        Screen3 hero damage numbers are LEFT-aligned with thin white/gray text.
+        Uses multi-pass voting with aggressive preprocessing for accuracy.
+        """
+        import numpy as np
+        from collections import Counter
+        
+        h, w = cell.shape[:2]
+        
+        # Convert to grayscale
+        if len(cell.shape) == 3:
+            gray = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = cell.copy()
+        
+        results = []
+        config = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        
+        # Pass 1: Standard preprocessing at 4x scale
+        scale = 4
+        scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced = clahe.apply(scaled)
+        _, binary1 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary1) < 127:
+            binary1 = cv2.bitwise_not(binary1)
+        
+        text1 = pytesseract.image_to_string(binary1, config=config).strip()
+        text1 = ''.join(c for c in text1 if c.isdigit())
+        if text1 and 3 <= len(text1) <= 6:
+            results.append(text1)
+        
+        # Pass 2: Higher scale (5x) with LANCZOS for fine details
+        scale2 = 5
+        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        clahe2 = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced2 = clahe2.apply(scaled2)
+        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary2) < 127:
+            binary2 = cv2.bitwise_not(binary2)
+        
+        text2 = pytesseract.image_to_string(binary2, config=config).strip()
+        text2 = ''.join(c for c in text2 if c.isdigit())
+        if text2 and 3 <= len(text2) <= 6:
+            results.append(text2)
+        
+        # Pass 3: Bilateral filter to reduce noise while preserving edges
+        scaled3 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        filtered = cv2.bilateralFilter(scaled3, 9, 75, 75)
+        _, binary3 = cv2.threshold(filtered, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary3) < 127:
+            binary3 = cv2.bitwise_not(binary3)
+        
+        text3 = pytesseract.image_to_string(binary3, config=config).strip()
+        text3 = ''.join(c for c in text3 if c.isdigit())
+        if text3 and 3 <= len(text3) <= 6:
+            results.append(text3)
+        
+        # Pass 4: HSV white mask (numbers are white text on dark background)
+        if len(cell.shape) == 3:
+            hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
+            # Target white/light gray text
+            mask = cv2.inRange(hsv, np.array([0, 0, 120]), np.array([180, 80, 255]))
+            masked_gray = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled4 = cv2.resize(masked_gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_CUBIC)
+            # Invert to make text dark on light
+            inverted = cv2.bitwise_not(scaled4)
+            _, binary4 = cv2.threshold(inverted, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            text4 = pytesseract.image_to_string(binary4, config=config).strip()
+            text4 = ''.join(c for c in text4 if c.isdigit())
+            if text4 and 3 <= len(text4) <= 6:
+                results.append(text4)
+        
+        # Pass 5: Adaptive threshold for varying lighting
+        scaled5 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        binary5 = cv2.adaptiveThreshold(scaled5, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY, 11, 2)
+        if np.mean(binary5) > 127:
+            binary5 = cv2.bitwise_not(binary5)
+        
+        text5 = pytesseract.image_to_string(binary5, config=config).strip()
+        text5 = ''.join(c for c in text5 if c.isdigit())
+        if text5 and 3 <= len(text5) <= 6:
+            results.append(text5)
+        
+        if not results:
+            return None
+        
+        # Majority voting - prefer 5-digit results (most common for hero damage)
+        five_digit = [r for r in results if len(r) == 5]
+        if five_digit:
+            counter = Counter(five_digit)
+            best = counter.most_common(1)[0][0]
+        else:
+            # Fall back to most common result of any length
+            counter = Counter(results)
+            best = counter.most_common(1)[0][0]
+        
+        try:
+            return int(best)
+        except ValueError:
+            return None
+    
+    def _ocr_screen3_consecutive_kills(self, cell: Any) -> Optional[int]:
+        """Specialized OCR for screen3 consecutive kills (single digit 0-9).
+        
+        Consecutive kills are small single-digit numbers (0-9).
+        Need very aggressive preprocessing for small numbers.
+        """
+        import numpy as np
+        from collections import Counter
+        
+        h, w = cell.shape[:2]
+        
+        # Convert to grayscale
+        if len(cell.shape) == 3:
+            gray = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = cell.copy()
+        
+        results = []
+        config = '--psm 10 -c tessedit_char_whitelist=0123456789'  # PSM 10 = single character
+        config_psm7 = '--psm 7 -c tessedit_char_whitelist=0123456789'  # PSM 7 = single line
+        
+        # Pass 1: High scale (6x) for small digits
+        scale = 6
+        scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced = clahe.apply(scaled)
+        _, binary1 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary1) < 127:
+            binary1 = cv2.bitwise_not(binary1)
+        
+        # Try both single char and single line mode
+        for cfg in [config, config_psm7]:
+            text = pytesseract.image_to_string(binary1, config=cfg).strip()
+            text = ''.join(c for c in text if c.isdigit())
+            if text and len(text) <= 2:
+                results.append(text[:1])  # Take only first digit
+        
+        # Pass 2: Very high scale (8x) with sharpening
+        scale2 = 8
+        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+        sharpened = cv2.filter2D(scaled2, -1, kernel)
+        clahe2 = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced2 = clahe2.apply(sharpened)
+        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary2) < 127:
+            binary2 = cv2.bitwise_not(binary2)
+        
+        for cfg in [config, config_psm7]:
+            text = pytesseract.image_to_string(binary2, config=cfg).strip()
+            text = ''.join(c for c in text if c.isdigit())
+            if text and len(text) <= 2:
+                results.append(text[:1])
+        
+        # Pass 3: Bilateral filter
+        scaled3 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        filtered = cv2.bilateralFilter(scaled3, 5, 50, 50)
+        _, binary3 = cv2.threshold(filtered, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary3) < 127:
+            binary3 = cv2.bitwise_not(binary3)
+        
+        for cfg in [config, config_psm7]:
+            text = pytesseract.image_to_string(binary3, config=cfg).strip()
+            text = ''.join(c for c in text if c.isdigit())
+            if text and len(text) <= 2:
+                results.append(text[:1])
+        
+        # Pass 4: HSV white mask for white numbers
+        if len(cell.shape) == 3:
+            hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 140]), np.array([180, 60, 255]))
+            masked_gray = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled4 = cv2.resize(masked_gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_CUBIC)
+            inverted = cv2.bitwise_not(scaled4)
+            _, binary4 = cv2.threshold(inverted, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            for cfg in [config, config_psm7]:
+                text = pytesseract.image_to_string(binary4, config=cfg).strip()
+                text = ''.join(c for c in text if c.isdigit())
+                if text and len(text) <= 2:
+                    results.append(text[:1])
+        
+        if not results:
+            return None
+        
+        # Majority voting
+        counter = Counter(results)
+        best = counter.most_common(1)[0][0]
+        
+        try:
+            value = int(best)
+            # Consecutive kills are typically 0-9
+            if 0 <= value <= 9:
+                return value
+            return value  # Return anyway, might be valid
+        except ValueError:
             return None
     
     def _ocr_screen1_individual_rating(self, cell: Any) -> Optional[float]:
@@ -1318,6 +1540,10 @@ class SquadStatsExtractor:
             "enemy_damage_taken", "enemy_teamfight_participation"
         }
         
+        # Screen3 fields that need specialized OCR
+        screen3_hero_damage_fields = {"enemy_hero_damage"}
+        screen3_consecutive_kills_fields = {"enemy_consecutive_kills"}
+        
         # Screen1 KDA fields
         screen1_kda_fields = {"enemy_kills", "enemy_deaths", "enemy_assists"}
         
@@ -1351,6 +1577,16 @@ class SquadStatsExtractor:
                 if self.screentype == "screen2" and field_name in screen2_damage_fields:
                     # Screen2 damage stats (95% accuracy - DO NOT MODIFY)
                     parsed_value = self._ocr_damage_stat(cell, field_name)
+                elif self.screentype == "screen3":
+                    # Screen3 specialized OCR functions
+                    if field_name in screen3_hero_damage_fields:
+                        parsed_value = self._ocr_screen3_hero_damage(cell)
+                    elif field_name in screen3_consecutive_kills_fields:
+                        parsed_value = self._ocr_screen3_consecutive_kills(cell)
+                    else:
+                        # Use standard OCR for other screen3 fields
+                        field_type = self._get_field_type(output_key)
+                        parsed_value = extract_field(cell, field_type, output_key)
                 elif self.screentype == "screen1":
                     # Screen1 specialized OCR functions
                     if field_name == "enemy_individual_rating":

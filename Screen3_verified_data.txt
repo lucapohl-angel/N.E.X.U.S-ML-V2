@@ -1,0 +1,15 @@
+Battle ID: 436609948828842102
+
+ALLIES (Blue Team):
+Player 1: hero_damage=20656, consecutive_kills=2
+Player 2: hero_damage=19606, consecutive_kills=1
+Player 3: hero_damage=41071, consecutive_kills=1
+Player 4: hero_damage=11205, consecutive_kills=3
+Player 5: hero_damage=63726, consecutive_kills=8
+
+ENEMIES (Red Team):
+Player 1: hero_damage=12405, consecutive_kills=1
+Player 2: hero_damage=21833, consecutive_kills=0
+Player 3: hero_damage=9491, consecutive_kills=0
+Player 4: hero_damage=17013, consecutive_kills=0
+Player 5: hero_damage=27993, consecutive_kills=4
