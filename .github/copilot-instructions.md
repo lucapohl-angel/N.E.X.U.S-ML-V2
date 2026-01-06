@@ -429,6 +429,75 @@ def test_parse_complete_match():
 
 ---
 
+## ⚠️ CRITICAL RULE - DO NOT MODIFY
+
+### NEVER CHANGE COLUMN MAPPING FILES
+
+**The column mapping YAML files are manually calibrated and must NEVER be modified:**
+- `config/column_mapping.yaml`
+- `config/screen1_column_mapping.yaml`  
+- `config/screen2_column_mapping.yaml`
+- Any `*_column_mapping.yaml` file
+
+**These mappings are PERFECT as-is.** If OCR accuracy is low:
+1. ✅ DO: Create dedicated OCR functions with better preprocessing
+2. ✅ DO: Adjust OCR parameters (thresholds, margins, tesseract config)
+3. ✅ DO: Modify Python code in `app/parser/ocr.py` or `main.py`
+4. ❌ DON'T: Change x_start_pct, x_end_pct, y_offset_pct, height_pct coordinates
+5. ❌ DON'T: Shrink or expand column boundaries
+
+**Rationale**: The user has manually calibrated these coordinates through visual debugging. Any coordinate change requires re-running phase1_debug_mapping.py and manual verification.
+
+### Data Validation Rules
+
+- **teamfight_participation**: Always 0-99 (max 2 digits). If OCR returns more digits, truncate to first 2.
+- **battle_id**: Must be 100% accurate - 18 digit number.
+
+### Accuracy Thresholds - DO NOT MODIFY WORKING CODE
+
+**95%+ Accuracy = DO NOT CHANGE:**
+- When a system achieves 95%+ accuracy, DO NOT modify that code
+- Only try improving systems that are BELOW 95% accuracy
+- If asked to "improve" something at 95%+, explain it's already optimal
+
+**Current Accuracy Status (as of Jan 2026):**
+- `screen2` OCR extraction: **95%** ✅ - DO NOT MODIFY `_ocr_damage_stat()`
+- `screen1` Item matching: **100%** ✅ - DO NOT MODIFY `ItemMatcher`
+- `screen1` Total Gold OCR: **100%** ✅ - DO NOT MODIFY
+- `screen1` Hero matching: ~78% ⚠️ - CAN BE IMPROVED
+- `screen1` Individual Rating OCR: ~22% ❌ - NEEDS IMPROVEMENT
+- `screen1` Player Name OCR: ~55% - **NOT IMPORTANT** (do not prioritize)
+- `screen1` KDA OCR: ~78% ⚠️ - CAN BE IMPROVED
+- `screen1` Hero Level OCR: ~67% ⚠️ - CAN BE IMPROVED
+
+**Battle ID: MUST BE 100% ACCURATE ON ALL SCREEN TYPES**
+- Battle ID is the unique match identifier (18 digits)
+- If extraction fails or is inaccurate, the entire match data is useless
+- Always validate: exactly 18 digits, no extra/missing characters
+- Create dedicated `_extract_battle_id()` function per screen type if needed
+
+**When adding new screen types:**
+1. First test with existing OCR functions
+2. If accuracy < 95%, create dedicated OCR function for that screen
+3. Name it clearly: `_ocr_{screentype}_{field}()`
+4. Do NOT modify working functions - create new ones
+5. **Always ensure Battle ID extraction is 100% accurate first**
+
+**Improvement Priority Order:**
+1. Battle ID (must be 100% on all screens)
+2. Individual Rating OCR (currently 22%)
+3. Hero Level OCR (currently 67%)
+4. KDA OCR (currently 78%)
+5. Hero matching (currently 78%)
+6. Player Name OCR - **LOW PRIORITY** (not important)
+
+**Important Distinction:**
+- "Confidence" = algorithm's internal belief (can be 100% and still wrong)
+- "Accuracy" = actual correctness vs verified data (ground truth)
+- Always measure against verified test data, not confidence scores
+
+---
+
 ## When User Asks...
 
 **"Add support for extracting [new stat]"**:
