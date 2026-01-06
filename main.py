@@ -29,8 +29,8 @@ from app.core.field_config import get_config
 
 # Mapping of screen types to their column mapping files
 SCREEN_MAPPING_FILES = {
-    "screen1": "config/screen1_column_mapping.yaml",
-    "screen2": "config/screen2_column_mapping.yaml",
+    "screen1": "screen1_column_mapping.yaml",
+    "screen2": "screen2_column_mapping.yaml",
 }
 
 # Screens that require hero/item matching (only screen1)
@@ -50,18 +50,18 @@ class SquadStatsExtractor:
         
         self.screentype = screentype
         
-        # Load configuration
-        self.field_config = get_config()
-        
-        # Determine mapping file
+        # Determine mapping file (just the filename - get_config adds the config/ directory)
         if screentype in SCREEN_MAPPING_FILES:
             self.mapping_file = SCREEN_MAPPING_FILES[screentype]
         else:
             # Allow custom mapping file path
-            self.mapping_file = f"config/{screentype}_column_mapping.yaml"
+            self.mapping_file = f"{screentype}_column_mapping.yaml"
         
         print(f"  ✓ Screen type: {screentype}")
         print(f"  ✓ Mapping file: {self.mapping_file}")
+        
+        # Load configuration
+        self.field_config = get_config(mapping_file=self.mapping_file)
         
         # Initialize matchers only for screens that need them
         self.hero_matcher = None
@@ -134,6 +134,10 @@ class SquadStatsExtractor:
         hero_col_def: Dict
     ) -> Optional[Dict[str, Any]]:
         """Extract and match hero portrait."""
+        # Skip hero matching if matcher not available (OCR-only mode)
+        if self.hero_matcher is None:
+            return None
+            
         try:
             # Calculate cell coordinates
             x_start = int(width * hero_col_def['x_start_pct'])
@@ -189,6 +193,10 @@ class SquadStatsExtractor:
     ) -> List[Dict[str, Any]]:
         """Extract and match all 6 item slots."""
         items = []
+        
+        # Skip item matching if matcher not available (OCR-only mode)
+        if self.item_matcher is None:
+            return items
         
         for slot_idx in range(1, 7):
             slot_key = f"item{slot_idx}"  # Changed from item_slot_{slot_idx}
@@ -588,6 +596,7 @@ class SquadStatsExtractor:
         """Specialized OCR for individual rating (decimal like 8.0, 10.3).
         
         The main issue is decimal point detection. Ratings are typically 0.0-16.0.
+        Uses aggressive multi-pass with different PSM modes.
         """
         import numpy as np
         from collections import Counter
@@ -603,6 +612,8 @@ class SquadStatsExtractor:
         # Config with decimal point
         config_decimal = '--psm 7 -c tessedit_char_whitelist=0123456789.'
         config_digits = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        config_psm6 = '--psm 6 -c tessedit_char_whitelist=0123456789.'
+        config_psm8 = '--psm 8 -c tessedit_char_whitelist=0123456789.'
         
         def parse_rating(text: str) -> Optional[float]:
             """Parse rating text, handling missing decimal points."""
@@ -613,13 +624,18 @@ class SquadStatsExtractor:
             if not cleaned:
                 return None
             
+            # Remove multiple dots
+            if cleaned.count('.') > 1:
+                parts = cleaned.split('.')
+                cleaned = parts[0] + '.' + ''.join(parts[1:])
+            
             try:
                 # If there's a decimal, use it directly
                 if '.' in cleaned:
                     val = float(cleaned)
                 else:
                     # No decimal - assume last digit is after decimal
-                    # e.g., "103" -> 10.3, "80" -> 8.0, "38" -> 3.8
+                    # e.g., "103" -> 10.3, "80" -> 8.0, "38" -> 3.8, "63" -> 6.3
                     if len(cleaned) >= 2:
                         val = float(cleaned[:-1] + '.' + cleaned[-1])
                     else:
@@ -641,44 +657,64 @@ class SquadStatsExtractor:
         if np.mean(binary) > 127:
             binary = cv2.bitwise_not(binary)
         
-        text1 = pytesseract.image_to_string(binary, config=config_decimal).strip()
-        val1 = parse_rating(text1)
-        if val1 is not None:
-            results.append(val1)
+        for cfg in [config_decimal, config_digits, config_psm8]:
+            text = pytesseract.image_to_string(binary, config=cfg).strip()
+            val = parse_rating(text)
+            if val is not None:
+                results.append(val)
         
-        # Pass 2: Digits only then infer decimal
-        text2 = pytesseract.image_to_string(binary, config=config_digits).strip()
-        val2 = parse_rating(text2)
-        if val2 is not None:
-            results.append(val2)
+        # Pass 2: HSV white mask (ratings are white text)
+        if len(cell.shape) == 3:
+            hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 140]), np.array([180, 60, 255]))
+            masked = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled2 = cv2.resize(masked, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            scaled2 = cv2.bitwise_not(scaled2)
+            _, binary2 = cv2.threshold(scaled2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            for cfg in [config_decimal, config_digits]:
+                text = pytesseract.image_to_string(binary2, config=cfg).strip()
+                val = parse_rating(text)
+                if val is not None:
+                    results.append(val)
         
         # Pass 3: Higher scale with sharpening
         scale2 = 8
-        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
-        # Sharpen
+        scaled3 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
         kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-        sharpened = cv2.filter2D(scaled2, -1, kernel)
+        sharpened = cv2.filter2D(scaled3, -1, kernel)
         clahe2 = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
         enhanced2 = clahe2.apply(sharpened)
-        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        if np.mean(binary2) > 127:
-            binary2 = cv2.bitwise_not(binary2)
-        
-        text3 = pytesseract.image_to_string(binary2, config=config_decimal).strip()
-        val3 = parse_rating(text3)
-        if val3 is not None:
-            results.append(val3)
-        
-        # Pass 4: Bilateral filter for noise reduction
-        filtered = cv2.bilateralFilter(scaled, 9, 75, 75)
-        _, binary3 = cv2.threshold(filtered, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, binary3 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         if np.mean(binary3) > 127:
             binary3 = cv2.bitwise_not(binary3)
         
-        text4 = pytesseract.image_to_string(binary3, config=config_decimal).strip()
-        val4 = parse_rating(text4)
-        if val4 is not None:
-            results.append(val4)
+        for cfg in [config_decimal, config_psm6]:
+            text = pytesseract.image_to_string(binary3, config=cfg).strip()
+            val = parse_rating(text)
+            if val is not None:
+                results.append(val)
+        
+        # Pass 4: Bilateral filter for noise reduction
+        filtered = cv2.bilateralFilter(scaled, 9, 75, 75)
+        _, binary4 = cv2.threshold(filtered, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary4) > 127:
+            binary4 = cv2.bitwise_not(binary4)
+        
+        text = pytesseract.image_to_string(binary4, config=config_decimal).strip()
+        val = parse_rating(text)
+        if val is not None:
+            results.append(val)
+        
+        # Pass 5: Adaptive threshold
+        scaled5 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        binary5 = cv2.adaptiveThreshold(scaled5, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY_INV, 11, 2)
+        
+        text = pytesseract.image_to_string(binary5, config=config_digits).strip()
+        val = parse_rating(text)
+        if val is not None:
+            results.append(val)
         
         if not results:
             return None
@@ -690,21 +726,48 @@ class SquadStatsExtractor:
     def _ocr_screen1_hero_level(self, cell: Any) -> Optional[int]:
         """Specialized OCR for hero level (1-15).
         
-        Hero level is a small number on the portrait. Can be tricky to read.
+        Hero level is a small white/yellow number overlaid on hero portrait.
+        Requires aggressive preprocessing to isolate the number from busy background.
+        
+        Known issues:
+        - First digit "1" often gets lost, making "12" appear as "2"
+        - Two-digit numbers starting with "1" are tricky
         """
         import numpy as np
         from collections import Counter
         
         results = []
+        raw_results = []  # Keep track of all raw OCR output before validation
+        
+        # Keep original for color processing
+        original = cell.copy()
+        
+        # Add padding to left side to help capture first digit
+        pad_left = 10
+        pad_right = 5
+        pad_top = 5
+        pad_bottom = 5
+        
+        if len(original.shape) == 3:
+            padded = cv2.copyMakeBorder(original, pad_top, pad_bottom, pad_left, pad_right,
+                                        cv2.BORDER_CONSTANT, value=[0, 0, 0])
+        else:
+            padded = cv2.copyMakeBorder(original, pad_top, pad_bottom, pad_left, pad_right,
+                                        cv2.BORDER_CONSTANT, value=0)
         
         # Convert to grayscale
-        if len(cell.shape) == 3:
-            gray = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
+        if len(padded.shape) == 3:
+            gray = cv2.cvtColor(padded, cv2.COLOR_BGR2GRAY)
         else:
-            gray = cell.copy()
+            gray = padded.copy()
         
-        config = '--psm 10 -c tessedit_char_whitelist=0123456789'  # Single character mode
-        config7 = '--psm 7 -c tessedit_char_whitelist=0123456789'   # Single line
+        # Multiple configs for different scenarios
+        config_single = '--psm 10 -c tessedit_char_whitelist=0123456789'
+        config_line = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        config_word = '--psm 8 -c tessedit_char_whitelist=0123456789'
+        config_sparse = '--psm 11 -c tessedit_char_whitelist=0123456789'
+        # PSM 6 - block of text, good for small numbers
+        config_block = '--psm 6 -c tessedit_char_whitelist=0123456789'
         
         def validate_level(text: str) -> Optional[int]:
             """Validate hero level is 1-15."""
@@ -715,73 +778,197 @@ class SquadStatsExtractor:
                 val = int(cleaned)
                 if 1 <= val <= 15:
                     return val
+                # Handle common misreads
+                if val in [41, 42, 43, 44, 45]:  # 4 misread as 1
+                    corrected = val - 30  # 41->11, 42->12, etc.
+                    if 1 <= corrected <= 15:
+                        return corrected
+                if val in [71, 72, 73, 74, 75]:  # 7 misread as 1
+                    corrected = val - 60  # 71->11, 72->12, etc.
+                    if 1 <= corrected <= 15:
+                        return corrected
             except ValueError:
                 pass
             return None
         
-        # Pass 1: High scale with HSV masking for white text
-        scale = 5
-        if len(cell.shape) == 3:
-            hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
-            # White text mask
-            mask = cv2.inRange(hsv, np.array([0, 0, 150]), np.array([180, 50, 255]))
-            masked = cv2.bitwise_and(gray, gray, mask=mask)
-        else:
-            masked = gray.copy()
+        def extract_raw(img, cfg):
+            """Extract raw OCR text and record it."""
+            text = pytesseract.image_to_string(img, config=cfg).strip()
+            cleaned = ''.join(c for c in text if c.isdigit())
+            if cleaned:
+                raw_results.append(cleaned)
+            return validate_level(text)
         
-        scaled = cv2.resize(masked, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-        scaled = cv2.bitwise_not(scaled)
-        _, binary = cv2.threshold(scaled, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        scale = 6  # Higher scale for small text
         
-        text1 = pytesseract.image_to_string(binary, config=config7).strip()
-        val1 = validate_level(text1)
-        if val1 is not None:
-            results.append(val1)
+        # Pass 1: HSV mask for white/bright text (most hero levels are white)
+        if len(padded.shape) == 3:
+            hsv = cv2.cvtColor(padded, cv2.COLOR_BGR2HSV)
+            # White text (high value, low saturation)
+            mask_white = cv2.inRange(hsv, np.array([0, 0, 180]), np.array([180, 50, 255]))
+            # Also try yellow text (some levels show yellow)
+            mask_yellow = cv2.inRange(hsv, np.array([15, 80, 180]), np.array([35, 255, 255]))
+            mask = cv2.bitwise_or(mask_white, mask_yellow)
+            
+            gray_orig = cv2.cvtColor(padded, cv2.COLOR_BGR2GRAY)
+            masked = cv2.bitwise_and(gray_orig, gray_orig, mask=mask)
+            scaled = cv2.resize(masked, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            scaled = cv2.bitwise_not(scaled)
+            _, binary = cv2.threshold(scaled, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            for cfg in [config_line, config_word, config_block]:
+                val = extract_raw(binary, cfg)
+                if val is not None:
+                    results.append(val)
         
-        # Pass 2: Standard CLAHE
+        # Pass 2: Standard CLAHE on grayscale
         scaled2 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        clahe = cv2.createCLAHE(clipLimit=4.0, tileGridSize=(4, 4))
         enhanced = clahe.apply(scaled2)
         enhanced = cv2.bitwise_not(enhanced)
         _, binary2 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         
-        text2 = pytesseract.image_to_string(binary2, config=config7).strip()
-        val2 = validate_level(text2)
-        if val2 is not None:
-            results.append(val2)
+        for cfg in [config_line, config_word, config_block]:
+            val = extract_raw(binary2, cfg)
+            if val is not None:
+                results.append(val)
         
         # Pass 3: Adaptive threshold
         scaled3 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-        scaled3 = cv2.bitwise_not(scaled3)
         binary3 = cv2.adaptiveThreshold(scaled3, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                        cv2.THRESH_BINARY, 11, 2)
+                                        cv2.THRESH_BINARY_INV, 11, 2)
         
-        text3 = pytesseract.image_to_string(binary3, config=config7).strip()
-        val3 = validate_level(text3)
-        if val3 is not None:
-            results.append(val3)
+        for cfg in [config_line, config_block]:
+            val = extract_raw(binary3, cfg)
+            if val is not None:
+                results.append(val)
         
-        # Pass 4: PSM 10 (single character) for single digit levels
-        text4 = pytesseract.image_to_string(binary, config=config).strip()
-        val4 = validate_level(text4)
-        if val4 is not None:
-            results.append(val4)
+        # Pass 4: Very high scale with bilateral filter
+        scale2 = 8
+        scaled4 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        filtered = cv2.bilateralFilter(scaled4, 9, 75, 75)
+        filtered = cv2.bitwise_not(filtered)
+        _, binary4 = cv2.threshold(filtered, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        
+        for cfg in [config_line, config_word, config_block]:
+            val = extract_raw(binary4, cfg)
+            if val is not None:
+                results.append(val)
+        
+        # Pass 5: Morphological cleanup
+        kernel = np.ones((2, 2), np.uint8)
+        morph = cv2.morphologyEx(binary2, cv2.MORPH_CLOSE, kernel)
+        morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
+        
+        val = extract_raw(morph, config_line)
+        if val is not None:
+            results.append(val)
+        
+        # Pass 6: Multiple threshold levels
+        for thresh in [80, 100, 127, 150, 180, 200]:
+            scaled6 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            _, binary6 = cv2.threshold(scaled6, thresh, 255, cv2.THRESH_BINARY_INV)
+            
+            val = extract_raw(binary6, config_line)
+            if val is not None:
+                results.append(val)
+        
+        # Pass 7: Dilation to thicken thin digits (especially "1")
+        kernel_dilate = np.ones((2, 2), np.uint8)
+        dilated = cv2.dilate(binary2, kernel_dilate, iterations=1)
+        
+        for cfg in [config_line, config_block]:
+            val = extract_raw(dilated, cfg)
+            if val is not None:
+                results.append(val)
+        
+        # Pass 8: Sharpening filter
+        sharpen_kernel = np.array([[-1, -1, -1],
+                                   [-1,  9, -1],
+                                   [-1, -1, -1]])
+        scaled8 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        sharpened = cv2.filter2D(scaled8, -1, sharpen_kernel)
+        sharpened = cv2.bitwise_not(sharpened)
+        _, binary8 = cv2.threshold(sharpened, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        
+        for cfg in [config_line, config_block]:
+            val = extract_raw(binary8, cfg)
+            if val is not None:
+                results.append(val)
+        
+        # Analyze raw results for inference
+        if raw_results:
+            # Count occurrences of each digit pattern
+            digit_counts = Counter(raw_results)
+            
+            # If we consistently get single digits, try inferring double digits
+            # This helps when "1" is lost from "11", "12", "13", etc.
+            single_digits = [r for r in raw_results if len(r) == 1]
+            double_digits = [r for r in raw_results if len(r) == 2]
+            
+            # Only infer 10+ values for digits 0-5 (which could be 10-15)
+            # Digits 6-9 are likely actual single-digit levels
+            if single_digits:
+                single_counter = Counter(single_digits)
+                for digit, count in single_counter.most_common():
+                    if digit in '012345' and count >= 2:
+                        # Likely missing first digit "1"
+                        inferred = 10 + int(digit)
+                        if 1 <= inferred <= 15:
+                            # Add multiple times based on occurrence count
+                            for _ in range(count):
+                                results.append(inferred)
         
         if not results:
             return None
         
-        # Prefer larger values (preprocessing tends to lose digits: 14->4)
+        # Use voting with preference for higher/double-digit values
+        counter = Counter(results)
+        most_common_list = counter.most_common()
+        
+        # Check for double digit candidates (10-15)
+        doubles = [(v, c) for v, c in most_common_list if v >= 10]
+        singles = [(v, c) for v, c in most_common_list if v <= 9]
+        
+        # For single digits 6-9, trust them more (unlikely to be 16-19 which don't exist)
+        high_singles = [(v, c) for v, c in singles if v >= 6]
+        low_singles = [(v, c) for v, c in singles if v <= 5]
+        
+        # If we have strong support for 6-9, trust it
+        if high_singles:
+            high_single_total = sum(c for v, c in high_singles)
+            if high_single_total >= 3:
+                return high_singles[0][0]
+        
+        # If we have double-digit candidates with reasonable support, prefer them
+        if doubles:
+            double_total = sum(c for v, c in doubles)
+            low_single_total = sum(c for v, c in low_singles)
+            
+            # If doubles have at least 30% of low single digit support, trust doubles
+            if double_total >= low_single_total * 0.3:
+                return doubles[0][0]
+        
+        # If most common has strong consensus (3+ votes), trust it
+        if most_common_list[0][1] >= 3:
+            return most_common_list[0][0]
+        
+        # Otherwise return the max value (prefer larger)
         return max(results)
     
     def _ocr_screen1_kda(self, cell: Any, field_name: str) -> Optional[int]:
         """Specialized OCR for K/D/A values (kills, deaths, assists).
         
-        These are typically 0-99 integers. Main issue is "1" being read as "4".
+        These are typically 0-99 integers. Main issues:
+        - "1" being read as "4" 
+        - "0" being missed entirely
+        - Single digits being tricky to detect
         """
         import numpy as np
         from collections import Counter
         
         results = []
+        original = cell.copy()
         
         # Convert to grayscale
         if len(cell.shape) == 3:
@@ -789,7 +976,9 @@ class SquadStatsExtractor:
         else:
             gray = cell.copy()
         
-        config = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        config7 = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        config8 = '--psm 8 -c tessedit_char_whitelist=0123456789'
+        config10 = '--psm 10 -c tessedit_char_whitelist=0123456789'  # Single char mode
         
         def validate_kda(text: str) -> Optional[int]:
             """Validate KDA value is 0-99."""
@@ -804,56 +993,95 @@ class SquadStatsExtractor:
                 pass
             return None
         
-        # Pass 1: Standard with CLAHE
-        scale = 4
+        scale = 5
+        
+        # Pass 1: CLAHE with multiple configs
         scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(4, 4))
         enhanced = clahe.apply(scaled)
         enhanced = cv2.bitwise_not(enhanced)
         _, binary = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         
-        text1 = pytesseract.image_to_string(binary, config=config).strip()
-        val1 = validate_kda(text1)
-        if val1 is not None:
-            results.append(val1)
+        for cfg in [config7, config8]:
+            text = pytesseract.image_to_string(binary, config=cfg).strip()
+            val = validate_kda(text)
+            if val is not None:
+                results.append(val)
         
         # Pass 2: Higher scale with bilateral filter
-        scale2 = 5
+        scale2 = 6
         scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
-        filtered = cv2.bilateralFilter(scaled2, 5, 50, 50)
+        filtered = cv2.bilateralFilter(scaled2, 9, 75, 75)
         filtered = cv2.bitwise_not(filtered)
         _, binary2 = cv2.threshold(filtered, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         
-        text2 = pytesseract.image_to_string(binary2, config=config).strip()
-        val2 = validate_kda(text2)
-        if val2 is not None:
-            results.append(val2)
+        for cfg in [config7, config8]:
+            text = pytesseract.image_to_string(binary2, config=cfg).strip()
+            val = validate_kda(text)
+            if val is not None:
+                results.append(val)
         
         # Pass 3: HSV masking for white text
-        if len(cell.shape) == 3:
-            hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
-            mask = cv2.inRange(hsv, np.array([0, 0, 150]), np.array([180, 50, 255]))
+        if len(original.shape) == 3:
+            hsv = cv2.cvtColor(original, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 160]), np.array([180, 60, 255]))
             masked_gray = cv2.bitwise_and(gray, gray, mask=mask)
             scaled3 = cv2.resize(masked_gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
             scaled3 = cv2.bitwise_not(scaled3)
             _, binary3 = cv2.threshold(scaled3, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             
-            text3 = pytesseract.image_to_string(binary3, config=config).strip()
-            val3 = validate_kda(text3)
-            if val3 is not None:
-                results.append(val3)
+            for cfg in [config7, config8]:
+                text = pytesseract.image_to_string(binary3, config=cfg).strip()
+                val = validate_kda(text)
+                if val is not None:
+                    results.append(val)
         
-        # Pass 4: Morphological operations to clean up
+        # Pass 4: Morphological operations
         kernel = np.ones((2, 2), np.uint8)
         morph = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
         morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
         
-        text4 = pytesseract.image_to_string(morph, config=config).strip()
-        val4 = validate_kda(text4)
-        if val4 is not None:
-            results.append(val4)
+        text = pytesseract.image_to_string(morph, config=config7).strip()
+        val = validate_kda(text)
+        if val is not None:
+            results.append(val)
+        
+        # Pass 5: Adaptive threshold
+        scaled5 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        binary5 = cv2.adaptiveThreshold(scaled5, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY_INV, 11, 2)
+        
+        for cfg in [config7, config8]:
+            text = pytesseract.image_to_string(binary5, config=cfg).strip()
+            val = validate_kda(text)
+            if val is not None:
+                results.append(val)
+        
+        # Pass 6: Multiple threshold levels for tricky values
+        for thresh in [100, 127, 150, 180]:
+            scaled6 = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            _, binary6 = cv2.threshold(scaled6, thresh, 255, cv2.THRESH_BINARY_INV)
+            
+            text = pytesseract.image_to_string(binary6, config=config7).strip()
+            val = validate_kda(text)
+            if val is not None:
+                results.append(val)
+        
+        # Pass 7: Try PSM 10 (single character) for single-digit values
+        text = pytesseract.image_to_string(binary, config=config10).strip()
+        val = validate_kda(text)
+        if val is not None:
+            results.append(val)
         
         if not results:
+            # Special case: if no results found, check if cell is mostly empty (likely 0)
+            # Count non-zero pixels in binary image
+            scaled_check = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            _, binary_check = cv2.threshold(scaled_check, 150, 255, cv2.THRESH_BINARY_INV)
+            non_zero_ratio = np.count_nonzero(binary_check) / binary_check.size
+            
+            # If very few bright pixels, likely a 0 which has distinct shape
+            # Return None and let caller decide
             return None
         
         # Use voting - most common result
@@ -990,6 +1218,10 @@ class SquadStatsExtractor:
         We reverse the order so slot 1 in output = leftmost item visually.
         """
         items = []
+        
+        # Skip item matching if matcher not available (OCR-only mode)
+        if self.item_matcher is None:
+            return items
         
         # Extract in reverse order: enemy_item6 -> enemy_item1 
         # so that slot 1 = leftmost item visually
@@ -1174,12 +1406,8 @@ class SquadStatsExtractor:
         rows = detect_player_rows(img, self.field_config)
         print(f"  ✓ Detected {len(rows)} player rows")
         
-        # Load column mappings from the appropriate file for this screen type
-        import yaml
-        with open(self.mapping_file, 'r') as f:
-            column_config = yaml.safe_load(f)
-        
-        column_mappings = column_config['columns']
+        # Get column mappings from the already-loaded field_config
+        column_mappings = self.field_config.column_config.get('columns', {})
         
         # Extract battle_id if present - use screen-specific function
         battle_id = None
@@ -1298,6 +1526,10 @@ def main():
         print('  python main.py "path/to/screenshot.png" [screentype]')
         print('  python main.py "tests/fixtures/test (1).jpeg"              # defaults to screen1')
         print('  python main.py "tests/fixtures/Screen2.jpeg" screen2       # damage stats')
+        print()
+        print("Screen types:")
+        print('  screen1 - KDA stats, items, ratings (default)')
+        print('  screen2 - Damage stats (hero/turret/damage taken/teamfight participation)')
         sys.exit(1)
     
     screenshot_path = sys.argv[1]
@@ -1308,14 +1540,15 @@ def main():
         print(f"❌ Error: File not found: {screenshot_path}")
         sys.exit(1)
     
-    # Validate mapping file exists
+    # Validate mapping file exists (full path for validation)
     if screentype in SCREEN_MAPPING_FILES:
-        mapping_file = SCREEN_MAPPING_FILES[screentype]
+        mapping_filename = SCREEN_MAPPING_FILES[screentype]
     else:
-        mapping_file = f"config/{screentype}_column_mapping.yaml"
+        mapping_filename = f"{screentype}_column_mapping.yaml"
     
-    if not Path(mapping_file).exists():
-        print(f"❌ Error: Mapping file not found: {mapping_file}")
+    mapping_path = Path("config") / mapping_filename
+    if not mapping_path.exists():
+        print(f"❌ Error: Mapping file not found: {mapping_path}")
         print(f"\nValid screen types: {', '.join(SCREEN_MAPPING_FILES.keys())}")
         sys.exit(1)
     

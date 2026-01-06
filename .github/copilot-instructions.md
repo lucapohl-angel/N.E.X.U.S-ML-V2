@@ -464,11 +464,11 @@ def test_parse_complete_match():
 - `screen2` OCR extraction: **95%** ✅ - DO NOT MODIFY `_ocr_damage_stat()`
 - `screen1` Item matching: **100%** ✅ - DO NOT MODIFY `ItemMatcher`
 - `screen1` Total Gold OCR: **100%** ✅ - DO NOT MODIFY
+- `screen1` Individual Rating OCR: **100%** ✅ - IMPROVED (was 22%)
+- `screen1` KDA OCR: **100%** ✅ - IMPROVED (was 78%)
+- `screen1` Hero Level OCR: **78%** ⚠️ - CAN BE IMPROVED (was 67%)
 - `screen1` Hero matching: ~78% ⚠️ - CAN BE IMPROVED
-- `screen1` Individual Rating OCR: ~22% ❌ - NEEDS IMPROVEMENT
 - `screen1` Player Name OCR: ~55% - **NOT IMPORTANT** (do not prioritize)
-- `screen1` KDA OCR: ~78% ⚠️ - CAN BE IMPROVED
-- `screen1` Hero Level OCR: ~67% ⚠️ - CAN BE IMPROVED
 
 **Battle ID: MUST BE 100% ACCURATE ON ALL SCREEN TYPES**
 - Battle ID is the unique match identifier (18 digits)
@@ -484,12 +484,18 @@ def test_parse_complete_match():
 5. **Always ensure Battle ID extraction is 100% accurate first**
 
 **Improvement Priority Order:**
-1. Battle ID (must be 100% on all screens)
-2. Individual Rating OCR (currently 22%)
-3. Hero Level OCR (currently 67%)
-4. KDA OCR (currently 78%)
+1. Battle ID (must be 100% on all screens) ✅ COMPLETE
+2. Individual Rating OCR ✅ COMPLETE (now 100%)
+3. KDA OCR ✅ COMPLETE (now 100%)
+4. Hero Level OCR (currently 78%) - needs improvement to 90%
 5. Hero matching (currently 78%)
 6. Player Name OCR - **LOW PRIORITY** (not important)
+
+**Known Hero Level OCR Issues:**
+- Digit "1" is often lost or misread (thin character)
+- "12" may appear as "2" (first digit lost)
+- "11" may appear as "14" (second "1" misread as "4")
+- Multi-pass OCR with inference helps but doesn't fully solve
 
 **Important Distinction:**
 - "Confidence" = algorithm's internal belief (can be 100% and still wrong)
