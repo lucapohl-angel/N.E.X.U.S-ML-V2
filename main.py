@@ -370,6 +370,20 @@ class SquadStatsExtractor:
                         # Use standard OCR for other screen4 fields
                         field_type = self._get_field_type(field_name)
                         result = extract_field(cell, field_type, field_name)
+                elif self.screentype == "screen5":
+                    # Screen5 specialized OCR functions for gold breakdown
+                    if field_name == "total_gold":
+                        result = self._ocr_screen5_total_gold(cell)
+                    elif field_name == "jungle_gold":
+                        result = self._ocr_screen5_jungle_gold(cell)
+                    elif field_name == "kill_gold":
+                        result = self._ocr_screen5_kill_gold(cell)
+                    elif field_name == "minion_gold":
+                        result = self._ocr_screen5_minion_gold(cell)
+                    else:
+                        # Use standard OCR for other screen5 fields
+                        field_type = self._get_field_type(field_name)
+                        result = extract_field(cell, field_type, field_name)
                 else:
                     # Default: use standard OCR from app/parser/ocr.py
                     field_type = self._get_field_type(field_name)
@@ -1131,6 +1145,371 @@ class SquadStatsExtractor:
         try:
             value = int(best)
             if 1000 <= value <= 999999:
+                return value
+            return value
+        except ValueError:
+            return None
+
+    # ==========================================
+    # SCREEN5 SPECIALIZED OCR FUNCTIONS
+    # ==========================================
+    
+    def _ocr_screen5_total_gold(self, cell: Any) -> Optional[int]:
+        """Specialized OCR for screen5 total gold stat (4-5 digit integers).
+        
+        Total gold values are typically 4000-12000.
+        Uses tight center cropping to avoid adjacent column overlap.
+        """
+        import numpy as np
+        from collections import Counter
+        
+        h, w = cell.shape[:2]
+        
+        # Use center 40% of cell - tight crop to avoid overlap with jungle_gold
+        center_margin = int(w * 0.30)
+        cropped = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+        
+        # Convert to grayscale
+        if len(cropped.shape) == 3:
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = cropped.copy()
+        
+        results = []
+        config = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        
+        # Pass 1: Standard preprocessing at 3x scale
+        scale = 3
+        scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced = clahe.apply(scaled)
+        _, binary1 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary1) < 127:
+            binary1 = cv2.bitwise_not(binary1)
+        
+        text1 = pytesseract.image_to_string(binary1, config=config).strip()
+        text1 = ''.join(c for c in text1 if c.isdigit())
+        if text1 and 3 <= len(text1) <= 5:
+            results.append(text1)
+        
+        # Pass 2: Higher scale with LANCZOS
+        scale2 = 4
+        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        clahe2 = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced2 = clahe2.apply(scaled2)
+        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary2) < 127:
+            binary2 = cv2.bitwise_not(binary2)
+        
+        text2 = pytesseract.image_to_string(binary2, config=config).strip()
+        text2 = ''.join(c for c in text2 if c.isdigit())
+        if text2 and 3 <= len(text2) <= 5:
+            results.append(text2)
+        
+        # Pass 3: Adaptive threshold
+        binary3 = cv2.adaptiveThreshold(scaled2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY, 11, 2)
+        if np.mean(binary3) < 127:
+            binary3 = cv2.bitwise_not(binary3)
+        
+        text3 = pytesseract.image_to_string(binary3, config=config).strip()
+        text3 = ''.join(c for c in text3 if c.isdigit())
+        if text3 and 3 <= len(text3) <= 5:
+            results.append(text3)
+        
+        # Pass 4: White text mask
+        if len(cell.shape) == 3:
+            cropped_color = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+            hsv = cv2.cvtColor(cropped_color, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 150]), np.array([180, 50, 255]))
+            masked = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled4 = cv2.resize(masked, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_CUBIC)
+            inverted = cv2.bitwise_not(scaled4)
+            _, binary4 = cv2.threshold(inverted, 100, 255, cv2.THRESH_BINARY)
+            
+            text4 = pytesseract.image_to_string(binary4, config=config).strip()
+            text4 = ''.join(c for c in text4 if c.isdigit())
+            if text4 and 3 <= len(text4) <= 5:
+                results.append(text4)
+        
+        if not results:
+            return None
+        
+        # Majority voting
+        counter = Counter(results)
+        best = counter.most_common(1)[0][0]
+        
+        try:
+            value = int(best)
+            if 1000 <= value <= 20000:
+                return value
+            return value
+        except ValueError:
+            return None
+
+    def _ocr_screen5_jungle_gold(self, cell: Any) -> Optional[int]:
+        """Specialized OCR for screen5 jungle gold stat (0-2000).
+        
+        Jungle gold can be 0, or 2-4 digit numbers. Many values are small (under 500).
+        Uses moderate center cropping. No zero detection - rely on OCR.
+        """
+        import numpy as np
+        from collections import Counter
+        
+        h, w = cell.shape[:2]
+        
+        # Use center 60% of cell - more generous crop to preserve digits
+        center_margin = int(w * 0.20)
+        cropped = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+        
+        # Convert to grayscale
+        if len(cropped.shape) == 3:
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = cropped.copy()
+        
+        results = []
+        config = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        
+        # Pass 1: Standard preprocessing
+        scale = 3
+        scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced = clahe.apply(scaled)
+        _, binary1 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary1) < 127:
+            binary1 = cv2.bitwise_not(binary1)
+        
+        text1 = pytesseract.image_to_string(binary1, config=config).strip()
+        text1 = ''.join(c for c in text1 if c.isdigit())
+        if text1 and len(text1) <= 4:
+            results.append(text1)
+        
+        # Pass 2: Higher scale
+        scale2 = 4
+        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        clahe2 = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced2 = clahe2.apply(scaled2)
+        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary2) < 127:
+            binary2 = cv2.bitwise_not(binary2)
+        
+        text2 = pytesseract.image_to_string(binary2, config=config).strip()
+        text2 = ''.join(c for c in text2 if c.isdigit())
+        if text2 and len(text2) <= 4:
+            results.append(text2)
+        
+        # Pass 3: White text mask
+        if len(cell.shape) == 3:
+            cropped_color = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+            hsv = cv2.cvtColor(cropped_color, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 160]), np.array([180, 50, 255]))
+            masked = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled3 = cv2.resize(masked, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_CUBIC)
+            inverted = cv2.bitwise_not(scaled3)
+            _, binary3 = cv2.threshold(inverted, 100, 255, cv2.THRESH_BINARY)
+            
+            text3 = pytesseract.image_to_string(binary3, config=config).strip()
+            text3 = ''.join(c for c in text3 if c.isdigit())
+            if text3 and len(text3) <= 4:
+                results.append(text3)
+        
+        if not results:
+            return 0  # Default to 0 if no text found
+        
+        # Majority voting
+        counter = Counter(results)
+        best = counter.most_common(1)[0][0]
+        
+        try:
+            value = int(best)
+            if 0 <= value <= 5000:
+                return value
+            return value
+        except ValueError:
+            return 0
+
+    def _ocr_screen5_kill_gold(self, cell: Any) -> Optional[int]:
+        """Specialized OCR for screen5 kill gold stat (0-4000).
+        
+        Kill gold values are typically 3-4 digit numbers or 0.
+        Uses moderate center cropping. No zero detection - rely on OCR.
+        """
+        import numpy as np
+        from collections import Counter
+        
+        h, w = cell.shape[:2]
+        
+        # Use center 60% of cell - more generous crop to preserve digits
+        center_margin = int(w * 0.20)
+        cropped = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+        
+        # Convert to grayscale
+        if len(cropped.shape) == 3:
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = cropped.copy()
+        
+        results = []
+        config = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        
+        # Pass 1: Standard preprocessing
+        scale = 3
+        scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced = clahe.apply(scaled)
+        _, binary1 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary1) < 127:
+            binary1 = cv2.bitwise_not(binary1)
+        
+        text1 = pytesseract.image_to_string(binary1, config=config).strip()
+        text1 = ''.join(c for c in text1 if c.isdigit())
+        if text1 and len(text1) <= 4:
+            results.append(text1)
+        
+        # Pass 2: Higher scale
+        scale2 = 4
+        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        clahe2 = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced2 = clahe2.apply(scaled2)
+        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary2) < 127:
+            binary2 = cv2.bitwise_not(binary2)
+        
+        text2 = pytesseract.image_to_string(binary2, config=config).strip()
+        text2 = ''.join(c for c in text2 if c.isdigit())
+        if text2 and len(text2) <= 4:
+            results.append(text2)
+        
+        # Pass 3: Adaptive threshold
+        binary3 = cv2.adaptiveThreshold(scaled2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY, 11, 2)
+        if np.mean(binary3) < 127:
+            binary3 = cv2.bitwise_not(binary3)
+        
+        text3 = pytesseract.image_to_string(binary3, config=config).strip()
+        text3 = ''.join(c for c in text3 if c.isdigit())
+        if text3 and len(text3) <= 4:
+            results.append(text3)
+        
+        # Pass 4: White text mask
+        if len(cell.shape) == 3:
+            cropped_color = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+            hsv = cv2.cvtColor(cropped_color, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 160]), np.array([180, 50, 255]))
+            masked = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled4 = cv2.resize(masked, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_CUBIC)
+            inverted = cv2.bitwise_not(scaled4)
+            _, binary4 = cv2.threshold(inverted, 100, 255, cv2.THRESH_BINARY)
+            
+            text4 = pytesseract.image_to_string(binary4, config=config).strip()
+            text4 = ''.join(c for c in text4 if c.isdigit())
+            if text4 and len(text4) <= 4:
+                results.append(text4)
+        
+        if not results:
+            return 0  # Default to 0
+        
+        # Majority voting
+        counter = Counter(results)
+        best = counter.most_common(1)[0][0]
+        
+        try:
+            value = int(best)
+            if 0 <= value <= 5000:
+                return value
+            return value
+        except ValueError:
+            return 0
+
+    def _ocr_screen5_minion_gold(self, cell: Any) -> Optional[int]:
+        """Specialized OCR for screen5 minion gold stat (500-5000).
+        
+        Minion gold values are typically 3-4 digit numbers.
+        Uses moderate center cropping to preserve all digits.
+        """
+        import numpy as np
+        from collections import Counter
+        
+        h, w = cell.shape[:2]
+        
+        # Use center 60% of cell - more generous crop to preserve digits
+        center_margin = int(w * 0.20)
+        cropped = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+        
+        # Convert to grayscale
+        if len(cropped.shape) == 3:
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = cropped.copy()
+        
+        results = []
+        config = '--psm 7 -c tessedit_char_whitelist=0123456789'
+        
+        # Pass 1: Standard preprocessing
+        scale = 3
+        scaled = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced = clahe.apply(scaled)
+        _, binary1 = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary1) < 127:
+            binary1 = cv2.bitwise_not(binary1)
+        
+        text1 = pytesseract.image_to_string(binary1, config=config).strip()
+        text1 = ''.join(c for c in text1 if c.isdigit())
+        if text1 and len(text1) <= 4:
+            results.append(text1)
+        
+        # Pass 2: Higher scale
+        scale2 = 4
+        scaled2 = cv2.resize(gray, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_LANCZOS4)
+        clahe2 = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced2 = clahe2.apply(scaled2)
+        _, binary2 = cv2.threshold(enhanced2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        if np.mean(binary2) < 127:
+            binary2 = cv2.bitwise_not(binary2)
+        
+        text2 = pytesseract.image_to_string(binary2, config=config).strip()
+        text2 = ''.join(c for c in text2 if c.isdigit())
+        if text2 and len(text2) <= 4:
+            results.append(text2)
+        
+        # Pass 3: Adaptive threshold
+        binary3 = cv2.adaptiveThreshold(scaled2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        cv2.THRESH_BINARY, 11, 2)
+        if np.mean(binary3) < 127:
+            binary3 = cv2.bitwise_not(binary3)
+        
+        text3 = pytesseract.image_to_string(binary3, config=config).strip()
+        text3 = ''.join(c for c in text3 if c.isdigit())
+        if text3 and len(text3) <= 4:
+            results.append(text3)
+        
+        # Pass 4: White text mask
+        if len(cell.shape) == 3:
+            cropped_color = cell[:, center_margin:w-center_margin] if w > center_margin * 2 else cell
+            hsv = cv2.cvtColor(cropped_color, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, np.array([0, 0, 160]), np.array([180, 50, 255]))
+            masked = cv2.bitwise_and(gray, gray, mask=mask)
+            scaled4 = cv2.resize(masked, None, fx=scale2, fy=scale2, interpolation=cv2.INTER_CUBIC)
+            inverted = cv2.bitwise_not(scaled4)
+            _, binary4 = cv2.threshold(inverted, 100, 255, cv2.THRESH_BINARY)
+            
+            text4 = pytesseract.image_to_string(binary4, config=config).strip()
+            text4 = ''.join(c for c in text4 if c.isdigit())
+            if text4 and len(text4) <= 4:
+                results.append(text4)
+        
+        if not results:
+            return None
+        
+        # Majority voting
+        counter = Counter(results)
+        best = counter.most_common(1)[0][0]
+        
+        try:
+            value = int(best)
+            if 100 <= value <= 5000:
                 return value
             return value
         except ValueError:
@@ -1930,6 +2309,20 @@ class SquadStatsExtractor:
                         parsed_value = self._ocr_screen4_damage_taken(cell)
                     else:
                         # Standard OCR for other screen4 fields
+                        field_type = self._get_field_type(output_key)
+                        parsed_value = extract_field(cell, field_type, output_key)
+                elif self.screentype == "screen5":
+                    # Screen5 specialized OCR functions for gold breakdown
+                    if field_name == "enemy_total_gold":
+                        parsed_value = self._ocr_screen5_total_gold(cell)
+                    elif field_name == "enemy_jungle_gold":
+                        parsed_value = self._ocr_screen5_jungle_gold(cell)
+                    elif field_name == "enemy_kill_gold":
+                        parsed_value = self._ocr_screen5_kill_gold(cell)
+                    elif field_name == "enemy_minion_gold":
+                        parsed_value = self._ocr_screen5_minion_gold(cell)
+                    else:
+                        # Standard OCR for other screen5 fields
                         field_type = self._get_field_type(output_key)
                         parsed_value = extract_field(cell, field_type, output_key)
                 else:

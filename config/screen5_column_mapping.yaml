@@ -51,16 +51,16 @@ columns:
     preprocessing: "binarize"
   
   kill_gold:
-    x_start_pct: 0.392
-    x_end_pct: 0.507
+    x_start_pct: 0.320
+    x_end_pct: 0.435
     y_offset_pct: 0.38
     height_pct: 0.29
     description: "Gold from kills (allies)"
     preprocessing: "binarize"
   
   minion_gold:
-    x_start_pct: 0.320
-    x_end_pct: 0.435
+    x_start_pct: 0.392
+    x_end_pct: 0.507
     y_offset_pct: 0.38
     height_pct: 0.29
     description: "Gold from minions (allies)"
@@ -87,16 +87,16 @@ columns:
     preprocessing: "binarize"
   
   enemy_kill_gold:
-    x_start_pct: 0.702
-    x_end_pct: 0.817
+    x_start_pct: 0.628
+    x_end_pct: 0.743
     y_offset_pct: 0.38
     height_pct: 0.29
     description: "Gold from kills (enemies)"
     preprocessing: "binarize"
   
   enemy_minion_gold:
-    x_start_pct: 0.628
-    x_end_pct: 0.743
+    x_start_pct: 0.702
+    x_end_pct: 0.817
     y_offset_pct: 0.38
     height_pct: 0.29
     description: "Gold from minions (enemies)"
