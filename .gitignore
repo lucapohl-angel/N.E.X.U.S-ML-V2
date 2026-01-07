@@ -1,31 +1,21 @@
+# ============================================
+# N.E.X.U.S-ML - Git Ignore
+# ============================================
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
 
 # Virtual Environment
 venv/
 ENV/
 env/
-.venv
+.venv/
 
 # IDE
 .vscode/
@@ -33,56 +23,19 @@ env/
 *.swp
 *.swo
 *~
+
+# OS
 .DS_Store
+Thumbs.db
 
 # Environment
 .env
 .env.local
-.env.*.local
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
 
 # Logs
-logs/
 *.log
+logs/
 
-# Uploads
-uploads/
-*.png
-*.jpg
-*.jpeg
-
-# Output
-output/
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-*.cover
-
-# Jupyter
-.ipynb_checkpoints
-
-# MyPy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Documentation builds
-site/
-_build/
-
-# OS
-Thumbs.db
-Desktop.ini
-
-# Exceptions - keep example files
-!.env.example
-!tests/fixtures/*.png
-!tests/fixtures/*.jpg
-!heroes/portraits/*.png
-!docs/**/*.png
+# Temporary files
+*.tmp
+*.temp

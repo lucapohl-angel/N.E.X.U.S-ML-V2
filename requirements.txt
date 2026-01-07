@@ -1,44 +1,20 @@
-# Squad STATS - Core Dependencies
-# Python 3.10+
+# ============================================
+# N.E.X.U.S-ML - Requirements
+# Neural Extraction for Unified Squads
+# ============================================
+# Python 3.10+ required
 
 # Image Processing
-opencv-python==4.8.1.78
-numpy==1.24.3
-Pillow==10.1.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
 
-# OCR
-pytesseract==0.3.10
-# Note: You must also install Tesseract OCR system package
+# OCR Engine
+pytesseract>=0.3.10
+# NOTE: Tesseract OCR must be installed separately
 # Windows: https://github.com/UB-Mannheim/tesseract/wiki
 # Linux: sudo apt-get install tesseract-ocr
-# Mac: brew install tesseract
+# macOS: brew install tesseract
 
 # Configuration
-PyYAML==6.0.1
-python-dotenv==1.0.0
-
-# Web Framework (Phase 3)
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-
-# Database (Phase 3)
-SQLAlchemy==2.0.23
-alembic==1.12.1
-psycopg2-binary==2.9.9  # PostgreSQL driver
-# For development, SQLite is built into Python
-
-# Data Validation
-pydantic==2.5.0
-pydantic-settings==2.1.0
-
-# HTTP Client
-httpx==0.25.2
-aiofiles==23.2.1
-
-# Task Queue (Phase 3 - optional)
-# celery==5.3.4
-# redis==5.0.1
-
-# Utilities
-python-dateutil==2.8.2
+PyYAML>=6.0

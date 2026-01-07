@@ -1,19 +1,26 @@
-"""Squad STATS - Main Extraction Script
+"""N.E.X.U.S-ML - Neural Extraction for Unified Squads
 
-Central script that orchestrates all extraction components:
-- Image preprocessing and row detection
-- Hero portrait matching (screen1 only)
-- Item icon matching (screen1 only)
-- OCR text extraction (all screens)
-- JSON output generation
+Production-ready extraction engine for Mobile Legends match statistics.
+Processes post-game screenshots and extracts structured JSON data.
+
+Pipeline:
+    Input: screenshot_path + screentype -> Process -> Output: JSON data
+
+Supported Screen Types:
+    - screen1: KDA, items, medals, ratings
+    - screen2: Damage dealt/taken, turret damage, teamfight participation
+    - screen3: Economy stats (gold earned, gold/min, turret gold)
+    - screen4: Battle spells, participation rates
+    - screen5: Gold breakdown (total, jungle, kill, minion gold)
 
 Usage:
-    python main.py <screenshot_path> [screentype]
-    python main.py "tests/fixtures/test (1).jpeg"           # defaults to screen1
-    python main.py "tests/fixtures/Screen2.jpeg" screen2    # damage stats screen
+    python main.py <screenshot_path> <screentype>
+    python main.py "match_result.png" screen1
+    python main.py "damage_stats.png" screen2
 """
 
 import sys
+import os
 import cv2
 import json
 import pytesseract
@@ -41,7 +48,7 @@ SCREENS_WITH_HERO_ITEMS = {"screen1"}
 
 
 class SquadStatsExtractor:
-    """Main extraction orchestrator."""
+    """Main extraction orchestrator for N.E.X.U.S-ML."""
     
     def __init__(self, screentype: str = "screen1"):
         """Initialize all extraction components.
@@ -49,7 +56,7 @@ class SquadStatsExtractor:
         Args:
             screentype: Type of screen to process (screen1, screen2, etc.)
         """
-        print("🔧 Initializing Squad STATS Extractor...")
+        print("🔧 Initializing N.E.X.U.S-ML Engine...")
         
         self.screentype = screentype
         
@@ -2476,94 +2483,136 @@ class SquadStatsExtractor:
 
 
 def main():
-    """Main entry point."""
-    print("=" * 70)
-    print("Squad STATS - Match Data Extraction")
-    print("=" * 70)
+    """Main entry point for N.E.X.U.S-ML extraction engine."""
+    print()
+    print("╔══════════════════════════════════════════════════════════════════════╗")
+    print("║     N.E.X.U.S-ML - Neural Extraction for Unified Squads             ║")
+    print("║                    Mobile Legends Data Extraction                    ║")
+    print("╚══════════════════════════════════════════════════════════════════════╝")
     print()
     
-    # Check arguments
-    if len(sys.argv) < 2:
-        print("❌ Error: No screenshot path provided")
-        print("\nUsage:")
-        print('  python main.py "path/to/screenshot.png" [screentype]')
-        print('  python main.py "tests/fixtures/test (1).jpeg"              # defaults to screen1')
-        print('  python main.py "tests/fixtures/Screen2.jpeg" screen2       # damage stats')
+    # Check arguments - require both screenshot and screentype
+    if len(sys.argv) < 3:
+        print("❌ Error: Missing required arguments")
         print()
-        print("Screen types:")
-        print('  screen1 - KDA stats, items, ratings (default)')
-        print('  screen2 - Damage stats (hero/turret/damage taken/teamfight participation)')
+        print("Usage:")
+        print('  python main.py <screenshot_path> <screentype>')
+        print()
+        print("Examples:")
+        print('  python main.py "match_result.png" screen1')
+        print('  python main.py "damage_stats.png" screen2')
+        print()
+        print("Screen Types:")
+        print('  screen1 - KDA, items, medals, ratings')
+        print('  screen2 - Damage dealt/taken, turret damage, teamfight participation')
+        print('  screen3 - Economy stats (gold earned, gold/min, turret gold)')
+        print('  screen4 - Battle spells, participation rates')
+        print('  screen5 - Gold breakdown (total, jungle, kill, minion gold)')
+        print()
         sys.exit(1)
     
     screenshot_path = sys.argv[1]
-    screentype = sys.argv[2] if len(sys.argv) > 2 else "screen1"
+    screentype = sys.argv[2].lower()
+    
+    # Validate screentype
+    valid_screentypes = list(SCREEN_MAPPING_FILES.keys())
+    if screentype not in valid_screentypes:
+        print(f"❌ Error: Invalid screentype '{screentype}'")
+        print(f"   Valid options: {', '.join(valid_screentypes)}")
+        sys.exit(1)
     
     # Check if file exists
     if not Path(screenshot_path).exists():
         print(f"❌ Error: File not found: {screenshot_path}")
         sys.exit(1)
     
-    # Validate mapping file exists (full path for validation)
-    if screentype in SCREEN_MAPPING_FILES:
-        mapping_filename = SCREEN_MAPPING_FILES[screentype]
-    else:
-        mapping_filename = f"{screentype}_column_mapping.yaml"
-    
+    # Validate mapping file exists
+    mapping_filename = SCREEN_MAPPING_FILES[screentype]
     mapping_path = Path("config") / mapping_filename
     if not mapping_path.exists():
         print(f"❌ Error: Mapping file not found: {mapping_path}")
-        print(f"\nValid screen types: {', '.join(SCREEN_MAPPING_FILES.keys())}")
         sys.exit(1)
     
     try:
-        # Initialize extractor with screentype
+        # Initialize extractor
         extractor = SquadStatsExtractor(screentype=screentype)
         
         # Process screenshot
         result = extractor.process_screenshot(screenshot_path)
         
-        # Save to JSON
-        output_dir = Path("output")
-        output_dir.mkdir(exist_ok=True)
-        
-        # Generate output filename
-        screenshot_name = Path(screenshot_path).stem
-        output_file = output_dir / f"{screenshot_name}_extraction.json"
-        
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(result, f, indent=2, ensure_ascii=False)
+        # Output JSON to stdout for pipeline usage
+        json_output = json.dumps(result, indent=2, ensure_ascii=False)
         
         print()
-        print("=" * 70)
-        print("✅ Extraction Complete!")
-        print("=" * 70)
-        print(f"📄 Output saved to: {output_file}")
+        print("╔══════════════════════════════════════════════════════════════════════╗")
+        print("║                        ✅ EXTRACTION COMPLETE                        ║")
+        print("╚══════════════════════════════════════════════════════════════════════╝")
         print()
-        print("Summary:")
-        summary = result["summary"]
         
-        # Show different summary based on screentype
+        # Summary
+        print("📊 Summary:")
         if screentype in SCREENS_WITH_HERO_ITEMS:
-            print(f"  Heroes detected: {summary['heroes_detected']}/{result['metadata']['total_players']}")
-            print(f"  Items detected: {summary['total_items_detected']}/{summary['total_item_slots']} slots ({summary['empty_slots']} empty)")
-            print(f"  Avg hero confidence: {summary['avg_hero_confidence']:.1%}")
-            print(f"  Avg item confidence: {summary['avg_item_confidence']:.1%}")
+            summary = result["summary"]
+            print(f"   • Heroes detected: {summary['heroes_detected']}/{result['metadata']['total_players']}")
+            print(f"   • Items detected: {summary['total_items_detected']}/{summary['total_item_slots']} slots")
+            print(f"   • Hero confidence: {summary['avg_hero_confidence']:.1%}")
+            print(f"   • Item confidence: {summary['avg_item_confidence']:.1%}")
         else:
-            # OCR-only mode (screen2, etc.)
-            print(f"  Players extracted: {result['metadata']['ally_count']} allies, {result['metadata']['enemy_count']} enemies")
+            print(f"   • Allies extracted: {result['metadata']['ally_count']}")
+            print(f"   • Enemies extracted: {result['metadata']['enemy_count']}")
             if result['metadata'].get('battle_id'):
-                print(f"  Battle ID: {result['metadata']['battle_id']}")
-        print("=" * 70)
+                print(f"   • Battle ID: {result['metadata']['battle_id']}")
+        
+        print()
+        print("📄 JSON Output:")
+        print("─" * 72)
+        print(json_output)
+        print("─" * 72)
+        print()
+        
+        # Return result for programmatic usage
+        return result
         
     except Exception as e:
         print()
-        print("=" * 70)
-        print("❌ Extraction Failed!")
-        print("=" * 70)
+        print("╔══════════════════════════════════════════════════════════════════════╗")
+        print("║                        ❌ EXTRACTION FAILED                          ║")
+        print("╚══════════════════════════════════════════════════════════════════════╝")
+        print()
         print(f"Error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
+
+
+def extract(screenshot_path: str, screentype: str) -> Dict[str, Any]:
+    """
+    Programmatic API for extraction.
+    
+    Args:
+        screenshot_path: Path to the screenshot image
+        screentype: Type of screen (screen1, screen2, screen3, screen4, screen5)
+    
+    Returns:
+        Dictionary containing extracted match data
+    
+    Raises:
+        ValueError: If screentype is invalid or file not found
+        Exception: If extraction fails
+    """
+    # Validate inputs
+    valid_screentypes = list(SCREEN_MAPPING_FILES.keys())
+    if screentype not in valid_screentypes:
+        raise ValueError(f"Invalid screentype '{screentype}'. Valid options: {valid_screentypes}")
+    
+    if not Path(screenshot_path).exists():
+        raise ValueError(f"File not found: {screenshot_path}")
+    
+    # Process
+    extractor = SquadStatsExtractor(screentype=screentype)
+    result = extractor.process_screenshot(screenshot_path)
+    
+    return result
 
 
 if __name__ == "__main__":
