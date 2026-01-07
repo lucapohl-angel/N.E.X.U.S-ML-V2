@@ -24,9 +24,12 @@ import os
 import cv2
 import json
 import pytesseract
+import time
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any, Optional
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 
 # Import core components
 from app.parser.detector import detect_player_rows
@@ -50,15 +53,20 @@ SCREENS_WITH_HERO_ITEMS = {"screen1"}
 class SquadStatsExtractor:
     """Main extraction orchestrator for N.E.X.U.S-ML."""
     
-    def __init__(self, screentype: str = "screen1"):
+    def __init__(self, screentype: str = "screen1", num_threads: int = 10):
         """Initialize all extraction components.
         
         Args:
             screentype: Type of screen to process (screen1, screen2, etc.)
+            num_threads: Number of threads for parallel player processing (default: 10)
         """
         print("🔧 Initializing N.E.X.U.S-ML Engine...")
         
         self.screentype = screentype
+        self.num_threads = num_threads
+        
+        # Create a reusable thread pool for the lifetime of the extractor
+        self._executor = ThreadPoolExecutor(max_workers=num_threads)
         
         # Determine mapping file (just the filename - get_config adds the config/ directory)
         if screentype in SCREEN_MAPPING_FILES:
@@ -2351,6 +2359,82 @@ class SquadStatsExtractor:
                 }
         
         return results
+    
+    def _process_all_players_parallel(
+        self,
+        img: Any,
+        rows: List[tuple],
+        column_mappings: Dict,
+        has_enemy_columns: bool
+    ) -> tuple:
+        """Process ALL players (allies + enemies) in ONE parallel batch.
+        
+        This is faster than processing allies then enemies separately because:
+        1. Single thread pool submission overhead
+        2. All 10 players processed simultaneously with 10 threads
+        3. Better CPU utilization
+        
+        Args:
+            img: Image to process
+            rows: List of (y_start, y_end) tuples for player rows
+            column_mappings: Column coordinate mappings
+            has_enemy_columns: Whether enemy columns exist
+            
+        Returns:
+            Tuple of (allies_list, enemies_list)
+        """
+        num_rows = len(rows)
+        allies = [None] * num_rows
+        enemies = [None] * num_rows if has_enemy_columns else []
+        
+        # Build all tasks: allies (0-4) and enemies (5-9) if applicable
+        tasks = []
+        
+        # Add ally tasks
+        for i, row in enumerate(rows):
+            tasks.append(('ally', i, row))
+        
+        # Add enemy tasks if applicable
+        if has_enemy_columns:
+            for i, row in enumerate(rows):
+                tasks.append(('enemy', i, row))
+        
+        def worker(task_info):
+            """Worker function for parallel processing."""
+            team, index, row = task_info
+            try:
+                if team == 'ally':
+                    player_data = self.extract_player_data(img, row, index, column_mappings)
+                    player_data["team"] = "ally"
+                else:
+                    player_data = self.extract_enemy_data(img, row, index, column_mappings)
+                
+                print(f"  ⏳ Processing {team} {index+1}... ✓")
+                return (team, index, player_data)
+            except Exception as e:
+                print(f"  ⏳ Processing {team} {index+1}... ✗")
+                return (team, index, {
+                    "player_number": index + 1,
+                    "error": str(e),
+                    "team": team
+                })
+        
+        # Submit ALL tasks at once to the thread pool
+        futures = [self._executor.submit(worker, task) for task in tasks]
+        
+        # Collect results as they complete
+        for future in as_completed(futures):
+            team, index, player_data = future.result()
+            if team == 'ally':
+                allies[index] = player_data
+            else:
+                enemies[index] = player_data
+        
+        # Filter out None values (safety check)
+        allies = [a for a in allies if a is not None]
+        enemies = [e for e in enemies if e is not None] if has_enemy_columns else []
+        
+        return allies, enemies
 
     def process_screenshot(self, screenshot_path: str) -> Dict[str, Any]:
         """
@@ -2362,6 +2446,9 @@ class SquadStatsExtractor:
         Returns:
             Dictionary with complete extraction results
         """
+        # Start timing
+        start_time = time.perf_counter()
+        
         print(f"📸 Processing: {screenshot_path}")
         
         # Load and normalize image
@@ -2387,25 +2474,18 @@ class SquadStatsExtractor:
             else:
                 battle_id = self._extract_battle_id(img, column_mappings['battle_id'])
         
-        # Extract data for each ally player
-        allies = []
-        for i, row in enumerate(rows):
-            print(f"  ⏳ Processing ally {i+1}...")
-            player_data = self.extract_player_data(img, row, i, column_mappings)
-            player_data["team"] = "ally"
-            allies.append(player_data)
-        
-        # Extract data for each enemy player (same rows, different columns)
-        # Only if enemy columns exist in this mapping
-        enemies = []
+        # Extract data for each ally player (parallel processing)
+        # Check if we have enemy columns
         has_enemy_columns = any(k.startswith('enemy_') for k in column_mappings.keys())
-        if has_enemy_columns:
-            for i, row in enumerate(rows):
-                print(f"  ⏳ Processing enemy {i+1}...")
-                enemy_data = self.extract_enemy_data(img, row, i, column_mappings)
-                enemies.append(enemy_data)
         
-        print(f"  ✓ Extraction complete!")
+        # Process ALL players (allies + enemies) in ONE parallel batch for maximum speed
+        allies, enemies = self._process_all_players_parallel(
+            img, rows, column_mappings, has_enemy_columns
+        )
+        
+        # Calculate elapsed time
+        elapsed_time = time.perf_counter() - start_time
+        print(f"  ✓ Extraction complete! ⏱️  {elapsed_time:.2f}s")
         
         # Combine all players
         all_players = allies + enemies
@@ -2417,6 +2497,7 @@ class SquadStatsExtractor:
                 "screentype": self.screentype,
                 "mapping_file": self.mapping_file,
                 "timestamp": datetime.now().isoformat(),
+                "processing_time_seconds": round(elapsed_time, 3),
                 "resolution": {"width": width, "height": height},
                 "total_players": len(all_players),
                 "ally_count": len(allies),
