@@ -33,6 +33,7 @@ SCREEN_MAPPING_FILES = {
     "screen2": "screen2_column_mapping.yaml",
     "screen3": "screen3_column_mapping.yaml",
     "screen4": "screen4_column_mapping.yaml",
+    "screen5": "screen5_column_mapping.yaml",
 }
 
 # Screens that require hero/item matching (only screen1)

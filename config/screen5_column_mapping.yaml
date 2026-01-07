@@ -1,0 +1,115 @@
+# Column Mapping Configuration - Screen 5 (Gold Breakdown Stats)
+# This file defines the pixel regions for gold breakdown statistics screen
+# Coordinates are specified as percentages of image dimensions for resolution independence.
+
+# ====================
+# REFERENCE RESOLUTION
+# ====================
+reference_resolution:
+  width: 1920
+  height: 1080
+
+# ====================
+# ROW DETECTION SETTINGS
+# ====================
+rows:
+  detection_method: "hough_lines"
+  expected_count: 5
+  team_filter: "blue_only"
+  blue_team_rows: [0, 1, 2, 3, 4]
+  min_row_height_px: 60
+  max_row_height_px: 120
+  row_spacing_tolerance_px: 10
+  
+  # Y-axis region where player rows are expected (same as other screens)
+  row_region:
+    y_start_pct: 0.237
+    y_end_pct: 0.883
+
+# ====================
+# COLUMN DEFINITIONS - SCREEN 5
+# ====================
+columns:
+  # ------------------
+  # ALLY TEAM STATS (Left half of screen)
+  # ------------------
+  
+  total_gold:
+    x_start_pct: 0.170
+    x_end_pct: 0.285
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Total gold earned (allies)"
+    preprocessing: "binarize"
+  
+  jungle_gold:
+    x_start_pct: 0.247
+    x_end_pct: 0.362
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Gold from jungle (allies)"
+    preprocessing: "binarize"
+  
+  kill_gold:
+    x_start_pct: 0.392
+    x_end_pct: 0.507
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Gold from kills (allies)"
+    preprocessing: "binarize"
+  
+  minion_gold:
+    x_start_pct: 0.320
+    x_end_pct: 0.435
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Gold from minions (allies)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # ENEMY TEAM STATS (Right half of screen)
+  # ------------------
+  
+  enemy_total_gold:
+    x_start_pct: 0.478
+    x_end_pct: 0.593
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Total gold earned (enemies)"
+    preprocessing: "binarize"
+  
+  enemy_jungle_gold:
+    x_start_pct: 0.555
+    x_end_pct: 0.670
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Gold from jungle (enemies)"
+    preprocessing: "binarize"
+  
+  enemy_kill_gold:
+    x_start_pct: 0.702
+    x_end_pct: 0.817
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Gold from kills (enemies)"
+    preprocessing: "binarize"
+  
+  enemy_minion_gold:
+    x_start_pct: 0.628
+    x_end_pct: 0.743
+    y_offset_pct: 0.38
+    height_pct: 0.29
+    description: "Gold from minions (enemies)"
+    preprocessing: "binarize"
+  
+  # ------------------
+  # METADATA
+  # ------------------
+  
+  battle_id:
+    x_start_pct: 0.158
+    x_end_pct: 0.320
+    y_offset_pct: 0.882
+    height_pct: 0.035
+    description: "Battle ID number at bottom"
+    preprocessing: "binarize"
