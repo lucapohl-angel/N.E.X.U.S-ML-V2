@@ -133,6 +133,14 @@ pip install -r requirements.txt
 
 ## 🚀 Usage
 
+### Phase 0 status
+
+V2 is currently in **Phase 0: freeze V1 and establish truth**. The compatibility harness is
+implemented, but the Phase 0 gate is blocked because this repository contains no post-match
+screenshot fixtures or approved benchmark annotations. No V1 or V2 accuracy metrics are claimed.
+See [implementation status](docs/v2/implementation_status.md) and
+[benchmark results](docs/v2/benchmark_results.md).
+
 ### Command Line
 
 ```bash
@@ -150,6 +158,33 @@ python main.py "damage_stats.png" screen2
 
 # Extract gold breakdown from screen5
 python main.py "gold_stats.png" screen5
+```
+
+The frozen V1 baseline can also be run from the locked Phase 0 environment:
+
+```bash
+uv sync --frozen
+uv run python main.py "match_result.png" screen1
+```
+
+### Phase 0 V1 benchmark
+
+Mount a private, versioned, human-approved benchmark dataset and run:
+
+```bash
+uv run nexus benchmark \
+  --engine v1 \
+  --dataset /absolute/private/path \
+  --report evaluation/reports/v1.json
+```
+
+`--output` is accepted as an alias for `--report`. If the manifest is absent or contains no samples,
+the command still writes a truthful `no_data` report and exits with status 2; it does not fabricate
+metrics. `NEXUS_BENCHMARK_DATASET` may supply the dataset path. Verify the external OCR prerequisite
+with:
+
+```bash
+uv run nexus doctor --json
 ```
 
 ### Programmatic API

@@ -39,3 +39,16 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+# V2 local tooling and private benchmark data
+.uv-cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.work/
+htmlcov/
+.coverage
+data/benchmarks/*
+!data/benchmarks/README.md
+data/private/
+evaluation/reports/*.json
