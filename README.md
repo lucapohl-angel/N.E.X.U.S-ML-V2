@@ -25,7 +25,7 @@
 - ⚔️ **Item Detection** - Identifies equipped items from icon matching
 - 📊 **Multi-Screen Support** - Processes 5 different post-game screens
 - 🔄 **Clean Pipeline** - Input image → Process → JSON output
-- 🚀 **Production Ready** - No file clutter, returns clean data
+- 🧪 **Evidence-Gated V2** - Typed benchmark and catalog foundations with explicit blocked states
 
 ---
 
@@ -133,13 +133,17 @@ pip install -r requirements.txt
 
 ## 🚀 Usage
 
-### Phase 0 status
+### V2 status
 
-V2 is currently in **Phase 0: freeze V1 and establish truth**. The compatibility harness is
-implemented, but the Phase 0 gate is blocked because this repository contains no post-match
-screenshot fixtures or approved benchmark annotations. No V1 or V2 accuracy metrics are claimed.
-See [implementation status](docs/v2/implementation_status.md) and
-[benchmark results](docs/v2/benchmark_results.md).
+The Phase 0 compatibility harness is implemented, but its data gate remains blocked because this
+repository contains no post-match screenshot fixtures or approved benchmark annotations. No V1 or
+V2 extraction-accuracy metric is claimed.
+
+The Phase 1 catalog software and a local-V1 migration snapshot are also implemented. The snapshot is
+deliberately **staging-only**: all inherited labels, assets, and provenance remain unreviewed, its
+audit reports 705 mandatory review/provenance issues, and promotion exits with status 2. See the
+[implementation status](docs/v2/implementation_status.md), [decision record](docs/v2/decisions.md),
+and [benchmark results](docs/v2/benchmark_results.md).
 
 ### Command Line
 
@@ -186,6 +190,43 @@ with:
 ```bash
 uv run nexus doctor --json
 ```
+
+### Phase 1 catalog workflow
+
+The checked-in staging snapshot is
+`catalogs/staging/phase1-v1-migration-2026-08-01`. It migrated 131 hero portraits and discovered 105
+legacy item icons. One item icon is the `EMPTY` slot-state sentinel, so it is recorded in the
+migration report but intentionally excluded from the item identity catalog and model class map. The
+result is 131 hero classes, 104 item classes, and 235 decoded catalog assets.
+
+```bash
+# Produce a new immutable staging snapshot from the local V1 assets.
+uv run nexus catalog sync \
+  --source local-v1 \
+  --repository . \
+  --staging catalogs/staging/<new-version> \
+  --version <new-version>
+
+# Re-decode every asset and verify hashes, dimensions, MIME types, duplicates, and review state.
+uv run nexus catalog audit catalogs/staging/phase1-v1-migration-2026-08-01
+
+# Inspect drift and review state.
+uv run nexus catalog diff <old-snapshot> <new-snapshot>
+uv run nexus catalog review catalogs/staging/phase1-v1-migration-2026-08-01
+uv run nexus catalog review catalogs/staging/phase1-v1-migration-2026-08-01 --serve
+
+# Export deterministic model mappings. Singular task spellings are accepted too.
+uv run nexus catalog export-classmap \
+  catalogs/staging/phase1-v1-migration-2026-08-01 --task heroes
+uv run nexus catalog export-classmap \
+  catalogs/staging/phase1-v1-migration-2026-08-01 --task items
+
+# This currently refuses promotion until explicit human actions verify every record.
+uv run nexus catalog promote catalogs/staging/phase1-v1-migration-2026-08-01
+```
+
+Remote Moonton hero discovery reads authorization only from
+`NEXUS_MOONTON_AUTHORIZATION`; no authorization value is stored in source or catalog provenance.
 
 ### Programmatic API
 

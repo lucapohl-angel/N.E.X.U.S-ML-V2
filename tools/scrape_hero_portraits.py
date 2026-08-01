@@ -26,7 +26,6 @@ API_ENDPOINT = "/api/gms/source/2669606/2756564"
 API_HEADERS = {
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'de,en;q=0.9,pt;q=0.8',
-    'authorization': 'a9UY0bDkcsAiw+Pqkw6EX09PeeY=',
     'content-type': 'application/json;charset=UTF-8',
     'origin': 'https://www.mobilelegends.com',
     'priority': 'u=1, i',
@@ -57,8 +56,15 @@ def fetch_hero_data(hero_id: int) -> Optional[Dict[str, Any]]:
     Returns:
         Hero data record or None if not found
     """
+    authorization = os.environ.get('NEXUS_MOONTON_AUTHORIZATION')
+    if not authorization:
+        print("  NEXUS_MOONTON_AUTHORIZATION is not set")
+        return None
+
+    conn: http.client.HTTPSConnection | None = None
     try:
         conn = http.client.HTTPSConnection(API_HOST, timeout=10)
+        headers = {**API_HEADERS, 'authorization': authorization}
         
         # Prepare payload with correct structure
         payload = json.dumps({
@@ -71,7 +77,7 @@ def fetch_hero_data(hero_id: int) -> Optional[Dict[str, Any]]:
             "object": []
         })
         
-        conn.request("POST", API_ENDPOINT, payload, API_HEADERS)
+        conn.request("POST", API_ENDPOINT, payload, headers)
         res = conn.getresponse()
         data = res.read()
         
@@ -95,10 +101,8 @@ def fetch_hero_data(hero_id: int) -> Optional[Dict[str, Any]]:
         print(f"  Error fetching hero {hero_id}: {e}")
         return None
     finally:
-        try:
+        if conn is not None:
             conn.close()
-        except:
-            pass
 
 
 def download_image(url: str, output_path: Path) -> bool:
