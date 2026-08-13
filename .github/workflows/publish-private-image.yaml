@@ -2,7 +2,7 @@ name: Publish private application image
 
 on:
   push:
-    branches: [v2-engine]
+    branches: [main]
     paths:
       - Dockerfile
       - nexus_v2/**

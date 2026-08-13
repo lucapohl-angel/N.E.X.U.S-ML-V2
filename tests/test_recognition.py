@@ -27,6 +27,22 @@ from nexus_v2.recognition import (
 from nexus_v2.schemas.result import ExtractionStatus
 
 ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_CATALOG = ROOT / "catalogs/staging/user-approved-2026-08-01-r2/catalog.json"
+REPOSITORY_HERO_PROTOTYPES = (
+    ROOT
+    / "data/private/recognition_prototypes/hero-catalog-batches01-07-v1/hero/manifest.json"
+)
+REPOSITORY_ITEM_PROTOTYPES = (
+    ROOT / "data/private/recognition_prototypes/family-01-v1/item/manifest.json"
+)
+REPOSITORY_BALANCED_POLICY = (
+    ROOT / "data/private/recognition_policies/hero-balanced-v1/policy.json"
+)
+
+
+def _require_private_recognition_assets(*paths: Path) -> None:
+    if any(not path.is_file() for path in paths):
+        pytest.skip("private reviewed recognition assets are unavailable")
 
 
 def _pattern(color: tuple[int, int, int], diagonal: bool) -> NDArray[np.uint8]:
@@ -531,20 +547,27 @@ def test_balanced_policy_cannot_be_combined_with_other_policy_family(tmp_path: P
 
 
 def test_repository_hero_modes_resolve_balanced_default_and_fallbacks() -> None:
-    catalog = ROOT / "catalogs/staging/user-approved-2026-08-01-r2/catalog.json"
+    _require_private_recognition_assets(
+        REPOSITORY_CATALOG,
+        REPOSITORY_HERO_PROTOTYPES,
+        REPOSITORY_BALANCED_POLICY,
+        ROOT
+        / "data/private/recognition_policies"
+        / "hero-ally-preprocess-rerank-calibration-v1/manifest.json",
+    )
 
     balanced = resolve_hero_recognition(
         project_root=ROOT,
-        catalog_path=catalog,
+        catalog_path=REPOSITORY_CATALOG,
     )
     strict = resolve_hero_recognition(
         project_root=ROOT,
-        catalog_path=catalog,
+        catalog_path=REPOSITORY_CATALOG,
         mode="strict",
     )
     original = resolve_hero_recognition(
         project_root=ROOT,
-        catalog_path=catalog,
+        catalog_path=REPOSITORY_CATALOG,
         mode="original",
     )
 
@@ -559,6 +582,10 @@ def test_repository_hero_modes_resolve_balanced_default_and_fallbacks() -> None:
 
 
 def test_balanced_mode_rejects_catalog_hash_mismatch(tmp_path: Path) -> None:
+    _require_private_recognition_assets(
+        REPOSITORY_HERO_PROTOTYPES,
+        REPOSITORY_BALANCED_POLICY,
+    )
     wrong_catalog = tmp_path / "catalog.json"
     wrong_catalog.write_text("{}\n", encoding="utf-8")
     with pytest.raises(ValueError, match="catalog SHA-256 mismatch"):
@@ -566,18 +593,17 @@ def test_balanced_mode_rejects_catalog_hash_mismatch(tmp_path: Path) -> None:
 
 
 def test_repository_item_recognition_resolves_reviewed_manifest() -> None:
-    catalog = ROOT / "catalogs/staging/user-approved-2026-08-01-r2/catalog.json"
-    setup = resolve_item_recognition(project_root=ROOT, catalog_path=catalog)
+    _require_private_recognition_assets(REPOSITORY_CATALOG, REPOSITORY_ITEM_PROTOTYPES)
+    setup = resolve_item_recognition(project_root=ROOT, catalog_path=REPOSITORY_CATALOG)
 
-    assert setup.prototype_manifest == (
-        ROOT / "data/private/recognition_prototypes/family-01-v1/item/manifest.json"
-    )
+    assert setup.prototype_manifest == REPOSITORY_ITEM_PROTOTYPES.resolve()
     assert setup.manifest_sha256 == hashlib.sha256(
         setup.prototype_manifest.read_bytes()
     ).hexdigest()
 
 
 def test_item_recognition_rejects_catalog_hash_mismatch(tmp_path: Path) -> None:
+    _require_private_recognition_assets(REPOSITORY_ITEM_PROTOTYPES)
     wrong_catalog = tmp_path / "catalog.json"
     wrong_catalog.write_text("{}\n", encoding="utf-8")
     with pytest.raises(ValueError, match="catalog SHA-256 mismatch"):

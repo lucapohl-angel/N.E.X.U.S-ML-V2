@@ -25,7 +25,7 @@ clone and install:
 printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
   -u YOUR_GITHUB_USER --password-stdin
 
-git clone --branch v2-engine https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2.git
+git clone --branch main https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2.git
 cd N.E.X.U.S-ML-V2
 ./scripts/nexus-server install
 ```

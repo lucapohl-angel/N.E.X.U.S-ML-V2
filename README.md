@@ -130,7 +130,7 @@ The GHCR token is not mounted into the N.E.X.U.S container. If you log out, auth
 ### 4. Clone and install
 
 ```bash
-git clone --branch v2-engine \
+git clone --branch main \
   https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2.git
 cd N.E.X.U.S-ML-V2
 ./scripts/nexus-server install
@@ -266,7 +266,7 @@ After first publication, verify in GitHub package settings that both packages ar
 
 ### Code and tuning updates
 
-Changes under the V2 engine/API/profile build paths trigger `.github/workflows/publish-private-image.yaml` on `v2-engine`.
+Changes under the V2 engine/API/profile build paths trigger `.github/workflows/publish-private-image.yaml` on `main`.
 
 The workflow:
 
