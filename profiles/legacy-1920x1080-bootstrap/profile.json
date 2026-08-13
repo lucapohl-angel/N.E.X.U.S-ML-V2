@@ -1,0 +1,1936 @@
+{
+  "schema_version": "2.0",
+  "profile_id": "legacy-1920x1080-bootstrap",
+  "profile_version": "0.2.0-bootstrap",
+  "verification": "bootstrap_unverified",
+  "verification_evidence": [
+    "seeded from legacy percentage coordinate maps",
+    "no second-device screenshot was supplied for visual verification"
+  ],
+  "runtime_enabled": false,
+  "canonical_size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "screen_types": [
+    "hero_item_build",
+    "overall",
+    "dps",
+    "farm",
+    "team"
+  ],
+  "compatibility": {
+    "ui_family": "legacy-v1-coordinate-seed",
+    "patch_min": "2026.07",
+    "patch_max": null,
+    "languages": [
+      "en"
+    ],
+    "allowed_aspect_error": 0.045,
+    "allows_cropped_edges": true,
+    "requires_second_device_verification": true,
+    "notes": [
+      "bootstrap metadata only; cannot accept runtime geometry",
+      "must be replaced or verified from an independent device capture"
+    ]
+  },
+  "panels": [
+    {
+      "side": "ally",
+      "canonical_box": [
+        0.0,
+        222.0,
+        960.0,
+        919.2
+      ],
+      "edge_search_radius": 24.0,
+      "independent_registration": true
+    },
+    {
+      "side": "enemy",
+      "canonical_box": [
+        960.0,
+        222.0,
+        1920.0,
+        919.2
+      ],
+      "edge_search_radius": 24.0,
+      "independent_registration": true
+    }
+  ],
+  "row_relation": {
+    "count": 5,
+    "first_top": 222.0,
+    "height": 139.2,
+    "step": 139.2,
+    "search_radius": 21.599999999999998,
+    "spacing_tolerance": 0.12
+  },
+  "slot_relation": {
+    "count": 6,
+    "centers": {
+      "ally": [
+        370.2,
+        439.8,
+        509.4,
+        579.0,
+        648.6,
+        718.2
+      ],
+      "enemy": [
+        1209.0,
+        1278.6,
+        1348.2,
+        1417.8,
+        1487.4,
+        1557.0
+      ]
+    },
+    "center_y_in_row": 92.39999999999999,
+    "diameter": 66.0,
+    "search_radius": 9.6
+  },
+  "anchors": [],
+  "screen_evidence": [],
+  "dynamic_masks": [
+    {
+      "mask_id": "team_scores",
+      "region": [
+        504.0,
+        42.0,
+        1416.0,
+        165.6
+      ],
+      "reason": "result and scores vary"
+    },
+    {
+      "mask_id": "player_table",
+      "region": [
+        144.0,
+        222.0,
+        1776.0,
+        919.2
+      ],
+      "reason": "names portraits stats items and badges vary"
+    },
+    {
+      "mask_id": "match_metadata",
+      "region": [
+        0.0,
+        1039.2,
+        780.0,
+        1080.0
+      ],
+      "reason": "battle ID is identifying"
+    },
+    {
+      "mask_id": "timestamp",
+      "region": [
+        1392.0,
+        108.0,
+        1920.0,
+        165.6
+      ],
+      "reason": "capture metadata varies"
+    }
+  ],
+  "fields": [
+    {
+      "field_id": "battle_id",
+      "kind": "metadata",
+      "scope": "viewport",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        12.0,
+        1046.4,
+        360.0,
+        1080.0
+      ],
+      "side": null,
+      "row_repeat": false,
+      "row_step": 0.0,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "battle_id",
+      "tight_padding": 0.0,
+      "context_padding": 2.4,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "result",
+      "kind": "metadata",
+      "scope": "viewport",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        708.0,
+        36.0,
+        1212.0,
+        141.6
+      ],
+      "side": null,
+      "row_repeat": false,
+      "row_step": 0.0,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "result",
+      "tight_padding": 0.0,
+      "context_padding": 3.5999999999999996,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "team_kills",
+      "kind": "metadata",
+      "scope": "viewport",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        528.0,
+        48.0,
+        678.0,
+        138.0
+      ],
+      "side": null,
+      "row_repeat": false,
+      "row_step": 0.0,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "small_integer",
+      "tight_padding": 0.0,
+      "context_padding": 3.5999999999999996,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "enemy_kills",
+      "kind": "metadata",
+      "scope": "viewport",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        1242.0,
+        48.0,
+        1398.0,
+        138.0
+      ],
+      "side": null,
+      "row_repeat": false,
+      "row_step": 0.0,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "small_integer",
+      "tight_padding": 0.0,
+      "context_padding": 3.5999999999999996,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "duration",
+      "kind": "metadata",
+      "scope": "viewport",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        1404.0,
+        117.6,
+        1644.0,
+        166.8
+      ],
+      "side": null,
+      "row_repeat": false,
+      "row_step": 0.0,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "duration",
+      "tight_padding": 0.0,
+      "context_padding": 2.4,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+
+    {
+      "field_id": "hero_portrait",
+      "kind": "hero",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        158.4,
+        228.0,
+        312.0,
+        358.8
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": null,
+      "tight_padding": 0.0,
+      "context_padding": 8.4,
+      "mask_shape": "ellipse",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_portrait",
+      "kind": "hero",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        1605.6,
+        228.0,
+        1755.6,
+        358.8
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": null,
+      "tight_padding": 0.0,
+      "context_padding": 8.4,
+      "mask_shape": "ellipse",
+      "dynamic": true
+    },
+    {
+      "field_id": "player_name",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        334.8,
+        234.0,
+        588.0,
+        271.2
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "player_name",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "player_name",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        1322.4,
+        234.0,
+        1593.6,
+        271.2
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "player_name",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "level",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        194.4,
+        312.0,
+        246.0,
+        351.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "small_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "level",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build",
+        "overall",
+        "dps",
+        "farm",
+        "team"
+      ],
+      "canonical_box": [
+        1658.4,
+        312.0,
+        1713.6,
+        351.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "small_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "kills",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        596.4,
+        232.8,
+        632.4,
+        271.2
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "short_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "deaths",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        642.0,
+        232.8,
+        678.0,
+        271.2
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "short_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "assists",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        688.8,
+        232.8,
+        729.6,
+        271.2
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "short_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "total_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        734.4,
+        232.8,
+        824.4,
+        271.2
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "kills",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        1206.0,
+        232.8,
+        1242.0,
+        271.2
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "short_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "deaths",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        1252.8,
+        232.8,
+        1288.8,
+        271.2
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "short_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "assists",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        1299.6,
+        232.8,
+        1340.4,
+        271.2
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "short_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "total_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        1101.6,
+        232.8,
+        1191.6,
+        271.2
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "rating",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        840.0,
+        308.4,
+        912.0,
+        352.8
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "decimal",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "rating",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        1008.0,
+        308.4,
+        1080.0,
+        352.8
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "decimal",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "item",
+      "kind": "item",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        336.0,
+        280.8,
+        404.4,
+        349.2
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": true,
+      "slot_step": 69.84,
+      "parser": null,
+      "tight_padding": 0.0,
+      "context_padding": 3.5999999999999996,
+      "mask_shape": "ellipse",
+      "dynamic": true
+    },
+    {
+      "field_id": "item",
+      "kind": "item",
+      "scope": "row",
+      "screen_types": [
+        "hero_item_build"
+      ],
+      "canonical_box": [
+        1174.8,
+        280.8,
+        1243.2,
+        349.2
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": true,
+      "slot_step": 69.84,
+      "parser": null,
+      "tight_padding": 0.0,
+      "context_padding": 3.5999999999999996,
+      "mask_shape": "ellipse",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        336.0,
+        270.0,
+        468.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        336.0,
+        306.0,
+        468.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "turret_damage",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        484.8,
+        270.0,
+        624.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "turret_damage_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        484.8,
+        306.0,
+        624.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        637.2,
+        270.0,
+        780.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        637.2,
+        306.0,
+        780.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "teamfight_participation",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        790.8,
+        306.0,
+        928.8,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1000.8,
+        270.0,
+        1132.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1000.8,
+        306.0,
+        1132.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "turret_damage",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1149.6,
+        270.0,
+        1288.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "turret_damage_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1149.6,
+        306.0,
+        1288.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1302.0,
+        270.0,
+        1444.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1302.0,
+        306.0,
+        1444.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "teamfight_participation",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "overall"
+      ],
+      "canonical_box": [
+        1455.6,
+        306.0,
+        1593.6,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "dps"
+      ],
+      "canonical_box": [
+        336.0,
+        270.0,
+        546.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "dps"
+      ],
+      "canonical_box": [
+        558.0,
+        306.0,
+        627.6,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "consecutive_kills",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "dps"
+      ],
+      "canonical_box": [
+        636.0,
+        270.0,
+        864.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "small_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "dps"
+      ],
+      "canonical_box": [
+        1000.8,
+        270.0,
+        1210.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "hero_damage_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "dps"
+      ],
+      "canonical_box": [
+        1222.8,
+        306.0,
+        1292.4,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "consecutive_kills",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "dps"
+      ],
+      "canonical_box": [
+        1300.8,
+        270.0,
+        1528.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "small_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "total_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        336.0,
+        270.0,
+        468.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "total_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        336.0,
+        306.0,
+        468.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "jungle_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        486.0,
+        270.0,
+        624.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "jungle_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        486.0,
+        306.0,
+        624.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "kill_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        637.2,
+        270.0,
+        780.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "kill_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        637.2,
+        306.0,
+        780.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "minion_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        790.8,
+        270.0,
+        928.8,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "minion_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        790.8,
+        306.0,
+        928.8,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "total_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1000.8,
+        270.0,
+        1132.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "total_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1000.8,
+        306.0,
+        1132.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "jungle_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1150.8,
+        270.0,
+        1288.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "jungle_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1150.8,
+        306.0,
+        1288.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "kill_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1302.0,
+        270.0,
+        1444.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "kill_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1302.0,
+        306.0,
+        1444.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "minion_gold",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1455.6,
+        270.0,
+        1593.6,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "minion_gold_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "farm"
+      ],
+      "canonical_box": [
+        1455.6,
+        306.0,
+        1593.6,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "teamfight_participation",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        336.0,
+        306.0,
+        468.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "crowd_control",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        486.0,
+        270.0,
+        624.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "crowd_control_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        486.0,
+        306.0,
+        624.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "healing_and_shields",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        637.2,
+        270.0,
+        780.0,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "healing_and_shields_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        637.2,
+        306.0,
+        780.0,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        790.8,
+        270.0,
+        928.8,
+        315.6
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        790.8,
+        306.0,
+        928.8,
+        350.4
+      ],
+      "side": "ally",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "teamfight_participation",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1000.8,
+        306.0,
+        1132.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "crowd_control",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1150.8,
+        270.0,
+        1288.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "crowd_control_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1150.8,
+        306.0,
+        1288.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "healing_and_shields",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1302.0,
+        270.0,
+        1444.8,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "healing_and_shields_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1302.0,
+        306.0,
+        1444.8,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1455.6,
+        270.0,
+        1593.6,
+        315.6
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "large_integer",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    },
+    {
+      "field_id": "damage_taken_percent",
+      "kind": "ocr",
+      "scope": "row",
+      "screen_types": [
+        "team"
+      ],
+      "canonical_box": [
+        1455.6,
+        306.0,
+        1593.6,
+        350.4
+      ],
+      "side": "enemy",
+      "row_repeat": true,
+      "row_step": 139.2,
+      "slot_repeat": false,
+      "slot_step": 0.0,
+      "parser": "percentage",
+      "tight_padding": 0.0,
+      "context_padding": 4.8,
+      "mask_shape": "rectangle",
+      "dynamic": true
+    }
+  ]
+}

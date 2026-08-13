@@ -1,0 +1,38 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# VCS and local Python/tool state
+.git
+.venv
+.uv-cache
+.work
+.mypy_cache
+.pytest_cache
+.ruff_cache
+__pycache__
+*.pyc
+
+# Development, review, training, and source-collection trees
+app
+heroes
+items
+tests
+tools
+data
+catalogs
+legacy
+scripts
+
+# Old application/docs not required by the API image
+NEXUS_ML_V2_PRD.md
+main.py
+requirements.txt
+docs
+
+# Build outputs and archives
+dist
+*.tar
+*.tar.gz
+*.tgz

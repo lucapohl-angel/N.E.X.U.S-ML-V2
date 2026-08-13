@@ -13,6 +13,7 @@ from urllib.parse import quote, urlencode, urlparse, urlunparse
 import requests
 
 from nexus_v2.catalog.models import CatalogKind, SourceFailure
+from nexus_v2.catalog.policy import is_visible_item_slot_class
 
 
 @dataclass(frozen=True)
@@ -119,6 +120,8 @@ class LocalV1CatalogSource:
                 item_metadata = metadata.get(path.name)
                 metadata_name = item_metadata.get("name") if item_metadata is not None else None
                 name = metadata_name if isinstance(metadata_name, str) else filename_name
+                if not is_visible_item_slot_class(name):
+                    continue
                 source_reference_value = (
                     item_metadata.get("url") if item_metadata is not None else None
                 )
@@ -377,6 +380,8 @@ class FandomItemCatalogSource:
                         reason="item entry omitted a string name or URL",
                     )
                 )
+                continue
+            if not is_visible_item_slot_class(name):
                 continue
             host = urlparse(url).hostname
             allowed_hosts = frozenset({"static.wikia.nocookie.net", "vignette.wikia.nocookie.net"})

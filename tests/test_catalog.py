@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import json
 import re
 import socket
 from collections.abc import Iterator
@@ -32,6 +33,7 @@ from nexus_v2.catalog.models import (
     ReviewStatus,
     SourceFailure,
 )
+from nexus_v2.catalog.policy import NON_SLOT_ITEM_NAMES, is_visible_item_slot_class
 from nexus_v2.catalog.promotion import CatalogPromotionError, promote_catalog
 from nexus_v2.catalog.review import (
     CatalogReviewServer,
@@ -320,6 +322,36 @@ def test_apostrophe_url_encoding_is_single_and_round_trips() -> None:
     assert "Athena%27s%20Shield.png" in url
     assert "%2527" not in url
     assert parse_qs(urlparse(url).query)["titles"] == ["File:Athena's Shield.png"]
+
+
+def test_non_slot_blessings_and_passives_never_become_item_classes(tmp_path: Path) -> None:
+    metadata = tmp_path / "items.json"
+    metadata.write_text(
+        json.dumps(
+            {
+                "items": [
+                    {
+                        "name": name,
+                        "url": "https://static.wikia.nocookie.net/mobile-legends/non-slot.png",
+                    }
+                    for name in sorted(NON_SLOT_ITEM_NAMES)
+                ]
+                + [
+                    {
+                        "name": "War Axe",
+                        "url": "https://static.wikia.nocookie.net/mobile-legends/war-axe.png",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = FandomItemCatalogSource(metadata).discover()
+
+    assert [candidate.canonical_name for candidate in result.candidates] == ["War Axe"]
+    assert all(not is_visible_item_slot_class(name) for name in NON_SLOT_ITEM_NAMES)
+    assert is_visible_item_slot_class("War Axe")
 
 
 def test_secure_downloader_follows_bounded_https_redirect_and_validates_image(

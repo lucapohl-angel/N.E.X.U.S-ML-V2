@@ -1,370 +1,220 @@
-<p align="center">
-  <h1 align="center">🎮 N.E.X.U.S-ML</h1>
-  <h3 align="center">Neural Extraction for Unified Squads - Mobile Legends</h3>
-  <p align="center">
-    <strong>AI-Powered Match Statistics Extraction Engine</strong>
-  </p>
-  <p align="center">
-    <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python">
-    <img src="https://img.shields.io/badge/OpenCV-4.8+-green.svg" alt="OpenCV">
-    <img src="https://img.shields.io/badge/Tesseract-OCR-orange.svg" alt="Tesseract">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
-  </p>
-</p>
+<div align="center">
 
----
+# N.E.X.U.S ML V2
 
-## 📖 Overview
+**Authenticated screenshot extraction API for Mobile Legends post-match results**
 
-**N.E.X.U.S-ML** is an intelligent extraction engine that processes Mobile Legends post-game screenshots and converts them into structured JSON data. Using computer vision and OCR technology, it accurately extracts player statistics, hero information, items, and match metrics.
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Deploy-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-### ✨ Key Features
+</div>
 
-- 🎯 **High Accuracy OCR** - Custom-tuned text extraction for each screen type
-- 🦸 **Hero Recognition** - Template matching for 100+ hero portraits
-- ⚔️ **Item Detection** - Identifies equipped items from icon matching
-- 📊 **Multi-Screen Support** - Processes 5 different post-game screens
-- 🔄 **Clean Pipeline** - Input image → Process → JSON output
-- 🧪 **Evidence-Gated V2** - Typed benchmark and catalog foundations with explicit blocked states
+N.E.X.U.S V2 accepts the five post-match screenshots, extracts structured match data, and returns one result per screen through an asynchronous API. The production service preloads one certified CPU engine, keeps uploaded screenshots in memory, and protects every submission/result route with an API key.
 
----
+> [!IMPORTANT]
+> Call N.E.X.U.S from your **website backend**, never directly from browser JavaScript. The API key must remain a server-side secret.
 
-## 🖼️ Supported Screen Types
+## Production architecture
 
-| Screen | Data Extracted |
-|--------|---------------|
-| `screen1` | KDA, items, medals, MVP ratings, hero portraits |
-| `screen2` | Damage dealt, damage taken, turret damage, teamfight % |
-| `screen3` | Gold earned, gold per minute, turret gold |
-| `screen4` | Battle spells, participation rates |
-| `screen5` | Gold breakdown (total, jungle, kill, minion gold) |
-
----
-
-## 📁 Project Structure
-
-```
-N.E.X.U.S-ML/
-│
-├── main.py                 # 🚀 Main extraction engine
-│
-├── app/                    # Core application modules
-│   ├── __init__.py
-│   ├── core/
-│   │   └── field_config.py # Configuration loader
-│   └── parser/
-│       ├── detector.py     # Player row detection
-│       ├── hero_matcher.py # Hero portrait matching
-│       ├── item_matcher.py # Item icon matching
-│       ├── ocr.py          # Text extraction
-│       └── preprocessor.py # Image preprocessing
-│
-├── config/                 # Screen mapping configurations
-│   ├── field_extraction.yaml
-│   ├── heroes.yaml
-│   ├── screen1_column_mapping.yaml
-│   ├── screen2_column_mapping.yaml
-│   ├── screen3_column_mapping.yaml
-│   ├── screen4_column_mapping.yaml
-│   └── screen5_column_mapping.yaml
-│
-├── heroes/                 # Hero portrait database
-│   └── portraits/          # Hero images for matching
-│
-├── items/                  # Item database
-│   ├── icons/              # Item images for matching
-│   └── items_metadata_validated.json
-│
-└── requirements.txt        # Python dependencies
+```text
+Browser → your backend → N.E.X.U.S API → queued extraction → structured JSON
+                              │
+                              └── Bearer API key
 ```
 
----
+The Docker image contains application code and screen-layout profiles only. Reviewed screenshots, reviewer state, truth files, reports, and recognition source provenance are excluded. A validated private runtime bundle is mounted read-only when the container starts.
 
-## 🛠️ Installation
+## Server installation
 
-### Prerequisites
+### Requirements
 
-- **Python 3.10+**
-- **Tesseract OCR** (system installation required)
+- 64-bit Linux server
+- Git
+- Docker Engine with Docker Compose v2
+- At least **4 GB RAM** available to the container
+- The private `nexus-runtime-assets.tar.gz` bundle
 
-### Step 1: Install Tesseract OCR
-
-**Windows:**
-1. Download from [UB-Mannheim/tesseract](https://github.com/UB-Mannheim/tesseract/wiki)
-2. Install to default location: `C:\Program Files\Tesseract-OCR`
-3. Add to PATH environment variable
-
-**Linux:**
-```bash
-sudo apt-get install tesseract-ocr
-```
-
-**macOS:**
-```bash
-brew install tesseract
-```
-
-### Step 2: Clone Repository
+Docker must already be installed and usable by your server user:
 
 ```bash
-git clone https://github.com/yourusername/NEXUS-ML.git
-cd NEXUS-ML
+docker info
+docker compose version
 ```
 
-### Step 3: Create Virtual Environment
+### 1. Export the private runtime bundle
 
-```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Linux/macOS
-source venv/bin/activate
-```
-
-### Step 4: Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 🚀 Usage
-
-### V2 status
-
-The Phase 0 compatibility harness is implemented, but its data gate remains blocked because this
-repository contains no post-match screenshot fixtures or approved benchmark annotations. No V1 or
-V2 extraction-accuracy metric is claimed.
-
-The Phase 1 catalog software and a local-V1 migration snapshot are also implemented. The snapshot is
-deliberately **staging-only**: all inherited labels, assets, and provenance remain unreviewed, its
-audit reports 705 mandatory review/provenance issues, and promotion exits with status 2. See the
-[implementation status](docs/v2/implementation_status.md), [decision record](docs/v2/decisions.md),
-and [benchmark results](docs/v2/benchmark_results.md).
-
-### Command Line
-
-```bash
-python main.py <screenshot_path> <screentype>
-```
-
-**Examples:**
-
-```bash
-# Extract KDA and items from screen1
-python main.py "match_result.png" screen1
-
-# Extract damage statistics from screen2
-python main.py "damage_stats.png" screen2
-
-# Extract gold breakdown from screen5
-python main.py "gold_stats.png" screen5
-```
-
-The frozen V1 baseline can also be run from the locked Phase 0 environment:
+Run this once on the trusted development machine that contains the reviewed runtime assets:
 
 ```bash
 uv sync --frozen
-uv run python main.py "match_result.png" screen1
+uv run python tools/export_runtime_assets.py \
+  --archive nexus-runtime-assets.tar.gz
 ```
 
-### Phase 0 V1 benchmark
-
-Mount a private, versioned, human-approved benchmark dataset and run:
+The exporter strips reviewer/source metadata, includes only inference files, writes per-file checksums, and verifies catalog/policy relationships. Transfer the archive privately:
 
 ```bash
-uv run nexus benchmark \
-  --engine v1 \
-  --dataset /absolute/private/path \
-  --report evaluation/reports/v1.json
+scp nexus-runtime-assets.tar.gz user@your-server:/tmp/
 ```
 
-`--output` is accepted as an alias for `--report`. If the manifest is absent or contains no samples,
-the command still writes a truthful `no_data` report and exits with status 2; it does not fabricate
-metrics. `NEXUS_BENCHMARK_DATASET` may supply the dataset path. Verify the external OCR prerequisite
-with:
+Do **not** publish this archive or add it to Git.
+
+### 2. Install with one command
+
+On the server:
 
 ```bash
-uv run nexus doctor --json
+git clone --branch v2-engine https://github.com/lucapohl-an/N.E.X.U.S-ML-V2.git
+cd N.E.X.U.S-ML-V2
+./scripts/nexus-server install --runtime-assets /tmp/nexus-runtime-assets.tar.gz
 ```
 
-### Phase 1 catalog workflow
+The installer automatically:
 
-The checked-in staging snapshot is
-`catalogs/staging/phase1-v1-migration-2026-08-01`. It migrated 131 hero portraits and discovered 105
-legacy item icons. One item icon is the `EMPTY` slot-state sentinel, so it is recorded in the
-migration report but intentionally excluded from the item identity catalog and model class map. The
-result is 131 hero classes, 104 item classes, and 235 decoded catalog assets.
+1. validates Docker and Compose;
+2. validates every runtime-asset checksum and integrity pin;
+3. generates a 256-bit API key;
+4. saves configuration in `.env` and the token in `.env.key`, both mode `0600`;
+5. builds and starts the hardened container;
+6. waits for the extraction engine to finish loading;
+7. proves unauthenticated access is rejected;
+8. proves the generated key reaches a protected route.
+
+By default the API listens only on `127.0.0.1:8000`.
+
+> [!TIP]
+> Keep the loopback default and expose the API through your existing HTTPS reverse proxy. Use `--public` only when firewall rules and TLS termination are already configured.
+
+Custom port:
 
 ```bash
-# Produce a new immutable staging snapshot from the local V1 assets.
-uv run nexus catalog sync \
-  --source local-v1 \
-  --repository . \
-  --staging catalogs/staging/<new-version> \
-  --version <new-version>
-
-# Re-decode every asset and verify hashes, dimensions, MIME types, duplicates, and review state.
-uv run nexus catalog audit catalogs/staging/phase1-v1-migration-2026-08-01
-
-# Inspect drift and review state.
-uv run nexus catalog diff <old-snapshot> <new-snapshot>
-uv run nexus catalog review catalogs/staging/phase1-v1-migration-2026-08-01
-uv run nexus catalog review catalogs/staging/phase1-v1-migration-2026-08-01 --serve
-
-# Export deterministic model mappings. Singular task spellings are accepted too.
-uv run nexus catalog export-classmap \
-  catalogs/staging/phase1-v1-migration-2026-08-01 --task heroes
-uv run nexus catalog export-classmap \
-  catalogs/staging/phase1-v1-migration-2026-08-01 --task items
-
-# This currently refuses promotion until explicit human actions verify every record.
-uv run nexus catalog promote catalogs/staging/phase1-v1-migration-2026-08-01
+./scripts/nexus-server install \
+  --runtime-assets /tmp/nexus-runtime-assets.tar.gz \
+  --port 8080
 ```
 
-Remote Moonton hero discovery reads authorization only from
-`NEXUS_MOONTON_AUTHORIZATION`; no authorization value is stored in source or catalog provenance.
+## API-key security
 
-### Programmatic API
+The key is generated during installation. Show it later with:
 
-```python
-from main import extract
-
-# Extract data from screenshot
-result = extract("screenshot.png", "screen1")
-
-# Access the data
-print(result["metadata"]["battle_id"])
-print(result["allies"][0]["hero"]["hero_name"])
-print(result["enemies"][0]["total_gold"]["value"])
+```bash
+./scripts/nexus-server key
 ```
 
----
+Protected routes accept either header:
 
-## 📤 Output Format
-
-The engine returns structured JSON data:
-
-```json
-{
-  "metadata": {
-    "screenshot_path": "match_result.png",
-    "screentype": "screen1",
-    "timestamp": "2026-01-07T12:00:00",
-    "resolution": {"width": 1920, "height": 1080},
-    "total_players": 10,
-    "ally_count": 5,
-    "enemy_count": 5,
-    "battle_id": "436609948828842102"
-  },
-  "allies": [
-    {
-      "player_number": 1,
-      "hero": {
-        "hero_id": "Fanny",
-        "hero_name": "Fanny",
-        "confidence": 0.92
-      },
-      "items": [...],
-      "kills": {"value": 12},
-      "deaths": {"value": 3},
-      "assists": {"value": 8}
-    }
-  ],
-  "enemies": [...],
-  "summary": {
-    "heroes_detected": 10,
-    "total_items_detected": 54,
-    "avg_hero_confidence": 0.89,
-    "avg_item_confidence": 0.85
-  }
-}
+```http
+Authorization: Bearer <API_KEY>
+X-Nexus-API-Key: <API_KEY>
 ```
 
----
+`GET /v2/health` remains public for container readiness checks but returns no screenshot or result data. Submission, job status, and results require the key. Key comparisons use constant-time verification, and production startup fails closed when the key is missing.
 
-## 🔧 How It Works
+Compose mounts the token from `.env.key` as `/run/secrets/nexus_api_key`; it is not placed in the
+container environment. Store the key in your backend secret manager. Never put it in frontend code,
+URLs, cookies, analytics, screenshots, or Git.
 
-### Pipeline Flow
+Rotate it at any time:
 
-```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐    ┌──────────┐
-│  Screenshot │───▶│  Row Detect  │───▶│  OCR + Match│───▶│   JSON   │
-│    Input    │    │  (5 players) │    │  (per row)  │    │  Output  │
-└─────────────┘    └──────────────┘    └─────────────┘    └──────────┘
-```
-
-### Step-by-Step Process
-
-1. **Image Loading** - Load and normalize screenshot to reference resolution
-2. **Row Detection** - Detect 5 player rows using color analysis (blue team indicator)
-3. **Column Mapping** - Apply screen-specific coordinate mappings
-4. **Data Extraction** - For each cell:
-   - Hero portraits → Template matching
-   - Items → Icon matching with similarity scoring
-   - Statistics → Multi-pass OCR with voting
-5. **JSON Assembly** - Combine all data into structured output
-
----
-
-## ⚙️ Configuration
-
-Screen mappings are defined in YAML files under `config/`. Each mapping specifies:
-
-- Column positions (as percentages for resolution independence)
-- Y-axis offsets within player rows
-- Field types for OCR processing
-
-Example mapping:
-```yaml
-columns:
-  kills:
-    x_start_pct: 0.45
-    x_end_pct: 0.52
-    y_offset_pct: 0.15
-    height_pct: 0.35
-    description: "Player kills count"
+```bash
+./scripts/nexus-server rotate-key
 ```
 
----
+The old key stops working after the container is recreated.
 
-## 📋 Requirements
+## Submit a match
 
+```bash
+BASE_URL='http://127.0.0.1:8000'
+API_KEY=$(./scripts/nexus-server key)
+
+curl -sS -X POST "$BASE_URL/v2/extract-match" \
+  -H "Authorization: Bearer $API_KEY" \
+  -F 'hero_item=@hero_item.png' \
+  -F 'overall=@overall.png' \
+  -F 'dps=@dps.png' \
+  -F 'farm=@farm.png' \
+  -F 'team=@team.png'
 ```
-opencv-python>=4.8.0
-numpy>=1.24.0
-Pillow>=10.0.0
-pytesseract>=0.3.10
-PyYAML>=6.0
+
+The API returns `202 Accepted` with `job_id`, `status_url`, and `result_url`.
+
+```bash
+curl -sS -H "Authorization: Bearer $API_KEY" \
+  "$BASE_URL/v2/jobs/<job-id>"
+
+curl -sS -H "Authorization: Bearer $API_KEY" \
+  "$BASE_URL/v2/jobs/<job-id>/result"
 ```
 
-**System Requirement:** Tesseract OCR must be installed separately.
+Result polling returns `202` while queued/processing and `200` when all five results are ready. Jobs are held in process memory and do not survive a restart.
 
----
+## Operations
 
-## 🤝 Contributing
+| Action | Command |
+|---|---|
+| Health and container status | `./scripts/nexus-server status` |
+| Follow logs | `./scripts/nexus-server logs -f` |
+| Restart | `./scripts/nexus-server restart` |
+| Stop | `./scripts/nexus-server stop` |
+| Start | `./scripts/nexus-server start` |
+| Rebuild/update current checkout | `./scripts/nexus-server update` |
+| Show API key | `./scripts/nexus-server key` |
+| Rotate API key | `./scripts/nexus-server rotate-key` |
+| Remove container, preserve assets | `./scripts/nexus-server uninstall` |
+| Remove container and private assets | `./scripts/nexus-server uninstall --purge-assets` |
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Upgrade to the newest branch revision:
 
----
+```bash
+git pull --ff-only
+./scripts/nexus-server update
+```
 
-## 📄 License
+The runtime bundle is mounted outside the image, so ordinary code upgrades do not duplicate or expose it. If a release requires new recognition assets, export a new archive and rerun `install --runtime-assets ...`.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Recovery
 
----
+If startup fails:
 
-## 🙏 Acknowledgments
+```bash
+./scripts/nexus-server logs --tail 200
+./scripts/nexus-server status
+```
 
-- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) - Open source OCR engine
-- [OpenCV](https://opencv.org/) - Computer vision library
-- Mobile Legends: Bang Bang by Moonton
+Common causes:
 
----
+- Docker daemon is stopped or the user cannot access it;
+- port 8000 is already in use;
+- fewer than 4 GB are available;
+- the runtime archive is incomplete, modified, or from a different catalog;
+- a reverse proxy points at the wrong host port.
 
-<p align="center">
-  <strong>Built with ❤️ for the Mobile Legends Community</strong>
-</p>
+The installer never reports success from container launch alone; it waits for the model engine and authentication checks. A failed runtime-bundle replacement keeps the previously installed bundle until the new one validates.
+
+## Recognition and privacy contract
+
+- `auto` selects the certified vectorized CPU profile.
+- Reviewed item prototypes are loaded automatically without lowering global score or margin thresholds.
+- Held-out iPad evaluation reached **112/113 exact occupied items**, **0 wrong accepted identities**, and **1 abstention**.
+- `played_at` is completely absent from extraction and API output.
+- Upload bytes are kept in memory and released when a job terminates.
+- No raw screenshots, reviewer state, player identifiers, truth exports, or benchmark reports enter the image or repository.
+
+Detailed API behavior, performance certification, concurrency, and provenance are documented in [`docs/v2/service_api.md`](docs/v2/service_api.md).
+
+## Local development
+
+```bash
+uv sync --frozen
+uv run pytest -q
+uv run ruff check nexus_v2 tests tools
+uv run mypy --strict nexus_v2
+```
+
+For an authenticated native API process, first export/mount the private runtime bundle and set `NEXUS_RUNTIME_ASSETS_ROOT`, `NEXUS_API_KEY`, and `NEXUS_REQUIRE_API_KEY=true`.
+
+## License
+
+MIT. Mobile Legends: Bang Bang assets and names remain property of their respective owners.

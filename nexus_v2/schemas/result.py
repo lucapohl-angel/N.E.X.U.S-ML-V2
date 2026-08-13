@@ -99,7 +99,7 @@ class HeroResult(StrictModel):
 
 
 class ItemResult(StrictModel):
-    slot: int = Field(ge=0, le=5)
+    slot: int = Field(ge=0, le=6)
     item_id: str | None = None
     name: str | None = None
     status: ExtractionStatus
@@ -177,3 +177,9 @@ class ExtractionResult(StrictModel):
     metadata: dict[str, ExtractedField] = Field(default_factory=dict)
     teams: tuple[TeamResult, ...] = ()
     warnings: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def reject_removed_played_at_field(self) -> Self:
+        if "played_at" in self.metadata:
+            raise ValueError("played_at has been removed from the extraction schema")
+        return self

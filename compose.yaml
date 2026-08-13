@@ -1,0 +1,47 @@
+name: nexus-v2
+
+services:
+  nexus-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nexus-ml-v2:${NEXUS_IMAGE_TAG:-local}
+    restart: unless-stopped
+    init: true
+    environment:
+      NEXUS_API_KEY_FILE: "/run/secrets/nexus_api_key"
+      NEXUS_REQUIRE_API_KEY: "true"
+      NEXUS_RUNTIME_ASSETS_ROOT: "/runtime-assets"
+      NEXUS_PERFORMANCE_PROFILE: "${NEXUS_PERFORMANCE_PROFILE:-auto}"
+      NEXUS_MAX_RETAINED_JOBS: "${NEXUS_MAX_RETAINED_JOBS:-64}"
+      NEXUS_MAX_UPLOAD_BYTES: "${NEXUS_MAX_UPLOAD_BYTES:-52428800}"
+    ports:
+      - "${NEXUS_BIND_ADDRESS:-127.0.0.1}:${NEXUS_API_PORT:-8000}:8000"
+    volumes:
+      - "${NEXUS_RUNTIME_ASSETS_DIR:?Set NEXUS_RUNTIME_ASSETS_DIR to the extracted private runtime bundle}:/runtime-assets:ro"
+    secrets:
+      - nexus_api_key
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 512
+    mem_limit: ${NEXUS_MEMORY_LIMIT:-4g}
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:8000/v2/health',timeout=4)); raise SystemExit(0 if d.get('status')=='ok' and d.get('engine_loaded') and d.get('authentication_required') else 1)"
+      interval: 15s
+      timeout: 5s
+      start_period: 120s
+      retries: 4
+
+secrets:
+  nexus_api_key:
+    file: "${NEXUS_API_KEY_FILE:?Run ./scripts/nexus-server install to generate the API key file}"
