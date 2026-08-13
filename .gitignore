@@ -28,9 +28,14 @@ env/
 .DS_Store
 Thumbs.db
 
-# Environment
+# Environment and generated server secrets
 .env
-.env.local
+.env.*
+!.env.example
+
+# Private runtime bundle exports/mounts
+runtime-assets/
+nexus-runtime-assets*.tar.gz
 
 # Logs
 *.log
@@ -39,3 +44,16 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+# V2 local tooling and private benchmark data
+.uv-cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.work/
+htmlcov/
+.coverage
+data/benchmarks/*
+!data/benchmarks/README.md
+data/private/
+evaluation/reports/*.json

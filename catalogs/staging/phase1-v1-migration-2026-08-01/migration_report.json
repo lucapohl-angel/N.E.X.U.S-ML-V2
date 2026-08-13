@@ -1,0 +1,2847 @@
+{
+  "ambiguous_files": 0,
+  "catalog_version": "mlbb-v1-migration-2026.08.01.1",
+  "failed_files": 0,
+  "generated_at": "2026-08-01T06:46:49.397500Z",
+  "hero_files_discovered": 131,
+  "item_files_discovered": 105,
+  "mapped_files": 236,
+  "mappings": [
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_001_miya.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:1",
+      "stable_id": "hero_0001",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_002_balmond.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:2",
+      "stable_id": "hero_0002",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_003_saber.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:3",
+      "stable_id": "hero_0003",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_004_alice.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:4",
+      "stable_id": "hero_0004",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_005_nana.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:5",
+      "stable_id": "hero_0005",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_006_tigreal.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:6",
+      "stable_id": "hero_0006",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_007_alucard.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:7",
+      "stable_id": "hero_0007",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_008_karina.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:8",
+      "stable_id": "hero_0008",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_009_akai.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:9",
+      "stable_id": "hero_0009",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_010_franco.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:10",
+      "stable_id": "hero_0010",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_011_bane.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:11",
+      "stable_id": "hero_0011",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_012_bruno.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:12",
+      "stable_id": "hero_0012",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_013_clint.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:13",
+      "stable_id": "hero_0013",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_014_rafaela.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:14",
+      "stable_id": "hero_0014",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_015_eudora.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:15",
+      "stable_id": "hero_0015",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_016_zilong.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:16",
+      "stable_id": "hero_0016",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_017_fanny.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:17",
+      "stable_id": "hero_0017",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_018_layla.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:18",
+      "stable_id": "hero_0018",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_019_minotaur.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:19",
+      "stable_id": "hero_0019",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_020_lolita.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:20",
+      "stable_id": "hero_0020",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_021_hayabusa.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:21",
+      "stable_id": "hero_0021",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_022_freya.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:22",
+      "stable_id": "hero_0022",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_023_gord.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:23",
+      "stable_id": "hero_0023",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_024_natalia.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:24",
+      "stable_id": "hero_0024",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_025_kagura.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:25",
+      "stable_id": "hero_0025",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_026_chou.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:26",
+      "stable_id": "hero_0026",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_027_sun.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:27",
+      "stable_id": "hero_0027",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_028_alpha.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:28",
+      "stable_id": "hero_0028",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_029_ruby.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:29",
+      "stable_id": "hero_0029",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_030_yi_sun-shin.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:30",
+      "stable_id": "hero_0030",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_031_moskov.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:31",
+      "stable_id": "hero_0031",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_032_johnson.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:32",
+      "stable_id": "hero_0032",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_033_cyclops.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:33",
+      "stable_id": "hero_0033",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_034_estes.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:34",
+      "stable_id": "hero_0034",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_035_hilda.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:35",
+      "stable_id": "hero_0035",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_036_aurora.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:36",
+      "stable_id": "hero_0036",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_037_lapu-lapu.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:37",
+      "stable_id": "hero_0037",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_038_vexana.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:38",
+      "stable_id": "hero_0038",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_039_roger.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:39",
+      "stable_id": "hero_0039",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_040_karrie.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:40",
+      "stable_id": "hero_0040",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_041_gatotkaca.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:41",
+      "stable_id": "hero_0041",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_042_harley.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:42",
+      "stable_id": "hero_0042",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_043_irithel.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:43",
+      "stable_id": "hero_0043",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_044_grock.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:44",
+      "stable_id": "hero_0044",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_045_argus.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:45",
+      "stable_id": "hero_0045",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_046_odette.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:46",
+      "stable_id": "hero_0046",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_047_lancelot.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:47",
+      "stable_id": "hero_0047",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_048_diggie.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:48",
+      "stable_id": "hero_0048",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_049_hylos.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:49",
+      "stable_id": "hero_0049",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_050_zhask.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:50",
+      "stable_id": "hero_0050",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_051_helcurt.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:51",
+      "stable_id": "hero_0051",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_052_pharsa.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:52",
+      "stable_id": "hero_0052",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_053_lesley.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:53",
+      "stable_id": "hero_0053",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_054_jawhead.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:54",
+      "stable_id": "hero_0054",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_055_angela.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:55",
+      "stable_id": "hero_0055",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_056_gusion.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:56",
+      "stable_id": "hero_0056",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_057_valir.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:57",
+      "stable_id": "hero_0057",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_058_martis.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:58",
+      "stable_id": "hero_0058",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_059_uranus.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:59",
+      "stable_id": "hero_0059",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_060_hanabi.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:60",
+      "stable_id": "hero_0060",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_061_change.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:61",
+      "stable_id": "hero_0061",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_062_kaja.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:62",
+      "stable_id": "hero_0062",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_063_selena.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:63",
+      "stable_id": "hero_0063",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_064_aldous.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:64",
+      "stable_id": "hero_0064",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_065_claude.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:65",
+      "stable_id": "hero_0065",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_066_vale.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:66",
+      "stable_id": "hero_0066",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_067_leomord.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:67",
+      "stable_id": "hero_0067",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_068_lunox.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:68",
+      "stable_id": "hero_0068",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_069_hanzo.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:69",
+      "stable_id": "hero_0069",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_070_belerick.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:70",
+      "stable_id": "hero_0070",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_071_kimmy.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:71",
+      "stable_id": "hero_0071",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_072_thamuz.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:72",
+      "stable_id": "hero_0072",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_073_harith.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:73",
+      "stable_id": "hero_0073",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_074_minsitthar.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:74",
+      "stable_id": "hero_0074",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_075_kadita.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:75",
+      "stable_id": "hero_0075",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_076_faramis.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:76",
+      "stable_id": "hero_0076",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_077_badang.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:77",
+      "stable_id": "hero_0077",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_078_khufra.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:78",
+      "stable_id": "hero_0078",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_079_granger.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:79",
+      "stable_id": "hero_0079",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_080_guinevere.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:80",
+      "stable_id": "hero_0080",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_081_esmeralda.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:81",
+      "stable_id": "hero_0081",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_082_terizla.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:82",
+      "stable_id": "hero_0082",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_083_x.borg.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:83",
+      "stable_id": "hero_0083",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_084_ling.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:84",
+      "stable_id": "hero_0084",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_085_dyrroth.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:85",
+      "stable_id": "hero_0085",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_086_lylia.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:86",
+      "stable_id": "hero_0086",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_087_baxia.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:87",
+      "stable_id": "hero_0087",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_088_masha.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:88",
+      "stable_id": "hero_0088",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_089_wanwan.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:89",
+      "stable_id": "hero_0089",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_090_silvanna.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:90",
+      "stable_id": "hero_0090",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_091_cecilion.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:91",
+      "stable_id": "hero_0091",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_092_carmilla.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:92",
+      "stable_id": "hero_0092",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_093_atlas.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:93",
+      "stable_id": "hero_0093",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_094_popol_and_kupa.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:94",
+      "stable_id": "hero_0094",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_095_yu_zhong.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:95",
+      "stable_id": "hero_0095",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_096_luo_yi.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:96",
+      "stable_id": "hero_0096",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_097_benedetta.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:97",
+      "stable_id": "hero_0097",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_098_khaleed.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:98",
+      "stable_id": "hero_0098",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_099_barats.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:99",
+      "stable_id": "hero_0099",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_100_brody.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:100",
+      "stable_id": "hero_0100",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_101_yve.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:101",
+      "stable_id": "hero_0101",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_102_mathilda.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:102",
+      "stable_id": "hero_0102",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_103_paquito.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:103",
+      "stable_id": "hero_0103",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_104_gloo.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:104",
+      "stable_id": "hero_0104",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_105_beatrix.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:105",
+      "stable_id": "hero_0105",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_106_phoveus.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:106",
+      "stable_id": "hero_0106",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_107_natan.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:107",
+      "stable_id": "hero_0107",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_108_aulus.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:108",
+      "stable_id": "hero_0108",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_109_aamon.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:109",
+      "stable_id": "hero_0109",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_110_valentina.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:110",
+      "stable_id": "hero_0110",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_111_edith.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:111",
+      "stable_id": "hero_0111",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_112_floryn.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:112",
+      "stable_id": "hero_0112",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_113_yin.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:113",
+      "stable_id": "hero_0113",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_114_melissa.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:114",
+      "stable_id": "hero_0114",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_115_xavier.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:115",
+      "stable_id": "hero_0115",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_116_julian.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:116",
+      "stable_id": "hero_0116",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_117_fredrinn.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:117",
+      "stable_id": "hero_0117",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_118_joy.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:118",
+      "stable_id": "hero_0118",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_119_novaria.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:119",
+      "stable_id": "hero_0119",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_120_arlott.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:120",
+      "stable_id": "hero_0120",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_121_ixia.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:121",
+      "stable_id": "hero_0121",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_122_nolan.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:122",
+      "stable_id": "hero_0122",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_123_cici.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:123",
+      "stable_id": "hero_0123",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_124_chip.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:124",
+      "stable_id": "hero_0124",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_125_zhuxin.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:125",
+      "stable_id": "hero_0125",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_126_suyou.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:126",
+      "stable_id": "hero_0126",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_127_lukas.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:127",
+      "stable_id": "hero_0127",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_128_kalea.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:128",
+      "stable_id": "hero_0128",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_129_zetian.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:129",
+      "stable_id": "hero_0129",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_130_obsidia.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:130",
+      "stable_id": "hero_0130",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "hero",
+      "legacy_path": "heroes/portraits/hero_131_sora.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label inferred from the V1 filename; not human verified"
+      ],
+      "source_identity": "v1-hero:131",
+      "stable_id": "hero_0131",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Allow Throw.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Allow Throw.png",
+      "stable_id": "item_3bd9564c517e",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Antique Cuirass.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Antique Cuirass.png",
+      "stable_id": "item_e7dca70e2962",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Arcane Boots.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Arcane Boots.png",
+      "stable_id": "item_44d88bc21125",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Ares Belt.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Ares Belt.png",
+      "stable_id": "item_86731df8b7a6",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Athena's Shield.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Athena's Shield.png",
+      "stable_id": "item_175eca7cd178",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Azure Blade.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Azure Blade.png",
+      "stable_id": "item_25a612fc49de",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Berserker's Fury.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Berserker's Fury.png",
+      "stable_id": "item_ff0790dd2149",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Black Ice Shield.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Black Ice Shield.png",
+      "stable_id": "item_b110cc4720ad",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Blade Armor.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Blade Armor.png",
+      "stable_id": "item_23fd75a8af20",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Blade of Despair.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Blade of Despair.png",
+      "stable_id": "item_b3ba1ba5a72f",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Blade of the Heptaseas.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Blade of the Heptaseas.png",
+      "stable_id": "item_7ae2c81d391a",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Blood Wings.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Blood Wings.png",
+      "stable_id": "item_441ffa0d7102",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Bloody Retribution.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Bloody Retribution.png",
+      "stable_id": "item_e531b514fbf2",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Book of Sages.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Book of Sages.png",
+      "stable_id": "item_533750d5cc43",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Boots.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Boots.png",
+      "stable_id": "item_00c42a783080",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Broken Heart.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Broken Heart.png",
+      "stable_id": "item_5074cd156208",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Brute Force Breastplate.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Brute Force Breastplate.png",
+      "stable_id": "item_6d6ff88a92d5",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Chastise Pauldron.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Chastise Pauldron.png",
+      "stable_id": "item_760afff1015a",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Clock of Destiny.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Clock of Destiny.png",
+      "stable_id": "item_bec4f5ab2578",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Concentrated Energy.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Concentrated Energy.png",
+      "stable_id": "item_e64425006f3d",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Corrosion Scythe.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Corrosion Scythe.png",
+      "stable_id": "item_fdc882d963d9",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Cursed Helmet.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Cursed Helmet.png",
+      "stable_id": "item_18840ec310c2",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Dagger.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Dagger.png",
+      "stable_id": "item_4b05bdabc859",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Demon Hunter Sword.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Demon Hunter Sword.png",
+      "stable_id": "item_4cba932e585a",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Demon Shoes.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Demon Shoes.png",
+      "stable_id": "item_af4bbaf8fc50",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Divine Glaive.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Divine Glaive.png",
+      "stable_id": "item_699e226b5662",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Dominance Ice.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Dominance Ice.png",
+      "stable_id": "item_bb849076c1f6",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Dreadnaught Armor.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Dreadnaught Armor.png",
+      "stable_id": "item_6f71d19dddba",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_EMPTY.png",
+      "match_basis": "excluded_empty_slot_sentinel",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified",
+        "V1 item metadata has no entry for this filename",
+        "V1 empty-slot sentinel; excluded from the item identity class map",
+        "mapped as slot state, not an item identity or production asset"
+      ],
+      "source_identity": "v1-item:item_EMPTY.png",
+      "stable_id": "item_empty_slot",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Elegant Gem.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Elegant Gem.png",
+      "stable_id": "item_578b5499c619",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Enchanted Talisman.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Enchanted Talisman.png",
+      "stable_id": "item_bc2f996b54cb",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Endless Battle.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Endless Battle.png",
+      "stable_id": "item_18e66669f9d2",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Exotic Veil.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Exotic Veil.png",
+      "stable_id": "item_9c5c5f25cdae",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Expert Gloves.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Expert Gloves.png",
+      "stable_id": "item_211916c30c75",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Feather of Heaven.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Feather of Heaven.png",
+      "stable_id": "item_c8cc16704894",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Flame Retribution.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Flame Retribution.png",
+      "stable_id": "item_d1e561e91f55",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Flask of the Oasis.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Flask of the Oasis.png",
+      "stable_id": "item_2f515c8164ad",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Fleeting Time.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Fleeting Time.png",
+      "stable_id": "item_345d1b0879be",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Flower of Hope.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Flower of Hope.png",
+      "stable_id": "item_a32997735166",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Fury Hammer.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Fury Hammer.png",
+      "stable_id": "item_1af92f626876",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Genius Wand.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Genius Wand.png",
+      "stable_id": "item_5d83ed4e15db",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Glowing Wand.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Glowing Wand.png",
+      "stable_id": "item_392b11452368",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Golden Staff.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Golden Staff.png",
+      "stable_id": "item_1e328e5d7007",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Great Dragon Spear.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Great Dragon Spear.png",
+      "stable_id": "item_15aa1df04f9e",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Guardian Helmet.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Guardian Helmet.png",
+      "stable_id": "item_c29ff5875171",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Haas' Claws.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Haas' Claws.png",
+      "stable_id": "item_80bd3613a4c3",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Healing Necklace.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Healing Necklace.png",
+      "stable_id": "item_d0805bf029c0",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Hero's Ring.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Hero's Ring.png",
+      "stable_id": "item_7cac413dbb3a",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Holy Crystal.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Holy Crystal.png",
+      "stable_id": "item_d70c0b0d0997",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Hunter Strike.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Hunter Strike.png",
+      "stable_id": "item_252a14f01bb8",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Ice Queen Wand.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Ice Queen Wand.png",
+      "stable_id": "item_954acc88998a",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Ice Retribution.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Ice Retribution.png",
+      "stable_id": "item_ec9660ae44fc",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Immortality.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Immortality.png",
+      "stable_id": "item_9489b01adfeb",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Iron Hunting Bow.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Iron Hunting Bow.png",
+      "stable_id": "item_1bd3378f556f",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Javelin.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Javelin.png",
+      "stable_id": "item_ca4d82e1c542",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Knife.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Knife.png",
+      "stable_id": "item_a74036fa04c4",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Lantern of Hope.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Lantern of Hope.png",
+      "stable_id": "item_daf2bbd7d62c",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Leather Jerkin.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Leather Jerkin.png",
+      "stable_id": "item_3e5ce9d1b850",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Legion Sword.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Legion Sword.png",
+      "stable_id": "item_9d318935ad8d",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Lightning Truncheon.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Lightning Truncheon.png",
+      "stable_id": "item_0be1bcb07f7e",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Magic Blade.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Magic Blade.png",
+      "stable_id": "item_d1e7952d0a7f",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Magic Necklace.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Magic Necklace.png",
+      "stable_id": "item_4f440e7290a6",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Magic Potion.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Magic Potion.png",
+      "stable_id": "item_9a9212bc82f2",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Magic Resist Cloak.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Magic Resist Cloak.png",
+      "stable_id": "item_7cefe7d94101",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Magic Shoes.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Magic Shoes.png",
+      "stable_id": "item_36b78d3bbff0",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Magic Wand.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Magic Wand.png",
+      "stable_id": "item_416620f71f54",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Malefic Gun.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Malefic Gun.png",
+      "stable_id": "item_92912df8fa50",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Malefic Roar.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Malefic Roar.png",
+      "stable_id": "item_0029281e457e",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Molten Essence.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Molten Essence.png",
+      "stable_id": "item_1d39a69efd04",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Mystery Codex.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Mystery Codex.png",
+      "stable_id": "item_28b1ab8ac967",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Mystic Container.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Mystic Container.png",
+      "stable_id": "item_a152f5184667",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Ogre Tomahawk.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Ogre Tomahawk.png",
+      "stable_id": "item_2c4b5bd5d9bd",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Oracle.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Oracle.png",
+      "stable_id": "item_dd22f4093f4d",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Passive - Dire Hit.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Passive - Dire Hit.png",
+      "stable_id": "item_697bdf1f992d",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Passive - Encourage.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Passive - Encourage.png",
+      "stable_id": "item_15da9fecbee5",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Passive - Favor.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Passive - Favor.png",
+      "stable_id": "item_e7e515e09ab7",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Power Crystal.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Power Crystal.png",
+      "stable_id": "item_7f2fab7d1639",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Power Potion.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Power Potion.png",
+      "stable_id": "item_8e382cf1f17f",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Queen's Wings.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Queen's Wings.png",
+      "stable_id": "item_863a77197901",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Radiant Armor.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Radiant Armor.png",
+      "stable_id": "item_a8f7489854a8",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Rapid Boots.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Rapid Boots.png",
+      "stable_id": "item_04c72bf84457",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Regular Spear.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Regular Spear.png",
+      "stable_id": "item_5ae85170cd01",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Resonating Heart.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Resonating Heart.png",
+      "stable_id": "item_c7dc31cd716e",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Rock Potion.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Rock Potion.png",
+      "stable_id": "item_8770ee7030bc",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Rogue Meteor.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Rogue Meteor.png",
+      "stable_id": "item_92754a00bd0b",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Rose Gold Meteor.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Rose Gold Meteor.png",
+      "stable_id": "item_de6f54b97f32",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Sea Halberd.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Sea Halberd.png",
+      "stable_id": "item_6416829d5375",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Silence Robe.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Silence Robe.png",
+      "stable_id": "item_d94d8ef4982c",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Sky Piercer.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Sky Piercer.png",
+      "stable_id": "item_3a34361d0c51",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Starlium Scythe.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Starlium Scythe.png",
+      "stable_id": "item_724391ad2ee5",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Steel Legplates.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Steel Legplates.png",
+      "stable_id": "item_bb9d8e35fbe3",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Swift Boots.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Swift Boots.png",
+      "stable_id": "item_77d2ae37eeeb",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Swift Crossbow.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Swift Crossbow.png",
+      "stable_id": "item_331bac2025b5",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Throw Forbidden.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Throw Forbidden.png",
+      "stable_id": "item_b69602e37817",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Thunder Belt.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Thunder Belt.png",
+      "stable_id": "item_cb7a4870e49e",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Tome of Evil.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Tome of Evil.png",
+      "stable_id": "item_5f99f5334d3f",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Tough Boots.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Tough Boots.png",
+      "stable_id": "item_e2189364ee0f",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Vampire Mallet.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Vampire Mallet.png",
+      "stable_id": "item_584d130be889",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Vitality Crystal.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Vitality Crystal.png",
+      "stable_id": "item_30cd6b5458d4",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_War Axe.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_War Axe.png",
+      "stable_id": "item_56dc42f0d8fc",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Warrior Boots.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Warrior Boots.png",
+      "stable_id": "item_632c4e0ee7e5",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Wind of Nature.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Wind of Nature.png",
+      "stable_id": "item_6ee0b1e257c7",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Windtalker.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Windtalker.png",
+      "stable_id": "item_5ed0be3129d3",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Winter Crown.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Winter Crown.png",
+      "stable_id": "item_f49d33dc425b",
+      "status": "mapped_unreviewed"
+    },
+    {
+      "ambiguity_candidates": [],
+      "kind": "item",
+      "legacy_path": "items/icons/item_Wishing Lantern.png",
+      "match_basis": "new_stable_id_assignment",
+      "notes": [
+        "label and provenance are inherited from V1 and remain unverified"
+      ],
+      "source_identity": "v1-item:item_Wishing Lantern.png",
+      "stable_id": "item_bf1fda964c49",
+      "status": "mapped_unreviewed"
+    }
+  ],
+  "report_version": "1.0"
+}

@@ -1,294 +1,399 @@
-<p align="center">
-  <h1 align="center">🎮 N.E.X.U.S-ML</h1>
-  <h3 align="center">Neural Extraction for Unified Squads - Mobile Legends</h3>
-  <p align="center">
-    <strong>AI-Powered Match Statistics Extraction Engine</strong>
-  </p>
-  <p align="center">
-    <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python">
-    <img src="https://img.shields.io/badge/OpenCV-4.8+-green.svg" alt="OpenCV">
-    <img src="https://img.shields.io/badge/Tesseract-OCR-orange.svg" alt="Tesseract">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
-  </p>
-</p>
+<div align="center">
 
----
+# N.E.X.U.S ML V2
 
-## 📖 Overview
+**Private, authenticated screenshot extraction for Mobile Legends post-match results**
 
-**N.E.X.U.S-ML** is an intelligent extraction engine that processes Mobile Legends post-game screenshots and converts them into structured JSON data. Using computer vision and OCR technology, it accurately extracts player statistics, hero information, items, and match metrics.
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Deploy-Private%20GHCR-2496ED?logo=docker&logoColor=white)](https://github.com/features/packages)
 
-### ✨ Key Features
+</div>
 
-- 🎯 **High Accuracy OCR** - Custom-tuned text extraction for each screen type
-- 🦸 **Hero Recognition** - Template matching for 100+ hero portraits
-- ⚔️ **Item Detection** - Identifies equipped items from icon matching
-- 📊 **Multi-Screen Support** - Processes 5 different post-game screens
-- 🔄 **Clean Pipeline** - Input image → Process → JSON output
-- 🚀 **Production Ready** - No file clutter, returns clean data
+N.E.X.U.S V2 accepts five post-match screenshots, extracts structured match data, and returns one result per screen through an asynchronous API. Production uses a preloaded CPU engine and protects every submission/result route with an API key.
 
----
+> [!IMPORTANT]
+> Call N.E.X.U.S from your website backend, never directly from browser JavaScript. Keep both the N.E.X.U.S API key and the GHCR deployment token server-side.
 
-## 🖼️ Supported Screen Types
+## Production architecture
 
-| Screen | Data Extracted |
-|--------|---------------|
-| `screen1` | KDA, items, medals, MVP ratings, hero portraits |
-| `screen2` | Damage dealt, damage taken, turret damage, teamfight % |
-| `screen3` | Gold earned, gold per minute, turret gold |
-| `screen4` | Battle spells, participation rates |
-| `screen5` | Gold breakdown (total, jungle, kill, minion gold) |
-
----
-
-## 📁 Project Structure
-
-```
-N.E.X.U.S-ML/
-│
-├── main.py                 # 🚀 Main extraction engine
-│
-├── app/                    # Core application modules
-│   ├── __init__.py
-│   ├── core/
-│   │   └── field_config.py # Configuration loader
-│   └── parser/
-│       ├── detector.py     # Player row detection
-│       ├── hero_matcher.py # Hero portrait matching
-│       ├── item_matcher.py # Item icon matching
-│       ├── ocr.py          # Text extraction
-│       └── preprocessor.py # Image preprocessing
-│
-├── config/                 # Screen mapping configurations
-│   ├── field_extraction.yaml
-│   ├── heroes.yaml
-│   ├── screen1_column_mapping.yaml
-│   ├── screen2_column_mapping.yaml
-│   ├── screen3_column_mapping.yaml
-│   ├── screen4_column_mapping.yaml
-│   └── screen5_column_mapping.yaml
-│
-├── heroes/                 # Hero portrait database
-│   └── portraits/          # Hero images for matching
-│
-├── items/                  # Item database
-│   ├── icons/              # Item images for matching
-│   └── items_metadata_validated.json
-│
-└── requirements.txt        # Python dependencies
+```text
+Public source repository
+        │
+        ├── GitHub Actions ── approved runtime digest
+        │                           │
+        ▼                           ▼
+Private GHCR application image ← private reviewed runtime image
+        │
+        ▼
+Server: digest-pinned container → authenticated N.E.X.U.S API
 ```
 
----
+Two GHCR packages stay private:
 
-## 🛠️ Installation
+- `ghcr.io/lucapohl-angel/nexus-ml-v2-runtime` contains reviewed catalog and recognition assets.
+- `ghcr.io/lucapohl-angel/nexus-ml-v2` contains the API plus one pinned runtime digest.
 
-### Prerequisites
+The public repository and Docker build context exclude source screenshots, reviewer state, truth files, player data, reports, private catalogs, and recognition source provenance.
 
-- **Python 3.10+**
-- **Tesseract OCR** (system installation required)
+## Server installation
 
-### Step 1: Install Tesseract OCR
+The source repository is public, but the production image is private. Cloning this repository does **not** grant access to `ghcr.io/lucapohl-angel/nexus-ml-v2`.
 
-**Windows:**
-1. Download from [UB-Mannheim/tesseract](https://github.com/UB-Mannheim/tesseract/wiki)
-2. Install to default location: `C:\Program Files\Tesseract-OCR`
-3. Add to PATH environment variable
+Two separate credentials are involved:
 
-**Linux:**
-```bash
-sudo apt-get install tesseract-ocr
-```
+| Credential | Purpose | Created by |
+|---|---|---|
+| GitHub PAT (classic), `read:packages` | Allows Docker to download the private GHCR image | Server operator |
+| N.E.X.U.S API key | Authorizes extraction and result API calls | Generated locally by the installer |
 
-**macOS:**
-```bash
-brew install tesseract
-```
+The GitHub token is never used as the N.E.X.U.S API key, and neither credential is included in the image or repository.
 
-### Step 2: Clone Repository
+### Requirements
+
+- 64-bit Linux server
+- Git
+- Docker Engine with Docker Compose v2
+- At least 4 GB RAM available to the container
+- A GitHub account that has **Read** access to the private N.E.X.U.S application package
+- A personal access token (classic) for that account with `read:packages`
+
+### 1. Get access to the official private image
+
+The package owner must grant your GitHub account Read access first. Ask the N.E.X.U.S maintainer to add your GitHub username under:
+
+1. GitHub profile → **Packages**
+2. `nexus-ml-v2` → **Package settings**
+3. **Manage access** → **Invite teams or people**
+4. Select your account and assign **Read**
+
+A token does not bypass package permissions. A valid `read:packages` token still receives `denied` if its GitHub account has not been granted access.
+
+> [!NOTE]
+> The runtime package is an internal build input. A normal server only needs Read access to `nexus-ml-v2`, the final application package.
+
+### 2. Create the GHCR download token
+
+GitHub Packages requires a [personal access token (classic)](https://github.com/settings/tokens). A fine-grained token is not the documented GHCR authentication method. See GitHub's [Container registry authentication guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
+
+1. Open GitHub → **Settings** → **Developer settings**.
+2. Open **Personal access tokens** → **Tokens (classic)**.
+3. Select **Generate new token (classic)**.
+4. Give it a recognizable name such as `Nexus server pull`.
+5. Set an expiration date appropriate for the server.
+6. Select only `read:packages`.
+7. Generate the token and store it in the server's secret manager or another protected location.
+
+Do not commit the token, put it in `.env`, pass it as a Docker build argument, or send it in chat.
+
+### 3. Log Docker into GHCR
+
+Use the GitHub username that was granted package access. Read the token interactively so it does not appear in shell history:
 
 ```bash
-git clone https://github.com/yourusername/NEXUS-ML.git
-cd NEXUS-ML
+read -rsp "GHCR token: " GHCR_TOKEN
+echo
+
+printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
+  -u YOUR_GITHUB_USERNAME \
+  --password-stdin
+
+unset GHCR_TOKEN
 ```
 
-### Step 3: Create Virtual Environment
+Expected result:
+
+```text
+Login Succeeded
+```
+
+Optional access test:
 
 ```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Linux/macOS
-source venv/bin/activate
+docker pull ghcr.io/lucapohl-angel/nexus-ml-v2:stable
 ```
 
-### Step 4: Install Dependencies
+If this returns `denied`, `unauthorized`, or `not found`, check all three conditions:
+
+1. the token is a PAT **classic**, not a fine-grained token;
+2. it includes `read:packages`;
+3. the token owner's GitHub account has Read access to `nexus-ml-v2`.
+
+Docker stores the registry login according to the machine's Docker credential configuration. You may remove it after installation:
 
 ```bash
-pip install -r requirements.txt
+docker logout ghcr.io
 ```
 
----
+The GHCR token is not mounted into the N.E.X.U.S container. If you log out, authenticate again before a future private image pull or update.
 
-## 🚀 Usage
-
-### Command Line
+### 4. Clone and install
 
 ```bash
-python main.py <screenshot_path> <screentype>
+git clone --branch main \
+  https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2.git
+cd N.E.X.U.S-ML-V2
+./scripts/nexus-server install
 ```
 
-**Examples:**
+The installer:
+
+1. pulls the private `stable` discovery channel;
+2. resolves it once to an immutable `sha256` digest;
+3. verifies source, commit, and pinned-runtime OCI labels;
+4. generates a 256-bit N.E.X.U.S API key in a mode-`0600` secret file;
+5. runs the container as the non-root account that owns that secret;
+6. starts the hardened container using the exact digest with pulling disabled;
+7. waits for the extraction engine to load;
+8. proves missing or invalid API authentication is rejected;
+9. proves the generated API key reaches a protected route;
+10. records the known-good digest for future rollback.
+
+The installer prints the generated N.E.X.U.S API key once at the end. Retrieve it again with:
 
 ```bash
-# Extract KDA and items from screen1
-python main.py "match_result.png" screen1
-
-# Extract damage statistics from screen2
-python main.py "damage_stats.png" screen2
-
-# Extract gold breakdown from screen5
-python main.py "gold_stats.png" screen5
+./scripts/nexus-server key
 ```
 
-### Programmatic API
+Store that key in your website backend's secret manager. Do not expose it to browser JavaScript.
 
-```python
-from main import extract
+By default, the API listens only on `127.0.0.1:8000`. Put your HTTPS reverse proxy in front of it.
 
-# Extract data from screenshot
-result = extract("screenshot.png", "screen1")
+Custom port or deliberate public bind:
 
-# Access the data
-print(result["metadata"]["battle_id"])
-print(result["allies"][0]["hero"]["hero_name"])
-print(result["enemies"][0]["total_gold"]["value"])
+```bash
+./scripts/nexus-server install --port 8080
+./scripts/nexus-server install --public
 ```
 
----
+Use `--public` only when firewall rules and TLS termination are already configured.
 
-## 📤 Output Format
+### Using your own GHCR package
 
-The engine returns structured JSON data:
+It is possible to operate a private package under your own GitHub namespace, but the public repository alone is not a complete production image source. The official private package contains reviewed recognition catalogs, policies, and screenshot-derived prototypes that are intentionally excluded from public Git.
 
-```json
-{
-  "metadata": {
-    "screenshot_path": "match_result.png",
-    "screentype": "screen1",
-    "timestamp": "2026-01-07T12:00:00",
-    "resolution": {"width": 1920, "height": 1080},
-    "total_players": 10,
-    "ally_count": 5,
-    "enemy_count": 5,
-    "battle_id": "436609948828842102"
-  },
-  "allies": [
-    {
-      "player_number": 1,
-      "hero": {
-        "hero_id": "Fanny",
-        "hero_name": "Fanny",
-        "confidence": 0.92
-      },
-      "items": [...],
-      "kills": {"value": 12},
-      "deaths": {"value": 3},
-      "assists": {"value": 8}
-    }
-  ],
-  "enemies": [...],
-  "summary": {
-    "heroes_detected": 10,
-    "total_items_detected": 54,
-    "avg_hero_confidence": 0.89,
-    "avg_item_confidence": 0.85
-  }
-}
+To publish your own production image, you must:
+
+1. provide and review your own legally distributable runtime assets;
+2. keep those assets outside public Git history;
+3. configure `NEXUS_GHCR_OWNER` for your GitHub namespace;
+4. authenticate with a PAT (classic) that has `read:packages` and `write:packages`;
+5. run the trusted publisher with explicit runtime approval:
+
+```bash
+read -rsp "GHCR publishing token: " GHCR_TOKEN
+echo
+export GHCR_TOKEN
+export NEXUS_GHCR_OWNER=YOUR_GITHUB_NAMESPACE
+
+./scripts/publish-private-images --approve-reviewed-runtime
+
+unset GHCR_TOKEN NEXUS_GHCR_OWNER
 ```
 
----
+The publisher creates the packages on their first successful pushes; empty GHCR packages do not need to be created manually.
 
-## 🔧 How It Works
+The stock installer deliberately trusts only the official package. A compatible custom application image can be selected with:
 
-### Pipeline Flow
-
-```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐    ┌──────────┐
-│  Screenshot │───▶│  Row Detect  │───▶│  OCR + Match│───▶│   JSON   │
-│    Input    │    │  (5 players) │    │  (per row)  │    │  Output  │
-└─────────────┘    └──────────────┘    └─────────────┘    └──────────┘
+```bash
+./scripts/nexus-server install \
+  --image ghcr.io/YOUR_GITHUB_NAMESPACE/nexus-ml-v2:stable
 ```
 
-### Step-by-Step Process
+That command will be rejected until your fork has its own matching trust policy. Update `DEFAULT_CHANNEL`, `EXPECTED_SOURCE`, `EXPECTED_RUNTIME_REPOSITORY`, `is_digest_reference`, and the repository check in `resolve_candidate_digest` inside `scripts/nexus-server`. Keep the repository allowlist, OCI label verification, digest pinning, health check, API authentication check, and rollback behavior. Do not pass the runtime-only image to the installer. The server needs the complete application image.
 
-1. **Image Loading** - Load and normalize screenshot to reference resolution
-2. **Row Detection** - Detect 5 player rows using color analysis (blue team indicator)
-3. **Column Mapping** - Apply screen-specific coordinate mappings
-4. **Data Extraction** - For each cell:
-   - Hero portraits → Template matching
-   - Items → Icon matching with similarity scoring
-   - Statistics → Multi-pass OCR with voting
-5. **JSON Assembly** - Combine all data into structured output
+## Updates and rollback
 
----
+Manual safe update:
 
-## ⚙️ Configuration
-
-Screen mappings are defined in YAML files under `config/`. Each mapping specifies:
-
-- Column positions (as percentages for resolution independence)
-- Y-axis offsets within player rows
-- Field types for OCR processing
-
-Example mapping:
-```yaml
-columns:
-  kills:
-    x_start_pct: 0.45
-    x_end_pct: 0.52
-    y_offset_pct: 0.15
-    height_pct: 0.35
-    description: "Player kills count"
+```bash
+git pull --ff-only
+./scripts/nexus-server update
 ```
 
----
+`stable` is never deployed directly. The updater:
 
-## 📋 Requirements
+- serializes deployments with a lock;
+- pulls and resolves `stable` to a digest;
+- exits without restarting when the digest is unchanged;
+- validates image provenance labels;
+- deploys the exact digest;
+- runs engine-readiness and authentication checks;
+- records it only after success;
+- restores the previous known-good digest if validation fails.
 
+Manual rollback:
+
+```bash
+./scripts/nexus-server rollback
 ```
-opencv-python>=4.8.0
-numpy>=1.24.0
-Pillow>=10.0.0
-pytesseract>=0.3.10
-PyYAML>=6.0
+
+Optional daily updates:
+
+```bash
+./scripts/nexus-server enable-auto-update
 ```
 
-**System Requirement:** Tesseract OCR must be installed separately.
+The scheduled updater adds randomized delay to avoid synchronized pulls, cannot overlap another deployment, and uses the same digest-pinned validation and rollback path. Logs are written to `nexus-update.log`.
 
----
+Disable it with:
 
-## 🤝 Contributing
+```bash
+./scripts/nexus-server disable-auto-update
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Automatic deployment is optional. For stricter production control, leave it disabled and run `update` after reviewing a release.
 
----
+## Publishing private images
 
-## 📄 License
+### First-time GHCR setup
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The first publication machine needs:
 
----
+- a running Docker daemon;
+- `uv`;
+- the reviewed private runtime sources;
+- a classic token with `read:packages` and `write:packages`.
 
-## 🙏 Acknowledgments
+```bash
+export GHCR_TOKEN
+./scripts/publish-private-images --approve-reviewed-runtime
+```
 
-- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) - Open source OCR engine
-- [OpenCV](https://opencv.org/) - Computer vision library
-- Mobile Legends: Bang Bang by Moonton
+The approval flag is intentional. The publisher exports and sanitizes the reviewed runtime, validates all checksums and catalog/policy pins, verifies exact runtime parity, builds an immutable runtime image, pins the app build to its digest, starts the app candidate, checks engine readiness and API authentication, then promotes both private packages.
 
----
+After first publication, verify in GitHub package settings that both packages are **Private**. Grant this repository Actions access to the runtime package. The publisher stores the approved runtime digest in the repository variable `NEXUS_RUNTIME_IMAGE` when the current GitHub credential permits it.
 
-<p align="center">
-  <strong>Built with ❤️ for the Mobile Legends Community</strong>
-</p>
+### Code and tuning updates
+
+Changes under the V2 engine/API/profile build paths trigger `.github/workflows/publish-private-image.yaml` on `main`.
+
+The workflow:
+
+1. runs the full test, Ruff, strict Mypy, and lockfile gates;
+2. requires `NEXUS_RUNTIME_IMAGE` to be an immutable runtime digest;
+3. builds an immutable `sha-<commit>` application image;
+4. starts the candidate and verifies engine readiness plus unauthorized/authorized requests;
+5. moves the private application `stable` channel only after success.
+
+The workflow uses SHA-pinned third-party Actions and does not cache private runtime layers in the public repository's Actions cache.
+
+### Hero, item, or artwork updates
+
+MLBB changes heroes, skins, and items over time. Do not let an unattended scraper replace live recognition references.
+
+Use this boundary:
+
+```text
+Discovery/scraping → human review/truth → replay and parity gates
+                  → publish reviewed runtime digest → rebuild app → stable
+```
+
+When approved recognition assets change:
+
+1. update and review the private catalog/prototype/policy sources;
+2. run the full replay and zero-wrong-output gates;
+3. run `./scripts/publish-private-images --approve-reviewed-runtime`;
+4. allow or manually run the app-image workflow against the new recorded runtime digest;
+5. update servers manually or through the optional scheduled updater.
+
+This keeps routine code releases automatic without allowing unreviewed game-art changes into production.
+
+## API-key security
+
+Show the generated key:
+
+```bash
+./scripts/nexus-server key
+```
+
+Protected routes accept either:
+
+```http
+Authorization: Bearer <server-generated-key>
+X-Nexus-API-Key: <server-generated-key>
+```
+
+`GET /v2/health` remains public for readiness checks but returns no screenshot or result data. Submission, job status, and results require authentication. The key is mounted as `/run/secrets/nexus_api_key`, not placed in the container environment.
+
+Rotate it:
+
+```bash
+./scripts/nexus-server rotate-key
+```
+
+## Submit a match
+
+```bash
+BASE_URL='http://127.0.0.1:8000'
+API_KEY=$(./scripts/nexus-server key)
+
+curl -sS -X POST "$BASE_URL/v2/extract-match" \
+  -H "Authorization: Bearer $API_KEY" \
+  -F 'hero_item=@hero_item.png' \
+  -F 'overall=@overall.png' \
+  -F 'dps=@dps.png' \
+  -F 'farm=@farm.png' \
+  -F 'team=@team.png'
+```
+
+The API returns `202 Accepted` with `job_id`, `status_url`, and `result_url`.
+
+```bash
+curl -sS -H "Authorization: Bearer $API_KEY" \
+  "$BASE_URL/v2/jobs/<job-id>"
+
+curl -sS -H "Authorization: Bearer $API_KEY" \
+  "$BASE_URL/v2/jobs/<job-id>/result"
+```
+
+Jobs are held in process memory and do not survive a restart.
+
+## Operations
+
+| Action | Command |
+|---|---|
+| Health and container status | `./scripts/nexus-server status` |
+| Follow logs | `./scripts/nexus-server logs -f` |
+| Safe digest update | `./scripts/nexus-server update` |
+| Previous known-good release | `./scripts/nexus-server rollback` |
+| Enable daily safe updates | `./scripts/nexus-server enable-auto-update` |
+| Disable daily updates | `./scripts/nexus-server disable-auto-update` |
+| Restart | `./scripts/nexus-server restart` |
+| Stop/start | `./scripts/nexus-server stop` / `start` |
+| Show/rotate API key | `./scripts/nexus-server key` / `rotate-key` |
+| Remove service and local credentials | `./scripts/nexus-server uninstall` |
+
+If startup fails:
+
+```bash
+./scripts/nexus-server logs --tail 200
+./scripts/nexus-server status
+```
+
+## Container hardening
+
+- non-root execution using the installer account's numeric UID/GID;
+- read-only root filesystem;
+- all Linux capabilities dropped;
+- `no-new-privileges` enabled;
+- bounded writable `/tmp` only;
+- API key mounted as a Compose secret;
+- localhost binding by default;
+- private runtime baked from a reviewed digest;
+- deployment by application digest, never by a mutable tag.
+
+## Local development
+
+```bash
+uv sync --frozen
+uv run pytest -q
+uv run ruff check nexus_v2 tests tools
+uv run mypy --strict nexus_v2
+```
+
+Detailed API behavior is documented in [`docs/v2/service_api.md`](docs/v2/service_api.md).
+
+## License
+
+MIT. Mobile Legends: Bang Bang assets and names remain property of their respective owners.

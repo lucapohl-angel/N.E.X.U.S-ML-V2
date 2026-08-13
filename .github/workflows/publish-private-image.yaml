@@ -1,0 +1,149 @@
+name: Publish private application image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - nexus_v2/**
+      - profiles/**
+      - pyproject.toml
+      - uv.lock
+      - README.md
+      - .github/workflows/publish-private-image.yaml
+  workflow_dispatch:
+    inputs:
+      promote_stable:
+        description: Promote the validated candidate to the stable tag
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: nexus-private-image-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: lucapohl-angel/nexus-ml-v2
+  RELEASE_TAG: sha-${{ github.sha }}-run-${{ github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  test-and-publish:
+    if: vars.NEXUS_RUNTIME_IMAGE != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@4959332f0f014c5280e7eac8b70c90cb574c9f9b # v6.6.0
+        with:
+          version: "0.11.8"
+          enable-cache: true
+
+      - name: Install locked dependencies
+        run: uv sync --frozen
+
+      - name: Run production gates
+        run: |
+          uv run pytest -q
+          uv run ruff check nexus_v2 tests \
+            tools/build_family_prototypes.py \
+            tools/build_review_batch_prototypes.py \
+            tools/build_starter_profile.py \
+            tools/build_visual_prototypes.py \
+            tools/compile_starter_truth.py \
+            tools/export_runtime_assets.py \
+            tools/merge_prototype_manifests.py \
+            tools/validate_runtime_assets.py \
+            tools/verify_runtime_asset_parity.py
+          uv run mypy --strict nexus_v2
+          uv lock --check
+
+      - name: Require approved immutable runtime image
+        env:
+          RUNTIME_IMAGE: ${{ vars.NEXUS_RUNTIME_IMAGE }}
+        run: |
+          test -n "$RUNTIME_IMAGE" || {
+            echo 'Set repository variable NEXUS_RUNTIME_IMAGE to the approved private runtime digest.' >&2
+            exit 1
+          }
+          echo "$RUNTIME_IMAGE" | grep -Eq '^ghcr\.io/lucapohl-angel/nexus-ml-v2-runtime@sha256:[0-9a-f]{64}$' || {
+            echo 'NEXUS_RUNTIME_IMAGE must be an immutable private runtime digest, never a tag.' >&2
+            exit 1
+          }
+
+      - name: Log in to private GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build and push immutable application image
+        id: build
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          push: true
+          build-args: |
+            NEXUS_RUNTIME_IMAGE=${{ vars.NEXUS_RUNTIME_IMAGE }}
+            VCS_REF=${{ github.sha }}
+            RUNTIME_REF=${{ vars.NEXUS_RUNTIME_IMAGE }}
+          tags: ghcr.io/lucapohl-angel/nexus-ml-v2:${{ env.RELEASE_TAG }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Verify candidate engine and authentication
+        env:
+          CANDIDATE: ghcr.io/lucapohl-angel/nexus-ml-v2@${{ steps.build.outputs.digest }}
+        run: |
+          set -Eeuo pipefail
+          key_file="$(mktemp)"
+          container="nexus-release-check-${GITHUB_RUN_ID}"
+          cleanup() {
+            docker rm -f "$container" >/dev/null 2>&1 || true
+            rm -f "$key_file"
+          }
+          trap cleanup EXIT
+          python -c 'import secrets; print("nxs_" + secrets.token_urlsafe(32))' >"$key_file"
+          chmod 600 "$key_file"
+          docker run --detach --name "$container" \
+            --user "$(id -u):$(id -g)" \
+            --read-only --cap-drop ALL --security-opt no-new-privileges \
+            --tmpfs /tmp:size=256m,mode=1777 \
+            --mount "type=bind,src=$key_file,dst=/run/secrets/nexus_api_key,readonly" \
+            --env NEXUS_API_KEY_FILE=/run/secrets/nexus_api_key \
+            --env NEXUS_REQUIRE_API_KEY=true \
+            --publish 127.0.0.1::8000 "$CANDIDATE"
+          port="$(docker port "$container" 8000/tcp | sed -n 's/.*://p' | head -1)"
+          for attempt in $(seq 1 80); do
+            if curl --fail --silent --max-time 5 "http://127.0.0.1:$port/v2/health" \
+              | python -c 'import json,sys; d=json.load(sys.stdin); raise SystemExit(0 if d.get("status")=="ok" and d.get("engine_loaded") and d.get("authentication_required") else 1)' 2>/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 80 ]; then
+              docker logs --tail 160 "$container"
+              exit 1
+            fi
+            sleep 3
+          done
+          key="$(tr -d '\r\n' <"$key_file")"
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' "http://127.0.0.1:$port/v2/jobs/release-check")" = 401
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' -H "Authorization: Bearer $key" "http://127.0.0.1:$port/v2/jobs/release-check")" = 404
+
+      - name: Promote validated image to stable
+        if: github.event_name == 'push' || inputs.promote_stable
+        run: |
+          docker buildx imagetools create \
+            --tag "$REGISTRY/$IMAGE_NAME:stable" \
+            "$REGISTRY/$IMAGE_NAME@${{ steps.build.outputs.digest }}"
