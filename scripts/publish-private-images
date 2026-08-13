@@ -47,6 +47,22 @@ fi
 untracked_source="$(git -C "$ROOT_DIR" ls-files --others --exclude-standard -- nexus_v2 profiles)"
 [[ -z "$untracked_source" ]] || die "application-image sources contain untracked files; commit them before publishing"
 
+work="$(mktemp -d "${TMPDIR:-/tmp}/nexus-private-publish.XXXXXX")"
+container=""
+cleanup() {
+  [[ -z "$container" ]] || docker rm -f "$container" >/dev/null 2>&1 || true
+  rm -rf "$work"
+}
+trap cleanup EXIT
+
+# Isolate registry credentials from ~/.docker/config.json. Docker discovers CLI
+# plugins below DOCKER_CONFIG, so expose the verified user-local Buildx binary there.
+mkdir -p "$work/docker-config/cli-plugins"
+buildx_plugin="$HOME/.docker/cli-plugins/docker-buildx"
+[[ -x "$buildx_plugin" ]] || die "Docker Buildx is required"
+ln -s "$buildx_plugin" "$work/docker-config/cli-plugins/docker-buildx"
+export DOCKER_CONFIG="$work/docker-config"
+docker buildx version >/dev/null
 printf '%s' "$GHCR_TOKEN" | docker login "$REGISTRY" -u "$OWNER" --password-stdin >/dev/null
 ok "Authenticated to $REGISTRY."
 
@@ -72,14 +88,6 @@ PY
   [[ "$visibility" == "private" ]] || die "GHCR package $package is not confirmed Private"
 }
 
-work="$(mktemp -d "${TMPDIR:-/tmp}/nexus-private-publish.XXXXXX")"
-container=""
-cleanup() {
-  [[ -z "$container" ]] || docker rm -f "$container" >/dev/null 2>&1 || true
-  rm -rf "$work"
-}
-trap cleanup EXIT
-
 runtime_dir="$work/runtime-context/runtime-assets"
 mkdir -p "$runtime_dir"
 info "Exporting and validating the reviewed runtime…"
@@ -98,22 +106,44 @@ app_image="$APP_REPOSITORY:$APP_TAG"
 cp "$ROOT_DIR/Dockerfile.runtime" "$work/runtime-context/Dockerfile"
 
 info "Building immutable runtime image $runtime_image…"
-docker build --pull \
+runtime_metadata="$work/runtime-metadata.json"
+docker buildx build --pull --platform linux/amd64 --provenance=false --push \
   --label "org.opencontainers.image.source=https://github.com/$OWNER/N.E.X.U.S-ML-V2" \
   --label "io.nexus.runtime.sha256=$runtime_hash" \
+  --metadata-file "$runtime_metadata" \
   --tag "$runtime_image" "$work/runtime-context"
-docker push "$runtime_image"
-docker pull "$runtime_image" >/dev/null
 require_private_package nexus-ml-v2-runtime
-runtime_digest_ref="$(docker image inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$runtime_image" | grep -E "^${RUNTIME_REPOSITORY}@sha256:[0-9a-f]{64}$" | head -1)"
+runtime_digest="$(METADATA="$runtime_metadata" python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+
+print(json.loads(Path(os.environ["METADATA"]).read_text())["containerimage.digest"])
+PY
+)"
+runtime_digest_ref="$RUNTIME_REPOSITORY@$runtime_digest"
 [[ "$runtime_digest_ref" =~ ^${RUNTIME_REPOSITORY}@sha256:[0-9a-f]{64}$ ]] || die "could not resolve the pushed runtime to an immutable digest"
 
 info "Building application candidate $app_image…"
-docker build --pull \
+app_metadata="$work/app-metadata.json"
+docker buildx build --pull --platform linux/amd64 --provenance=false --push \
   --build-arg "NEXUS_RUNTIME_IMAGE=$runtime_digest_ref" \
   --build-arg "VCS_REF=$source_revision" \
   --build-arg "RUNTIME_REF=$runtime_digest_ref" \
+  --metadata-file "$app_metadata" \
   --tag "$app_image" "$ROOT_DIR"
+require_private_package nexus-ml-v2
+app_digest="$(METADATA="$app_metadata" python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+
+print(json.loads(Path(os.environ["METADATA"]).read_text())["containerimage.digest"])
+PY
+)"
+app_digest_ref="$APP_REPOSITORY@$app_digest"
+[[ "$app_digest_ref" =~ ^${APP_REPOSITORY}@sha256:[0-9a-f]{64}$ ]] || die "could not resolve the pushed application to an immutable digest"
+docker pull "$app_digest_ref" >/dev/null
 
 key_file="$work/api.key"
 python3 -c 'import secrets; print("nxs_" + secrets.token_urlsafe(32))' >"$key_file"
@@ -121,13 +151,14 @@ chmod 600 "$key_file"
 container="nexus-publish-check-$$"
 info "Starting the candidate for engine/authentication validation…"
 docker run --detach --name "$container" \
+  --user "$(id -u):$(id -g)" \
   --read-only --cap-drop ALL --security-opt no-new-privileges \
   --tmpfs /tmp:size=256m,mode=1777 \
   --mount "type=bind,src=$key_file,dst=/run/secrets/nexus_api_key,readonly" \
   --env NEXUS_API_KEY_FILE=/run/secrets/nexus_api_key \
   --env NEXUS_REQUIRE_API_KEY=true \
   --publish 127.0.0.1::8000 \
-  "$app_image" >/dev/null
+  "$app_digest_ref" >/dev/null
 port="$(docker port "$container" 8000/tcp | sed -n 's/.*://p' | head -1)"
 [[ -n "$port" ]] || die "failed to discover candidate port"
 deadline=$((SECONDS + WAIT_SECONDS))
@@ -151,20 +182,16 @@ docker rm -f "$container" >/dev/null
 container=""
 ok "Candidate engine and authentication checks passed."
 
-# The immutable runtime candidate was pushed before the application build so the
-# builder could resolve it. Stable is moved only after every local gate passes.
-docker push "$app_image"
-require_private_package nexus-ml-v2
-docker tag "$runtime_image" "$RUNTIME_REPOSITORY:stable"
-docker push "$RUNTIME_REPOSITORY:stable"
-docker tag "$app_image" "$APP_REPOSITORY:stable"
-docker push "$APP_REPOSITORY:stable"
+# Immutable candidates were pushed before validation. Stable moves only after
+# the exact application digest passes the live engine/authentication gate.
+docker buildx imagetools create --tag "$RUNTIME_REPOSITORY:stable" "$runtime_digest_ref"
+docker buildx imagetools create --tag "$APP_REPOSITORY:stable" "$app_digest_ref"
 
 if command -v gh >/dev/null && gh auth status >/dev/null 2>&1; then
   gh variable set NEXUS_RUNTIME_IMAGE --repo "$OWNER/N.E.X.U.S-ML-V2" --body "$runtime_digest_ref" || true
 fi
 
 ok "Published private runtime: $runtime_digest_ref"
-ok "Published private application: $app_image"
+ok "Published private application: $app_digest_ref"
 ok "Promoted: $RUNTIME_REPOSITORY:stable and $APP_REPOSITORY:stable"
 printf '\nKeep both GHCR packages Private and grant this repository Actions access to the runtime package.\n'

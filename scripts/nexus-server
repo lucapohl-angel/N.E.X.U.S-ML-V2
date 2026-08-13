@@ -85,12 +85,18 @@ PY
 
 ensure_env() {
   local bind_address="${1:-127.0.0.1}" port="${2:-8000}" channel="${3:-$DEFAULT_CHANNEL}"
+  local runtime_uid runtime_gid
+  runtime_uid="$(id -u)"
+  runtime_gid="$(id -g)"
+  ((runtime_uid != 0)) || die "run Nexus as a dedicated non-root server account"
   if [[ -f "$ENV_FILE" ]]; then
     chmod 600 "$ENV_FILE"
     local existing_key_file
     existing_key_file="$(env_value NEXUS_API_KEY_FILE)"
     [[ -s "$existing_key_file" ]] || die "API key file is missing or empty: $existing_key_file"
     chmod 600 "$existing_key_file"
+    set_env_value NEXUS_CONTAINER_UID "$runtime_uid"
+    set_env_value NEXUS_CONTAINER_GID "$runtime_gid"
     [[ -n "$(env_value_optional NEXUS_UPDATE_CHANNEL)" ]] || set_env_value NEXUS_UPDATE_CHANNEL "$channel"
     return
   fi
@@ -104,6 +110,8 @@ ensure_env() {
   printf '%s\n' "$key" >"$key_file"
   cat >"$ENV_FILE" <<EOF
 NEXUS_API_KEY_FILE=$key_file
+NEXUS_CONTAINER_UID=$runtime_uid
+NEXUS_CONTAINER_GID=$runtime_gid
 NEXUS_IMAGE=$channel
 NEXUS_UPDATE_CHANNEL=$channel
 NEXUS_CURRENT_IMAGE=

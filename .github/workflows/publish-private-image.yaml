@@ -118,6 +118,7 @@ jobs:
           python -c 'import secrets; print("nxs_" + secrets.token_urlsafe(32))' >"$key_file"
           chmod 600 "$key_file"
           docker run --detach --name "$container" \
+            --user "$(id -u):$(id -g)" \
             --read-only --cap-drop ALL --security-opt no-new-privileges \
             --tmpfs /tmp:size=256m,mode=1777 \
             --mount "type=bind,src=$key_file,dst=/run/secrets/nexus_api_key,readonly" \

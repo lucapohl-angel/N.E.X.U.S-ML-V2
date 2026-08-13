@@ -3,6 +3,7 @@ name: nexus-v2
 services:
   nexus-api:
     image: "${NEXUS_IMAGE:?Set NEXUS_IMAGE to the private GHCR image}"
+    user: "${NEXUS_CONTAINER_UID:?Run ./scripts/nexus-server install}:${NEXUS_CONTAINER_GID:?Run ./scripts/nexus-server install}"
     restart: unless-stopped
     init: true
     environment:

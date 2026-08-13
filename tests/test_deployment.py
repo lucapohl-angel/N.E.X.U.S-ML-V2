@@ -66,6 +66,10 @@ def test_compose_pulls_private_image_and_applies_container_hardening() -> None:
     service = payload["services"]["nexus-api"]
 
     assert service["image"] == "${NEXUS_IMAGE:?Set NEXUS_IMAGE to the private GHCR image}"
+    assert service["user"] == (
+        "${NEXUS_CONTAINER_UID:?Run ./scripts/nexus-server install}:"
+        "${NEXUS_CONTAINER_GID:?Run ./scripts/nexus-server install}"
+    )
     assert "build" not in service
     assert "volumes" not in service
     assert service["environment"]["NEXUS_API_KEY_FILE"] == "/run/secrets/nexus_api_key"
@@ -321,6 +325,8 @@ def test_private_publish_workflow_uses_immutable_runtime_and_live_gate() -> None
     assert "require_private_package nexus-ml-v2-runtime" in publisher
     assert "require_private_package nexus-ml-v2" in publisher
     assert "Authorization: " + "Bearer" + " " + "${" + "key}" in publisher
+    assert '--user "$(id -u):$(id -g)"' in publisher
+    assert '--user "$(id -u):$(id -g)"' in workflow
     assert "Authorization: " + "Bearer" + " " + "$" + "key" in workflow
     assert 'RUNTIME_REPOSITORY:stable' in publisher
     assert 'APP_REPOSITORY:stable' in publisher
