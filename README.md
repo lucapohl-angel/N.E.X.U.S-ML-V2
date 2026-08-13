@@ -38,23 +38,96 @@ The public repository and Docker build context exclude source screenshots, revie
 
 ## Server installation
 
+The source repository is public, but the production image is private. Cloning this repository does **not** grant access to `ghcr.io/lucapohl-angel/nexus-ml-v2`.
+
+Two separate credentials are involved:
+
+| Credential | Purpose | Created by |
+|---|---|---|
+| GitHub PAT (classic), `read:packages` | Allows Docker to download the private GHCR image | Server operator |
+| N.E.X.U.S API key | Authorizes extraction and result API calls | Generated locally by the installer |
+
+The GitHub token is never used as the N.E.X.U.S API key, and neither credential is included in the image or repository.
+
 ### Requirements
 
 - 64-bit Linux server
 - Git
 - Docker Engine with Docker Compose v2
 - At least 4 GB RAM available to the container
-- A GitHub classic personal access token with `read:packages`
+- A GitHub account that has **Read** access to the private N.E.X.U.S application package
+- A personal access token (classic) for that account with `read:packages`
 
-Authenticate Docker once. Prefer a dedicated deployment identity/token with only package-read access:
+### 1. Get access to the official private image
+
+The package owner must grant your GitHub account Read access first. Ask the N.E.X.U.S maintainer to add your GitHub username under:
+
+1. GitHub profile → **Packages**
+2. `nexus-ml-v2` → **Package settings**
+3. **Manage access** → **Invite teams or people**
+4. Select your account and assign **Read**
+
+A token does not bypass package permissions. A valid `read:packages` token still receives `denied` if its GitHub account has not been granted access.
+
+> [!NOTE]
+> The runtime package is an internal build input. A normal server only needs Read access to `nexus-ml-v2`, the final application package.
+
+### 2. Create the GHCR download token
+
+GitHub Packages requires a [personal access token (classic)](https://github.com/settings/tokens). A fine-grained token is not the documented GHCR authentication method. See GitHub's [Container registry authentication guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
+
+1. Open GitHub → **Settings** → **Developer settings**.
+2. Open **Personal access tokens** → **Tokens (classic)**.
+3. Select **Generate new token (classic)**.
+4. Give it a recognizable name such as `Nexus server pull`.
+5. Set an expiration date appropriate for the server.
+6. Select only `read:packages`.
+7. Generate the token and store it in the server's secret manager or another protected location.
+
+Do not commit the token, put it in `.env`, pass it as a Docker build argument, or send it in chat.
+
+### 3. Log Docker into GHCR
+
+Use the GitHub username that was granted package access. Read the token interactively so it does not appear in shell history:
 
 ```bash
+read -rsp "GHCR token: " GHCR_TOKEN
+echo
+
 printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
-  -u YOUR_GITHUB_USER \
+  -u YOUR_GITHUB_USERNAME \
   --password-stdin
+
+unset GHCR_TOKEN
 ```
 
-Clone and install:
+Expected result:
+
+```text
+Login Succeeded
+```
+
+Optional access test:
+
+```bash
+docker pull ghcr.io/lucapohl-angel/nexus-ml-v2:stable
+```
+
+If this returns `denied`, `unauthorized`, or `not found`, check all three conditions:
+
+1. the token is a PAT **classic**, not a fine-grained token;
+2. it includes `read:packages`;
+3. the token owner's GitHub account has Read access to `nexus-ml-v2`.
+
+Docker stores the registry login according to the machine's Docker credential configuration. You may remove it after installation:
+
+```bash
+docker logout ghcr.io
+```
+
+The GHCR token is not mounted into the N.E.X.U.S container. If you log out, authenticate again before a future private image pull or update.
+
+### 4. Clone and install
 
 ```bash
 git clone --branch v2-engine \
@@ -68,12 +141,21 @@ The installer:
 1. pulls the private `stable` discovery channel;
 2. resolves it once to an immutable `sha256` digest;
 3. verifies source, commit, and pinned-runtime OCI labels;
-4. generates a 256-bit API key in a mode-`0600` secret file;
-5. starts the hardened container using the exact digest with pulling disabled;
-6. waits for the extraction engine to load;
-7. proves unauthenticated access is rejected;
-8. proves the generated key reaches a protected route;
-9. records the known-good digest for future rollback.
+4. generates a 256-bit N.E.X.U.S API key in a mode-`0600` secret file;
+5. runs the container as the non-root account that owns that secret;
+6. starts the hardened container using the exact digest with pulling disabled;
+7. waits for the extraction engine to load;
+8. proves missing or invalid API authentication is rejected;
+9. proves the generated API key reaches a protected route;
+10. records the known-good digest for future rollback.
+
+The installer prints the generated N.E.X.U.S API key once at the end. Retrieve it again with:
+
+```bash
+./scripts/nexus-server key
+```
+
+Store that key in your website backend's secret manager. Do not expose it to browser JavaScript.
 
 By default, the API listens only on `127.0.0.1:8000`. Put your HTTPS reverse proxy in front of it.
 
@@ -85,6 +167,40 @@ Custom port or deliberate public bind:
 ```
 
 Use `--public` only when firewall rules and TLS termination are already configured.
+
+### Using your own GHCR package
+
+It is possible to operate a private package under your own GitHub namespace, but the public repository alone is not a complete production image source. The official private package contains reviewed recognition catalogs, policies, and screenshot-derived prototypes that are intentionally excluded from public Git.
+
+To publish your own production image, you must:
+
+1. provide and review your own legally distributable runtime assets;
+2. keep those assets outside public Git history;
+3. configure `NEXUS_GHCR_OWNER` for your GitHub namespace;
+4. authenticate with a PAT (classic) that has `read:packages` and `write:packages`;
+5. run the trusted publisher with explicit runtime approval:
+
+```bash
+read -rsp "GHCR publishing token: " GHCR_TOKEN
+echo
+export GHCR_TOKEN
+export NEXUS_GHCR_OWNER=YOUR_GITHUB_NAMESPACE
+
+./scripts/publish-private-images --approve-reviewed-runtime
+
+unset GHCR_TOKEN NEXUS_GHCR_OWNER
+```
+
+The publisher creates the packages on their first successful pushes; empty GHCR packages do not need to be created manually.
+
+The stock installer deliberately trusts only the official package. A compatible custom application image can be selected with:
+
+```bash
+./scripts/nexus-server install \
+  --image ghcr.io/YOUR_GITHUB_NAMESPACE/nexus-ml-v2:stable
+```
+
+That command will be rejected until your fork has its own matching trust policy. Update `DEFAULT_CHANNEL`, `EXPECTED_SOURCE`, `EXPECTED_RUNTIME_REPOSITORY`, `is_digest_reference`, and the repository check in `resolve_candidate_digest` inside `scripts/nexus-server`. Keep the repository allowlist, OCI label verification, digest pinning, health check, API authentication check, and rollback behavior. Do not pass the runtime-only image to the installer. The server needs the complete application image.
 
 ## Updates and rollback
 
@@ -257,7 +373,7 @@ If startup fails:
 
 ## Container hardening
 
-- non-root UID/GID `10001`;
+- non-root execution using the installer account's numeric UID/GID;
 - read-only root filesystem;
 - all Linux capabilities dropped;
 - `no-new-privileges` enabled;
