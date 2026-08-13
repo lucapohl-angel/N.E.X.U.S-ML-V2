@@ -11,33 +11,35 @@ Browser -> website backend -> authenticated N.E.X.U.S API -> job polling -> webs
 The API keeps uploads in memory, releases encoded screenshot bytes when a job terminates, and does not
 write screenshots to permanent storage.
 
-## Quick start with Docker
+## Private GHCR deployment
 
-The public Docker image intentionally excludes reviewed recognition assets. First export the minimal
-private runtime bundle on a trusted development machine:
+Production is distributed as the private application image
+`ghcr.io/lucapohl-angel/nexus-ml-v2`. It contains one reviewed runtime bundle pinned by
+immutable digest. The separate private runtime package is never mounted from the host and
+neither package is public.
 
-```bash
-uv run python tools/export_runtime_assets.py --archive nexus-runtime-assets.tar.gz
-scp nexus-runtime-assets.tar.gz user@your-server:/tmp/
-```
-
-Then install on the server:
+Authenticate Docker with a dedicated classic GitHub token that has `read:packages`, then
+clone and install:
 
 ```bash
-git clone --branch v2-engine https://github.com/lucapohl-an/N.E.X.U.S-ML-V2.git
+printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
+  -u YOUR_GITHUB_USER --password-stdin
+
+git clone --branch v2-engine https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2.git
 cd N.E.X.U.S-ML-V2
-./scripts/nexus-server install --runtime-assets /tmp/nexus-runtime-assets.tar.gz
+./scripts/nexus-server install
 ```
 
-The idempotent installer validates all bundle checksums and catalog/policy integrity pins, generates a
-256-bit API key, writes `.env` and `.env.key` with mode `0600`, builds and starts the service, waits for the engine,
-and checks both rejected unauthenticated access and accepted authenticated access. The service binds
-to loopback by default.
+The installer generates a 256-bit API key, writes `.env` and `.env.key` with mode `0600`,
+resolves the `stable` discovery channel to an immutable application digest, verifies image
+provenance labels, starts the hardened service with pulling disabled, waits for the engine,
+and checks both rejected unauthenticated access and accepted authenticated access. The
+service binds to loopback by default.
 
-Compose runs the container as an unprivileged user, drops Linux capabilities, uses a read-only root
-filesystem, caps memory and process count, and mounts the private inference bundle read-only. The image
-contains code and production profiles only. Reviewed screenshots, truth files, reviewer states,
-evaluation reports, catalog worktrees, and prototype source provenance remain outside the image.
+Compose runs the container as an unprivileged user, drops Linux capabilities, uses a
+read-only root filesystem, and caps memory and process count. Reviewed source screenshots,
+truth files, reviewer states, evaluation reports, private catalog worktrees, and prototype
+source provenance remain outside the public repository and normal application build context.
 
 Use the lifecycle helper for normal operation:
 
@@ -45,8 +47,28 @@ Use the lifecycle helper for normal operation:
 ./scripts/nexus-server status
 ./scripts/nexus-server logs -f
 ./scripts/nexus-server update
+./scripts/nexus-server rollback
 ./scripts/nexus-server rotate-key
 ```
+
+Updates deploy exact digests and automatically restore the previous known-good digest if
+engine readiness or authentication checks fail. Optional daily updates use the same bounded,
+locked path:
+
+```bash
+./scripts/nexus-server enable-auto-update
+./scripts/nexus-server disable-auto-update
+```
+
+Runtime artwork/catalog refreshes are not blindly promoted. After human review and replay,
+a trusted Docker-capable machine publishes them with:
+
+```bash
+./scripts/publish-private-images --approve-reviewed-runtime
+```
+
+See the root `README.md` for first-time GHCR permissions and the code-versus-runtime update
+workflow.
 
 The default `auto` profile resolves to the fastest profile certified on the current reviewed corpus.
 Override it in `.env` when needed:

@@ -4,7 +4,9 @@ set -Eeuo pipefail
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_FILE="${NEXUS_ENV_FILE:-$ROOT_DIR/.env}"
 COMPOSE_FILE="$ROOT_DIR/compose.yaml"
-RUNTIME_ARCHIVE=""
+DEFAULT_CHANNEL="ghcr.io/lucapohl-angel/nexus-ml-v2:stable"
+EXPECTED_SOURCE="https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2"
+EXPECTED_RUNTIME_REPOSITORY="ghcr.io/lucapohl-angel/nexus-ml-v2-runtime"
 WAIT_SECONDS="${NEXUS_STARTUP_TIMEOUT:-240}"
 
 info() { printf '\033[1;36m[nexus]\033[0m %s\n' "$*"; }
@@ -17,17 +19,20 @@ usage() {
 Nexus V2 server manager
 
 Usage:
-  ./scripts/nexus-server install [--runtime-assets FILE] [--public] [--port PORT]
-  ./scripts/nexus-server update
+  ./scripts/nexus-server install [--public] [--port PORT] [--image IMAGE]
+  ./scripts/nexus-server update [--image IMAGE]
+  ./scripts/nexus-server rollback
+  ./scripts/nexus-server enable-auto-update | disable-auto-update
   ./scripts/nexus-server status
   ./scripts/nexus-server logs [docker compose logs options]
   ./scripts/nexus-server restart | stop | start
   ./scripts/nexus-server key | rotate-key
-  ./scripts/nexus-server uninstall [--purge-assets]
+  ./scripts/nexus-server uninstall
 
-Install/update are idempotent. The default bind address is 127.0.0.1; put a TLS
-reverse proxy in front of it. Use --public only when the server firewall and TLS
-termination are already configured.
+Install/update require an existing `docker login ghcr.io` with read:packages. The
+mutable stable tag is discovery-only: deployment and rollback always use saved
+sha256 digests. Updates are serialized and automatically restore the prior digest
+if engine readiness or API authentication checks fail.
 EOF
 }
 
@@ -35,65 +40,24 @@ require_command() {
   command -v "$1" >/dev/null 2>&1 || die "required command not found: $1"
 }
 
-docker_ready() {
-  docker info >/dev/null 2>&1
-}
-
 require_docker() {
   require_command docker
   docker compose version >/dev/null 2>&1 || die "Docker Compose v2 is required (docker compose)."
-  docker_ready || die "Docker is installed but unavailable. Start the daemon and ensure this user can access it."
+  docker info >/dev/null 2>&1 || die "Docker is installed but unavailable. Start the daemon and ensure this user can access it."
 }
 
-ensure_env() {
-  local bind_address="${1:-127.0.0.1}"
-  local port="${2:-8000}"
-  if [[ -f "$ENV_FILE" ]]; then
-    chmod 600 "$ENV_FILE"
-    local existing_key_file
-    existing_key_file="$(env_value NEXUS_API_KEY_FILE)"
-    [[ -s "$existing_key_file" ]] || die "API key file is missing or empty: $existing_key_file"
-    chmod 600 "$existing_key_file"
-    return
-  fi
-  require_command python3
-  local key key_file
-  key="$(python3 -c 'import secrets; print("nxs_" + secrets.token_urlsafe(32))')"
-  key_file="${ENV_FILE}.key"
-  umask 077
-  printf '%s\n' "$key" >"$key_file"
-  cat >"$ENV_FILE" <<EOF
-NEXUS_API_KEY_FILE=$key_file
-NEXUS_RUNTIME_ASSETS_DIR=$ROOT_DIR/runtime-assets
-NEXUS_BIND_ADDRESS=$bind_address
-NEXUS_API_PORT=$port
-NEXUS_PERFORMANCE_PROFILE=auto
-NEXUS_MAX_RETAINED_JOBS=64
-NEXUS_MAX_UPLOAD_BYTES=52428800
-NEXUS_MEMORY_LIMIT=4g
-NEXUS_IMAGE_TAG=local
-EOF
-  chmod 600 "$ENV_FILE" "$key_file"
-  ok "Generated a 256-bit API key in $key_file (mode 0600)."
+env_value_optional() {
+  local key="$1"
+  [[ -f "$ENV_FILE" ]] || return 0
+  grep -m1 -E "^${key}=" "$ENV_FILE" | cut -d= -f2- || true
 }
 
 env_value() {
-  local key="$1"
+  local key="$1" value
   [[ -f "$ENV_FILE" ]] || die "missing $ENV_FILE; run install first"
-  local value
-  value="$(grep -m1 -E "^${key}=" "$ENV_FILE" | cut -d= -f2- || true)"
+  value="$(env_value_optional "$key")"
   [[ -n "$value" ]] || die "$key is missing from $ENV_FILE"
   printf '%s' "$value"
-}
-
-api_key() {
-  local key_file
-  key_file="$(env_value NEXUS_API_KEY_FILE)"
-  [[ -s "$key_file" ]] || die "API key file is missing or empty: $key_file"
-  local key
-  key="$(tr -d '\r\n' <"$key_file")"
-  ((${#key} >= 16)) || die "API key file contains an invalid short key"
-  printf '%s' "$key"
 }
 
 set_env_value() {
@@ -105,66 +69,85 @@ from pathlib import Path
 path = Path(os.environ["ENV_FILE"])
 key = os.environ["KEY"]
 value = os.environ["VALUE"]
-lines = path.read_text(encoding="utf-8").splitlines()
-replaced = False
+lines = path.read_text(encoding="utf-8").splitlines() if path.exists() else []
 for index, line in enumerate(lines):
     if line.startswith(key + "="):
         lines[index] = f"{key}={value}"
-        replaced = True
         break
-if not replaced:
+else:
     lines.append(f"{key}={value}")
-path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+temporary = path.with_name(path.name + ".new")
+temporary.write_text("\n".join(lines) + "\n", encoding="utf-8")
+os.chmod(temporary, 0o600)
+temporary.replace(path)
 PY
-  chmod 600 "$ENV_FILE"
+}
+
+ensure_env() {
+  local bind_address="${1:-127.0.0.1}" port="${2:-8000}" channel="${3:-$DEFAULT_CHANNEL}"
+  if [[ -f "$ENV_FILE" ]]; then
+    chmod 600 "$ENV_FILE"
+    local existing_key_file
+    existing_key_file="$(env_value NEXUS_API_KEY_FILE)"
+    [[ -s "$existing_key_file" ]] || die "API key file is missing or empty: $existing_key_file"
+    chmod 600 "$existing_key_file"
+    [[ -n "$(env_value_optional NEXUS_UPDATE_CHANNEL)" ]] || set_env_value NEXUS_UPDATE_CHANNEL "$channel"
+    return
+  fi
+
+  require_command python3
+  local key key_file
+  key="$(python3 -c 'import secrets; print("nxs_" + secrets.token_urlsafe(32))')"
+  key_file="${ENV_FILE}.key"
+  umask 077
+  mkdir -p "$(dirname -- "$ENV_FILE")"
+  printf '%s\n' "$key" >"$key_file"
+  cat >"$ENV_FILE" <<EOF
+NEXUS_API_KEY_FILE=$key_file
+NEXUS_IMAGE=$channel
+NEXUS_UPDATE_CHANNEL=$channel
+NEXUS_CURRENT_IMAGE=
+NEXUS_PREVIOUS_IMAGE=
+NEXUS_BIND_ADDRESS=$bind_address
+NEXUS_API_PORT=$port
+NEXUS_PERFORMANCE_PROFILE=auto
+NEXUS_MAX_RETAINED_JOBS=64
+NEXUS_MAX_UPLOAD_BYTES=52428800
+NEXUS_MEMORY_LIMIT=4g
+EOF
+  chmod 600 "$ENV_FILE" "$key_file"
+  ok "Generated a 256-bit API key in $key_file (mode 0600)."
+}
+
+acquire_deploy_lock() {
+  require_command flock
+  mkdir -p "$(dirname -- "$ENV_FILE")"
+  umask 077
+  exec 9>"${ENV_FILE}.deploy.lock"
+  chmod 600 "${ENV_FILE}.deploy.lock"
+  flock -n 9 || die "another Nexus install/update/rollback is already running"
+}
+
+api_key() {
+  local key_file key
+  key_file="$(env_value NEXUS_API_KEY_FILE)"
+  [[ -s "$key_file" ]] || die "API key file is missing or empty: $key_file"
+  key="$(tr -d '\r\n' <"$key_file")"
+  ((${#key} >= 16)) || die "API key file contains an invalid short key"
+  printf '%s' "$key"
 }
 
 compose() {
   docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" "$@"
 }
 
-install_runtime_assets() {
-  local runtime_dir
-  runtime_dir="$(env_value NEXUS_RUNTIME_ASSETS_DIR)"
-  if [[ -n "$RUNTIME_ARCHIVE" ]]; then
-    require_command python3
-    local archive
-    archive="$(python3 -c 'import os,sys; print(os.path.abspath(os.path.expanduser(sys.argv[1])))' "$RUNTIME_ARCHIVE")"
-    [[ -f "$archive" ]] || die "runtime asset archive not found: $archive"
-    local parent temporary backup
-    parent="$(dirname -- "$runtime_dir")"
-    temporary="${runtime_dir}.new.$$"
-    backup="${runtime_dir}.previous.$$"
-    mkdir -p "$parent"
-    rm -rf "$temporary"
-    mkdir -p "$temporary"
-    ARCHIVE="$archive" DESTINATION="$temporary" python3 - <<'PY'
-import os
-import tarfile
-from pathlib import Path
-
-archive = Path(os.environ["ARCHIVE"])
-destination = Path(os.environ["DESTINATION"]).resolve()
-with tarfile.open(archive, "r:gz") as bundle:
-    for member in bundle.getmembers():
-        target = (destination / member.name).resolve()
-        if not target.is_relative_to(destination):
-            raise SystemExit(f"unsafe runtime archive path: {member.name}")
-        if member.issym() or member.islnk() or not (member.isfile() or member.isdir()):
-            raise SystemExit(f"unsupported runtime archive entry: {member.name}")
-    bundle.extractall(destination)
-PY
-    python3 "$ROOT_DIR/tools/validate_runtime_assets.py" "$temporary"
-    if [[ -d "$runtime_dir" ]]; then
-      mv "$runtime_dir" "$backup"
-    fi
-    mv "$temporary" "$runtime_dir"
-    rm -rf "$backup"
-    chmod -R a=rX,u+w "$runtime_dir"
-    ok "Installed the private runtime bundle at $runtime_dir."
-  fi
-  [[ -d "$runtime_dir" ]] || die "runtime assets are missing at $runtime_dir. Pass --runtime-assets nexus-runtime-assets.tar.gz."
-  python3 "$ROOT_DIR/tools/validate_runtime_assets.py" "$runtime_dir"
+verify_auth() {
+  local host="$1" port="$2" key unauth auth
+  key="$(api_key)"
+  unauth="$(curl --silent --output /dev/null --write-out '%{http_code}' --max-time 10 "http://${host}:${port}/v2/jobs/security-check")"
+  [[ "$unauth" == "401" ]] || return 1
+  auth="$(curl --silent --output /dev/null --write-out '%{http_code}' --max-time 10 -H "Authorization: Bearer $key" "http://${host}:${port}/v2/jobs/security-check")"
+  [[ "$auth" == "404" ]]
 }
 
 wait_ready() {
@@ -177,35 +160,122 @@ wait_ready() {
   health="http://${host}:${port}/v2/health"
   deadline=$((SECONDS + WAIT_SECONDS))
   while (( SECONDS < deadline )); do
-    if curl --fail --silent --max-time 5 "$health" | python3 -c 'import json,sys; d=json.load(sys.stdin); raise SystemExit(0 if d.get("status")=="ok" and d.get("engine_loaded") and d.get("authentication_required") else 1)' 2>/dev/null; then
-      verify_auth "$host" "$port"
+    if curl --fail --silent --max-time 5 "$health" | python3 -c 'import json,sys; d=json.load(sys.stdin); raise SystemExit(0 if d.get("status")=="ok" and d.get("engine_loaded") and d.get("authentication_required") else 1)' 2>/dev/null && verify_auth "$host" "$port"; then
       ok "API is healthy and authenticated at http://${host}:${port}."
-      return
+      return 0
     fi
     sleep 3
   done
+  return 1
+}
+
+show_failure() {
   compose ps >&2 || true
   compose logs --tail 120 nexus-api >&2 || true
-  die "API did not become ready within ${WAIT_SECONDS}s"
 }
 
-verify_auth() {
-  local host="$1" port="$2" key unauth auth
-  key="$(api_key)"
-  unauth="$(curl --silent --output /dev/null --write-out '%{http_code}' --max-time 10 "http://${host}:${port}/v2/jobs/security-check")"
-  [[ "$unauth" == "401" ]] || die "security check failed: unauthenticated protected request returned HTTP $unauth"
-  auth="$(curl --silent --output /dev/null --write-out '%{http_code}' --max-time 10 -H "Authorization: Bearer $key" "http://${host}:${port}/v2/jobs/security-check")"
-  [[ "$auth" == "404" ]] || die "security check failed: authenticated protected request returned HTTP $auth"
+image_repository() {
+  local reference="$1"
+  reference="${reference%@*}"
+  if [[ "${reference##*/}" == *:* ]]; then
+    reference="${reference%:*}"
+  fi
+  printf '%s' "$reference"
 }
 
-install_or_update() {
-  local action="$1" bind="127.0.0.1" port="8000"
-  shift
+is_digest_reference() {
+  [[ "$1" =~ ^ghcr\.io/lucapohl-angel/nexus-ml-v2@sha256:[0-9a-f]{64}$ ]]
+}
+
+resolve_candidate_digest() {
+  local channel="$1" repository candidate
+  if is_digest_reference "$channel"; then
+    docker pull "$channel" >/dev/null
+    printf '%s' "$channel"
+    return
+  fi
+
+  repository="$(image_repository "$channel")"
+  [[ "$repository" == "ghcr.io/lucapohl-angel/nexus-ml-v2" ]] || die "update image must use the private Nexus application repository"
+  info "Pulling private update channel $channel…" >&2
+  if ! docker pull "$channel" >&2; then
+    cat >&2 <<EOF
+[nexus] Could not pull the private GHCR image. Authenticate with a classic GitHub
+[nexus] token that has read:packages:
+[nexus]   printf '%s' "\$GHCR_TOKEN" | docker login ghcr.io -u YOUR_GITHUB_USER --password-stdin
+EOF
+    return 1
+  fi
+  candidate="$(docker image inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$channel" | grep -E "^${repository}@sha256:[0-9a-f]{64}$" | head -1)"
+  is_digest_reference "$candidate" || die "could not resolve $channel to a trusted application digest"
+  printf '%s' "$candidate"
+}
+
+verify_candidate_metadata() {
+  local image="$1" source revision runtime
+  source="$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.source"}}' "$image")"
+  revision="$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$image")"
+  runtime="$(docker image inspect --format '{{index .Config.Labels "io.nexus.runtime.ref"}}' "$image")"
+  [[ "$source" == "$EXPECTED_SOURCE" ]] || die "candidate has an unexpected source label: $source"
+  [[ "$revision" =~ ^[0-9a-f]{40}$ ]] || die "candidate has an invalid source revision label"
+  [[ "$runtime" =~ ^${EXPECTED_RUNTIME_REPOSITORY}@sha256:[0-9a-f]{64}$ ]] || die "candidate is not pinned to an immutable reviewed runtime digest"
+}
+
+activate_image() {
+  local image="$1" container expected_id running_id
+  is_digest_reference "$image" || die "refusing to deploy a mutable image reference: $image"
+  docker pull "$image" >/dev/null
+  set_env_value NEXUS_IMAGE "$image"
+  compose config --quiet
+  compose up --detach --force-recreate --remove-orphans --pull never nexus-api
+  if wait_ready; then
+    container="$(compose ps --quiet nexus-api)"
+    expected_id="$(docker image inspect --format '{{.Id}}' "$image")"
+    running_id="$(docker inspect --format '{{.Image}}' "$container")"
+    [[ -n "$container" && "$running_id" == "$expected_id" ]] || {
+      warn "running container image does not match the requested digest"
+      return 1
+    }
+    return 0
+  fi
+  show_failure
+  return 1
+}
+
+update_image() {
+  local channel="$1" current candidate
+  current="$(env_value_optional NEXUS_CURRENT_IMAGE)"
+  candidate="$(resolve_candidate_digest "$channel")" || return 1
+  verify_candidate_metadata "$candidate"
+
+  if [[ "$candidate" == "$current" ]]; then
+    ok "Already running the newest approved digest ($candidate)."
+    return 0
+  fi
+
+  if activate_image "$candidate"; then
+    [[ -z "$current" ]] || set_env_value NEXUS_PREVIOUS_IMAGE "$current"
+    set_env_value NEXUS_CURRENT_IMAGE "$candidate"
+    ok "Promoted approved digest $candidate."
+    return 0
+  fi
+
+  warn "Candidate failed readiness/authentication."
+  if is_digest_reference "$current" && activate_image "$current"; then
+    set_env_value NEXUS_CURRENT_IMAGE "$current"
+    warn "Rollback to the previous known-good digest succeeded."
+    return 1
+  fi
+  die "candidate failed and no known-good digest could be restored"
+}
+
+install_service() {
+  local bind="127.0.0.1" port="8000" channel="$DEFAULT_CHANNEL"
   while (($#)); do
     case "$1" in
-      --runtime-assets) (($# >= 2)) || die "--runtime-assets requires a file"; RUNTIME_ARCHIVE="$2"; shift 2 ;;
       --public) bind="0.0.0.0"; shift ;;
       --port) (($# >= 2)) || die "--port requires a number"; port="$2"; shift 2 ;;
+      --image) (($# >= 2)) || die "--image requires a reference"; channel="$2"; shift 2 ;;
       *) die "unknown option: $1" ;;
     esac
   done
@@ -213,30 +283,89 @@ install_or_update() {
   require_docker
   require_command curl
   require_command python3
-  require_command tar
-  ensure_env "$bind" "$port"
-  if [[ "$action" == "install" ]]; then
-    set_env_value NEXUS_BIND_ADDRESS "$bind"
-    set_env_value NEXUS_API_PORT "$port"
-  fi
-  install_runtime_assets
-  compose config --quiet
-  info "Building the production API image…"
-  compose build --pull nexus-api
-  info "Starting/updating the service…"
-  compose up --detach --remove-orphans nexus-api
-  wait_ready
+  ensure_env "$bind" "$port" "$channel"
+  acquire_deploy_lock
+  set_env_value NEXUS_BIND_ADDRESS "$bind"
+  set_env_value NEXUS_API_PORT "$port"
+  set_env_value NEXUS_UPDATE_CHANNEL "$channel"
+  update_image "$channel" || die "installation failed"
   printf '\nAPI key (store it in your backend secret manager):\n%s\n\n' "$(api_key)"
-  printf 'Health: curl http://127.0.0.1:%s/v2/health\n' "$(env_value NEXUS_API_PORT)"
-  printf 'Logs:   ./scripts/nexus-server logs -f\n'
+  printf 'Health:  curl http://127.0.0.1:%s/v2/health\n' "$(env_value NEXUS_API_PORT)"
+  printf 'Updates: ./scripts/nexus-server update\n'
+}
+
+update_service() {
+  local channel scheduled=false jitter
+  channel="$(env_value_optional NEXUS_UPDATE_CHANNEL)"
+  [[ -n "$channel" ]] || channel="$DEFAULT_CHANNEL"
+  while (($#)); do
+    case "$1" in
+      --image) (($# >= 2)) || die "--image requires a reference"; channel="$2"; shift 2 ;;
+      --scheduled) scheduled=true; shift ;;
+      *) die "unknown option: $1" ;;
+    esac
+  done
+  require_docker
+  require_command curl
+  require_command python3
+  ensure_env "$(env_value NEXUS_BIND_ADDRESS)" "$(env_value NEXUS_API_PORT)" "$channel"
+  if $scheduled; then
+    jitter="${NEXUS_UPDATE_JITTER_MAX:-900}"
+    [[ "$jitter" =~ ^[0-9]+$ ]] || die "NEXUS_UPDATE_JITTER_MAX must be a non-negative integer"
+    ((jitter == 0)) || sleep $((RANDOM % (jitter + 1)))
+  fi
+  acquire_deploy_lock
+  set_env_value NEXUS_UPDATE_CHANNEL "$channel"
+  update_image "$channel"
+}
+
+rollback_service() {
+  local current previous
+  current="$(env_value NEXUS_CURRENT_IMAGE)"
+  previous="$(env_value NEXUS_PREVIOUS_IMAGE)"
+  is_digest_reference "$previous" || die "no previous known-good digest is available"
+  verify_candidate_metadata "$previous"
+  if activate_image "$previous"; then
+    set_env_value NEXUS_CURRENT_IMAGE "$previous"
+    set_env_value NEXUS_PREVIOUS_IMAGE "$current"
+    ok "Rolled back to $previous."
+    return
+  fi
+  if is_digest_reference "$current" && activate_image "$current"; then
+    die "requested rollback failed; current known-good digest was restored"
+  fi
+  die "rollback failed and the current digest could not be restored"
+}
+
+enable_auto_update() {
+  require_command crontab
+  [[ -f "$ENV_FILE" ]] || die "run install first"
+  local marker="# nexus-v2-auto-update:$ROOT_DIR" command existing
+  command="17 4 * * * NEXUS_ENV_FILE='$ENV_FILE' '$ROOT_DIR/scripts/nexus-server' update --scheduled >>'$ROOT_DIR/nexus-update.log' 2>&1 $marker"
+  existing="$(crontab -l 2>/dev/null | grep -Fv "$marker" || true)"
+  { printf '%s\n' "$existing"; printf '%s\n' "$command"; } | awk 'NF' | crontab -
+  ok "Enabled daily digest-pinned updates with randomized delay and rollback. Log: $ROOT_DIR/nexus-update.log"
+}
+
+disable_auto_update() {
+  require_command crontab
+  local marker="# nexus-v2-auto-update:$ROOT_DIR" existing
+  existing="$(crontab -l 2>/dev/null | grep -Fv "$marker" || true)"
+  printf '%s\n' "$existing" | awk 'NF' | crontab -
+  ok "Disabled automatic Nexus updates."
 }
 
 case "${1:-}" in
-  install) shift; install_or_update install "$@" ;;
-  update) shift; install_or_update update "$@" ;;
-  start) shift; require_docker; compose up --detach nexus-api; wait_ready ;;
+  install) shift; install_service "$@" ;;
+  update) shift; update_service "$@" ;;
+  rollback)
+    shift; (($# == 0)) || die "rollback takes no options"; require_docker; require_command curl; require_command python3; acquire_deploy_lock; rollback_service
+    ;;
+  enable-auto-update) shift; (($# == 0)) || die "enable-auto-update takes no options"; enable_auto_update ;;
+  disable-auto-update) shift; (($# == 0)) || die "disable-auto-update takes no options"; disable_auto_update ;;
+  start) shift; require_docker; compose up --detach --pull never nexus-api; wait_ready || { show_failure; die "API failed readiness"; } ;;
   stop) shift; require_docker; compose stop nexus-api ;;
-  restart) shift; require_docker; compose restart nexus-api; wait_ready ;;
+  restart) shift; require_docker; compose restart nexus-api; wait_ready || { show_failure; die "API failed readiness"; } ;;
   status) shift; require_docker; compose ps; [[ "$(compose ps --status running --services)" == *"nexus-api"* ]] && wait_ready ;;
   logs) shift; require_docker; compose logs "$@" nexus-api ;;
   key) shift; api_key; printf '\n' ;;
@@ -248,27 +377,19 @@ case "${1:-}" in
     python3 -c 'import secrets; print("nxs_" + secrets.token_urlsafe(32))' >"${key_file}.new"
     chmod 600 "${key_file}.new"
     mv "${key_file}.new" "$key_file"
-    compose up --detach --force-recreate nexus-api
-    wait_ready
+    compose up --detach --force-recreate --pull never nexus-api
+    wait_ready || { show_failure; die "API failed after key rotation"; }
     printf 'New API key:\n%s\n' "$(api_key)"
     ;;
   uninstall)
-    shift; require_docker
-    purge=false
-    [[ "${1:-}" == "--purge-assets" ]] && purge=true && shift
-    (($# == 0)) || die "unknown uninstall option: $1"
+    shift; require_docker; (($# == 0)) || die "uninstall takes no options"
     if [[ -f "$ENV_FILE" ]]; then
       key_file="$(env_value NEXUS_API_KEY_FILE)"
       compose down --remove-orphans || true
-      if $purge; then rm -rf -- "$(env_value NEXUS_RUNTIME_ASSETS_DIR)"; fi
-      rm -f -- "$key_file" "$ENV_FILE"
+      rm -f -- "$key_file" "$ENV_FILE" "${ENV_FILE}.deploy.lock"
+      ok "Nexus V2 service and local credentials removed. Private GHCR images remain in Docker's cache."
     else
       warn "No local installation file found."
-    fi
-    if $purge; then
-      ok "Nexus V2 service and runtime assets removed."
-    else
-      ok "Nexus V2 service removed; runtime assets were preserved."
     fi
     ;;
   -h|--help|help) usage ;;

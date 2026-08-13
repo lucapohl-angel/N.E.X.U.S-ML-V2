@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
+ARG NEXUS_RUNTIME_IMAGE
+FROM ${NEXUS_RUNTIME_IMAGE} AS runtime-assets
+
 FROM python:3.11-slim-bookworm AS builder
 
 ENV UV_COMPILE_BYTECODE=1 \
@@ -12,6 +15,12 @@ COPY nexus_v2 ./nexus_v2
 RUN uv sync --frozen --no-dev --no-editable
 
 FROM python:3.11-slim-bookworm AS runtime
+
+ARG VCS_REF=unknown
+ARG RUNTIME_REF=unknown
+LABEL org.opencontainers.image.source="https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      io.nexus.runtime.ref="${RUNTIME_REF}"
 
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
@@ -29,8 +38,9 @@ RUN apt-get update \
 
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
+COPY --from=runtime-assets /runtime-assets /runtime-assets
 COPY profiles ./profiles
-RUN chmod -R a=rX /app/profiles
+RUN chmod -R a=rX /app/profiles /runtime-assets
 
 USER 10001:10001
 EXPOSE 8000

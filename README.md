@@ -2,28 +2,39 @@
 
 # N.E.X.U.S ML V2
 
-**Authenticated screenshot extraction API for Mobile Legends post-match results**
+**Private, authenticated screenshot extraction for Mobile Legends post-match results**
 
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Docker](https://img.shields.io/badge/Deploy-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker](https://img.shields.io/badge/Deploy-Private%20GHCR-2496ED?logo=docker&logoColor=white)](https://github.com/features/packages)
 
 </div>
 
-N.E.X.U.S V2 accepts the five post-match screenshots, extracts structured match data, and returns one result per screen through an asynchronous API. The production service preloads one certified CPU engine, keeps uploaded screenshots in memory, and protects every submission/result route with an API key.
+N.E.X.U.S V2 accepts five post-match screenshots, extracts structured match data, and returns one result per screen through an asynchronous API. Production uses a preloaded CPU engine and protects every submission/result route with an API key.
 
 > [!IMPORTANT]
-> Call N.E.X.U.S from your **website backend**, never directly from browser JavaScript. The API key must remain a server-side secret.
+> Call N.E.X.U.S from your website backend, never directly from browser JavaScript. Keep both the N.E.X.U.S API key and the GHCR deployment token server-side.
 
 ## Production architecture
 
 ```text
-Browser → your backend → N.E.X.U.S API → queued extraction → structured JSON
-                              │
-                              └── Bearer API key
+Public source repository
+        │
+        ├── GitHub Actions ── approved runtime digest
+        │                           │
+        ▼                           ▼
+Private GHCR application image ← private reviewed runtime image
+        │
+        ▼
+Server: digest-pinned container → authenticated N.E.X.U.S API
 ```
 
-The Docker image contains application code and screen-layout profiles only. Reviewed screenshots, reviewer state, truth files, reports, and recognition source provenance are excluded. A validated private runtime bundle is mounted read-only when the container starts.
+Two GHCR packages stay private:
+
+- `ghcr.io/lucapohl-angel/nexus-ml-v2-runtime` contains reviewed catalog and recognition assets.
+- `ghcr.io/lucapohl-angel/nexus-ml-v2` contains the API plus one pinned runtime digest.
+
+The public repository and Docker build context exclude source screenshots, reviewer state, truth files, player data, reports, private catalogs, and recognition source provenance.
 
 ## Server installation
 
@@ -32,96 +43,168 @@ The Docker image contains application code and screen-layout profiles only. Revi
 - 64-bit Linux server
 - Git
 - Docker Engine with Docker Compose v2
-- At least **4 GB RAM** available to the container
-- The private `nexus-runtime-assets.tar.gz` bundle
+- At least 4 GB RAM available to the container
+- A GitHub classic personal access token with `read:packages`
 
-Docker must already be installed and usable by your server user:
+Authenticate Docker once. Prefer a dedicated deployment identity/token with only package-read access:
 
 ```bash
-docker info
-docker compose version
+printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
+  -u YOUR_GITHUB_USER \
+  --password-stdin
 ```
 
-### 1. Export the private runtime bundle
-
-Run this once on the trusted development machine that contains the reviewed runtime assets:
+Clone and install:
 
 ```bash
-uv sync --frozen
-uv run python tools/export_runtime_assets.py \
-  --archive nexus-runtime-assets.tar.gz
-```
-
-The exporter strips reviewer/source metadata, includes only inference files, writes per-file checksums, and verifies catalog/policy relationships. Transfer the archive privately:
-
-```bash
-scp nexus-runtime-assets.tar.gz user@your-server:/tmp/
-```
-
-Do **not** publish this archive or add it to Git.
-
-### 2. Install with one command
-
-On the server:
-
-```bash
-git clone --branch v2-engine https://github.com/lucapohl-an/N.E.X.U.S-ML-V2.git
+git clone --branch v2-engine \
+  https://github.com/lucapohl-angel/N.E.X.U.S-ML-V2.git
 cd N.E.X.U.S-ML-V2
-./scripts/nexus-server install --runtime-assets /tmp/nexus-runtime-assets.tar.gz
+./scripts/nexus-server install
 ```
 
-The installer automatically:
+The installer:
 
-1. validates Docker and Compose;
-2. validates every runtime-asset checksum and integrity pin;
-3. generates a 256-bit API key;
-4. saves configuration in `.env` and the token in `.env.key`, both mode `0600`;
-5. builds and starts the hardened container;
-6. waits for the extraction engine to finish loading;
+1. pulls the private `stable` discovery channel;
+2. resolves it once to an immutable `sha256` digest;
+3. verifies source, commit, and pinned-runtime OCI labels;
+4. generates a 256-bit API key in a mode-`0600` secret file;
+5. starts the hardened container using the exact digest with pulling disabled;
+6. waits for the extraction engine to load;
 7. proves unauthenticated access is rejected;
-8. proves the generated key reaches a protected route.
+8. proves the generated key reaches a protected route;
+9. records the known-good digest for future rollback.
 
-By default the API listens only on `127.0.0.1:8000`.
+By default, the API listens only on `127.0.0.1:8000`. Put your HTTPS reverse proxy in front of it.
 
-> [!TIP]
-> Keep the loopback default and expose the API through your existing HTTPS reverse proxy. Use `--public` only when firewall rules and TLS termination are already configured.
-
-Custom port:
+Custom port or deliberate public bind:
 
 ```bash
-./scripts/nexus-server install \
-  --runtime-assets /tmp/nexus-runtime-assets.tar.gz \
-  --port 8080
+./scripts/nexus-server install --port 8080
+./scripts/nexus-server install --public
 ```
+
+Use `--public` only when firewall rules and TLS termination are already configured.
+
+## Updates and rollback
+
+Manual safe update:
+
+```bash
+git pull --ff-only
+./scripts/nexus-server update
+```
+
+`stable` is never deployed directly. The updater:
+
+- serializes deployments with a lock;
+- pulls and resolves `stable` to a digest;
+- exits without restarting when the digest is unchanged;
+- validates image provenance labels;
+- deploys the exact digest;
+- runs engine-readiness and authentication checks;
+- records it only after success;
+- restores the previous known-good digest if validation fails.
+
+Manual rollback:
+
+```bash
+./scripts/nexus-server rollback
+```
+
+Optional daily updates:
+
+```bash
+./scripts/nexus-server enable-auto-update
+```
+
+The scheduled updater adds randomized delay to avoid synchronized pulls, cannot overlap another deployment, and uses the same digest-pinned validation and rollback path. Logs are written to `nexus-update.log`.
+
+Disable it with:
+
+```bash
+./scripts/nexus-server disable-auto-update
+```
+
+Automatic deployment is optional. For stricter production control, leave it disabled and run `update` after reviewing a release.
+
+## Publishing private images
+
+### First-time GHCR setup
+
+The first publication machine needs:
+
+- a running Docker daemon;
+- `uv`;
+- the reviewed private runtime sources;
+- a classic token with `read:packages` and `write:packages`.
+
+```bash
+export GHCR_TOKEN
+./scripts/publish-private-images --approve-reviewed-runtime
+```
+
+The approval flag is intentional. The publisher exports and sanitizes the reviewed runtime, validates all checksums and catalog/policy pins, verifies exact runtime parity, builds an immutable runtime image, pins the app build to its digest, starts the app candidate, checks engine readiness and API authentication, then promotes both private packages.
+
+After first publication, verify in GitHub package settings that both packages are **Private**. Grant this repository Actions access to the runtime package. The publisher stores the approved runtime digest in the repository variable `NEXUS_RUNTIME_IMAGE` when the current GitHub credential permits it.
+
+### Code and tuning updates
+
+Changes under the V2 engine/API/profile build paths trigger `.github/workflows/publish-private-image.yaml` on `v2-engine`.
+
+The workflow:
+
+1. runs the full test, Ruff, strict Mypy, and lockfile gates;
+2. requires `NEXUS_RUNTIME_IMAGE` to be an immutable runtime digest;
+3. builds an immutable `sha-<commit>` application image;
+4. starts the candidate and verifies engine readiness plus unauthorized/authorized requests;
+5. moves the private application `stable` channel only after success.
+
+The workflow uses SHA-pinned third-party Actions and does not cache private runtime layers in the public repository's Actions cache.
+
+### Hero, item, or artwork updates
+
+MLBB changes heroes, skins, and items over time. Do not let an unattended scraper replace live recognition references.
+
+Use this boundary:
+
+```text
+Discovery/scraping → human review/truth → replay and parity gates
+                  → publish reviewed runtime digest → rebuild app → stable
+```
+
+When approved recognition assets change:
+
+1. update and review the private catalog/prototype/policy sources;
+2. run the full replay and zero-wrong-output gates;
+3. run `./scripts/publish-private-images --approve-reviewed-runtime`;
+4. allow or manually run the app-image workflow against the new recorded runtime digest;
+5. update servers manually or through the optional scheduled updater.
+
+This keeps routine code releases automatic without allowing unreviewed game-art changes into production.
 
 ## API-key security
 
-The key is generated during installation. Show it later with:
+Show the generated key:
 
 ```bash
 ./scripts/nexus-server key
 ```
 
-Protected routes accept either header:
+Protected routes accept either:
 
 ```http
-Authorization: Bearer <API_KEY>
-X-Nexus-API-Key: <API_KEY>
+Authorization: Bearer <server-generated-key>
+X-Nexus-API-Key: <server-generated-key>
 ```
 
-`GET /v2/health` remains public for container readiness checks but returns no screenshot or result data. Submission, job status, and results require the key. Key comparisons use constant-time verification, and production startup fails closed when the key is missing.
+`GET /v2/health` remains public for readiness checks but returns no screenshot or result data. Submission, job status, and results require authentication. The key is mounted as `/run/secrets/nexus_api_key`, not placed in the container environment.
 
-Compose mounts the token from `.env.key` as `/run/secrets/nexus_api_key`; it is not placed in the
-container environment. Store the key in your backend secret manager. Never put it in frontend code,
-URLs, cookies, analytics, screenshots, or Git.
-
-Rotate it at any time:
+Rotate it:
 
 ```bash
 ./scripts/nexus-server rotate-key
 ```
-
-The old key stops working after the container is recreated.
 
 ## Submit a match
 
@@ -148,7 +231,7 @@ curl -sS -H "Authorization: Bearer $API_KEY" \
   "$BASE_URL/v2/jobs/<job-id>/result"
 ```
 
-Result polling returns `202` while queued/processing and `200` when all five results are ready. Jobs are held in process memory and do not survive a restart.
+Jobs are held in process memory and do not survive a restart.
 
 ## Operations
 
@@ -156,25 +239,14 @@ Result polling returns `202` while queued/processing and `200` when all five res
 |---|---|
 | Health and container status | `./scripts/nexus-server status` |
 | Follow logs | `./scripts/nexus-server logs -f` |
+| Safe digest update | `./scripts/nexus-server update` |
+| Previous known-good release | `./scripts/nexus-server rollback` |
+| Enable daily safe updates | `./scripts/nexus-server enable-auto-update` |
+| Disable daily updates | `./scripts/nexus-server disable-auto-update` |
 | Restart | `./scripts/nexus-server restart` |
-| Stop | `./scripts/nexus-server stop` |
-| Start | `./scripts/nexus-server start` |
-| Rebuild/update current checkout | `./scripts/nexus-server update` |
-| Show API key | `./scripts/nexus-server key` |
-| Rotate API key | `./scripts/nexus-server rotate-key` |
-| Remove container, preserve assets | `./scripts/nexus-server uninstall` |
-| Remove container and private assets | `./scripts/nexus-server uninstall --purge-assets` |
-
-Upgrade to the newest branch revision:
-
-```bash
-git pull --ff-only
-./scripts/nexus-server update
-```
-
-The runtime bundle is mounted outside the image, so ordinary code upgrades do not duplicate or expose it. If a release requires new recognition assets, export a new archive and rerun `install --runtime-assets ...`.
-
-## Recovery
+| Stop/start | `./scripts/nexus-server stop` / `start` |
+| Show/rotate API key | `./scripts/nexus-server key` / `rotate-key` |
+| Remove service and local credentials | `./scripts/nexus-server uninstall` |
 
 If startup fails:
 
@@ -183,26 +255,17 @@ If startup fails:
 ./scripts/nexus-server status
 ```
 
-Common causes:
+## Container hardening
 
-- Docker daemon is stopped or the user cannot access it;
-- port 8000 is already in use;
-- fewer than 4 GB are available;
-- the runtime archive is incomplete, modified, or from a different catalog;
-- a reverse proxy points at the wrong host port.
-
-The installer never reports success from container launch alone; it waits for the model engine and authentication checks. A failed runtime-bundle replacement keeps the previously installed bundle until the new one validates.
-
-## Recognition and privacy contract
-
-- `auto` selects the certified vectorized CPU profile.
-- Reviewed item prototypes are loaded automatically without lowering global score or margin thresholds.
-- Held-out iPad evaluation reached **112/113 exact occupied items**, **0 wrong accepted identities**, and **1 abstention**.
-- `played_at` is completely absent from extraction and API output.
-- Upload bytes are kept in memory and released when a job terminates.
-- No raw screenshots, reviewer state, player identifiers, truth exports, or benchmark reports enter the image or repository.
-
-Detailed API behavior, performance certification, concurrency, and provenance are documented in [`docs/v2/service_api.md`](docs/v2/service_api.md).
+- non-root UID/GID `10001`;
+- read-only root filesystem;
+- all Linux capabilities dropped;
+- `no-new-privileges` enabled;
+- bounded writable `/tmp` only;
+- API key mounted as a Compose secret;
+- localhost binding by default;
+- private runtime baked from a reviewed digest;
+- deployment by application digest, never by a mutable tag.
 
 ## Local development
 
@@ -213,7 +276,7 @@ uv run ruff check nexus_v2 tests tools
 uv run mypy --strict nexus_v2
 ```
 
-For an authenticated native API process, first export/mount the private runtime bundle and set `NEXUS_RUNTIME_ASSETS_ROOT`, `NEXUS_API_KEY`, and `NEXUS_REQUIRE_API_KEY=true`.
+Detailed API behavior is documented in [`docs/v2/service_api.md`](docs/v2/service_api.md).
 
 ## License
 

@@ -2,10 +2,7 @@ name: nexus-v2
 
 services:
   nexus-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: nexus-ml-v2:${NEXUS_IMAGE_TAG:-local}
+    image: "${NEXUS_IMAGE:?Set NEXUS_IMAGE to the private GHCR image}"
     restart: unless-stopped
     init: true
     environment:
@@ -17,8 +14,6 @@ services:
       NEXUS_MAX_UPLOAD_BYTES: "${NEXUS_MAX_UPLOAD_BYTES:-52428800}"
     ports:
       - "${NEXUS_BIND_ADDRESS:-127.0.0.1}:${NEXUS_API_PORT:-8000}:8000"
-    volumes:
-      - "${NEXUS_RUNTIME_ASSETS_DIR:?Set NEXUS_RUNTIME_ASSETS_DIR to the extracted private runtime bundle}:/runtime-assets:ro"
     secrets:
       - nexus_api_key
     read_only: true
